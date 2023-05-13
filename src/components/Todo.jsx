@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from "react";
-import Modal from "react-modal";
+import Button from "react-bootstrap/Button";
+import ListGroup from "react-bootstrap/ListGroup";
+import Form from "react-bootstrap/Form";
+import Modal from "react-bootstrap/Modal";
 
-function App() {
-  const [modalIsOpen, setModalIsOpen] = useState(false);
+function Todo() {
+  const [showModal, setShowModal] = useState(false);
   const [todos, setTodos] = useState([]);
-  const [inputValue, setInputValue] = useState("");
 
   useEffect(() => {
     const storedTodos = JSON.parse(localStorage.getItem("todos"));
-    if (storedTodos && storedTodos.length) {
+    if (storedTodos) {
       setTodos(storedTodos);
     }
   }, []);
@@ -17,36 +19,75 @@ function App() {
     localStorage.setItem("todos", JSON.stringify(todos));
   }, [todos]);
 
-  const handleAddTodo = () => {
-    if (inputValue) {
-      setTodos([...todos, inputValue]);
-      setInputValue("");
+  const handleAddTodo = (e) => {
+    e.preventDefault();
+    const newTodo = e.target.elements.todo.value.trim();
+    if (newTodo !== "") {
+      setTodos([...todos, { text: newTodo, completed: false }]);
+      setShowModal(false);
     }
+    e.target.elements.todo.value = "";
   };
 
-  const handleRemoveTodo = (indexToRemove) => {
-    setTodos(todos.filter((_, index) => index !== indexToRemove));
+  const handleToggleCompleted = (index) => {
+    const updatedTodos = [...todos];
+    updatedTodos[index].completed = !updatedTodos[index].completed;
+    setTodos(updatedTodos);
+  };
+
+  const handleDeleteTodo = (index) => {
+    const updatedTodos = [...todos];
+    updatedTodos.splice(index, 1);
+    setTodos(updatedTodos);
   };
 
   return (
     <div>
-      <button onClick={() => setModalIsOpen(true)}>Todo</button>
-      <Modal isOpen={modalIsOpen} onRequestClose={() => setModalIsOpen(false)}>
-        <h2>Todo List</h2>
-        <ul>
-          {todos.map((todo, index) => (
-            <li key={index}>
-              {todo}
-              <button onClick={() => handleRemoveTodo(index)}>X</button>
-            </li>
-          ))}
-        </ul>
-        <input value={inputValue} onChange={(e) => setInputValue(e.target.value)} />
-        <button onClick={handleAddTodo}>Add Todo</button>
-        <button onClick={() => setModalIsOpen(false)}>Close</button>
+      <h1>Todo List</h1>
+      <ListGroup>
+        {todos.map((todo, index) => (
+          <ListGroup.Item
+            key={index}
+            action
+            onClick={() => handleToggleCompleted(index)}
+            style={{
+              textDecoration: todo.completed ? "line-through" : "none",
+            }}
+          >
+            {todo.text}
+            <Button
+              variant="danger"
+              style={{ float: "right" }}
+              onClick={() => handleDeleteTodo(index)}
+            >
+              X
+            </Button>
+          </ListGroup.Item>
+        ))}
+      </ListGroup>
+
+      <Button variant="primary" onClick={() => setShowModal(true)}>
+        Add Todo
+      </Button>
+
+      <Modal show={showModal} onHide={() => setShowModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Add Todo</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form onSubmit={handleAddTodo}>
+            <Form.Group controlId="todo">
+              <Form.Label>Todo:</Form.Label>
+              <Form.Control type="text" placeholder="Enter todo" />
+            </Form.Group>
+            <Button variant="primary" type="submit">
+              Add
+            </Button>
+          </Form>
+        </Modal.Body>
       </Modal>
     </div>
   );
 }
 
-export default App;
+export default Todo;
