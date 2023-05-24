@@ -19,7 +19,7 @@ export default function Intermediate() {
             client_secret: "1Ea7GmMu62XmlJhZ8qSl-zCzg5ccfSFO",
             grant_type: "authorization_code",
             code: code,
-            redirect_uri: "http://localhost:3000/authenticating",
+            redirect_uri: "https://bet-hero-phi.vercel.app/authenticating",
           },
           {
             headers: {

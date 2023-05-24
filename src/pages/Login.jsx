@@ -11,7 +11,7 @@ const Login = () => {
   const handleClick = () => {
     localStorage.setItem("authenticating", "true");
     window.location.href =
-      "https://discord.com/api/oauth2/authorize?client_id=1110861504535871568&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fauthenticating&response_type=code&scope=identify%20email";
+      "https://discord.com/api/oauth2/authorize?client_id=1110861504535871568&redirect_uri=https%3A%2F%2Fbet-hero-phi.vercel.app%2Fauthenticating&response_type=code&scope=identify%20email";
   };
   useEffect(() => {
     if (!isAuthenticated) {
