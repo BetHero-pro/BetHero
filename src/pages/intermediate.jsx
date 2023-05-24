@@ -46,7 +46,7 @@ export default function Intermediate() {
           console.log(err);
         });
     } else {
-      navigate("/login");
+      navigate("/welcome");
     }
   }, []);
 

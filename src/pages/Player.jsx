@@ -40,7 +40,7 @@ const Player = ({ palyerName }) => {
   const navigate = useNavigate();
   useEffect(() => {
     if (username == null) {
-      navigate("/login");
+      navigate("/welcome");
     } else {
       console.log(username);
     }
