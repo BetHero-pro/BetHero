@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 
 const DiscordButton = ({ isSSO, url, handleClick }) => (
   <a
-    // href={url}
+    href={url}
     onClick={handleClick}
   >
     <div style={{ width: 45, height: 45, marginRight: 15 }}>

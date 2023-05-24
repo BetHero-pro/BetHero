@@ -1,35 +1,26 @@
-import { useState } from 'react';
-import './App.css';
-import './css/general.css'
-import NavComponent from './components/NavComponent';
-import TodoList from './components/Todo';
-import Welcome from './pages/Welcome';
-import Login from './pages/Login';
-import Player from './pages/Player';
-import Quest from './pages/Quest';
+import { useState } from "react";
+import "./App.css";
+import "./css/general.css";
+import NavComponent from "./components/NavComponent";
+import TodoList from "./components/Todo";
+import Welcome from "./pages/Welcome";
+import Login from "./pages/Login";
+import Player from "./pages/Player";
+import Quest from "./pages/Quest";
+import Intermediate from "./pages/intermediate";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 function App() {
-  const [currentPage, setCurrentPage] = useState(0);
-
-  const onChangeCurrentPage = (page) => {
-    setCurrentPage(page);
-  }
-
-  const pages = [
-    <Welcome currentPage={currentPage} setCurrentPage={onChangeCurrentPage} />,
-    <Login currentPage={currentPage} setCurrentPage={onChangeCurrentPage} />,
-    <Player />,
-  ]
-
   return (
-    <>
-      <div class="d-flex justify-content-center margin-custom back-white reponsive-container">
-        {
-          pages[currentPage]
-        }
-      </div>
-    </>
-    );
+    <Router>
+      <Routes>
+        <Route Component={Welcome} path="/welcome" exact />
+        <Route Component={Login} path="/login" exact />
+        <Route Component={Player} path="/" exact />
+        <Route Component={Intermediate} path="/authenticating" exact />
+      </Routes>
+    </Router>
+  );
 }
 
 export default App;
