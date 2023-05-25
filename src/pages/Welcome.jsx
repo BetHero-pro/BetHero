@@ -12,6 +12,7 @@ const Welcome = () => {
         <div class="d-flex flex-col align-items-center">
           <div class="">
             <h1 class="font-title">Welcome to BetHero</h1>
+            <h2>(prototype version 0.1)</h2>
             <div class="d-flex justify-content-center">
               <img width="50%" height="50%" src="Logo.png" />
             </div>

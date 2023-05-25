@@ -1,17 +1,19 @@
 import { useEffect } from "react";
 import DiscordButton from "../components/DiscordButton";
-import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { user_is_authenticating } from "../redux/authSlice";
+import { ENV, DISCORD_LOCAL_LINK, DISCORD_PROD_LINK } from "../secrets";
 
 const Login = () => {
-  const isAuthenticated = localStorage.getItem("username") == null;
+  const redirect_link = ENV == "local" ? DISCORD_LOCAL_LINK : DISCORD_PROD_LINK;
+  const isAuthenticated =
+    localStorage.getItem("username") == null ||
+    localStorage.getItem("username") == "";
   const navigate = useNavigate();
 
   const handleClick = () => {
     localStorage.setItem("authenticating", "true");
-    window.location.href =
-      "https://discord.com/api/oauth2/authorize?client_id=1110861504535871568&redirect_uri=https%3A%2F%2Fbet-hero-phi.vercel.app%2Fauthenticating&response_type=code&scope=identify%20email";
+    console.log(redirect_link);
+    window.location.href = redirect_link;
   };
   useEffect(() => {
     if (!isAuthenticated) {

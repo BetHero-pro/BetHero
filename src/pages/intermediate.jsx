@@ -1,14 +1,21 @@
 import React, { useEffect } from "react";
 import axios from "axios";
-import { user_is_authenticated, getUsername } from "../redux/authSlice";
-import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import {
+  DISCORD_CLIENT_SECRET,
+  ENV,
+  DISCORD_LOCAL_URI,
+  DISCORD_PROD_URI,
+} from "../secrets";
 
 export default function Intermediate() {
   const isAuthenticating = localStorage.getItem("authenticating");
   const navigate = useNavigate();
   useEffect(() => {
     if (isAuthenticating === "true") {
+      const client_secret = DISCORD_CLIENT_SECRET;
+      const redirect_uri =
+        ENV === "local" ? DISCORD_LOCAL_URI : DISCORD_PROD_URI;
       const params = new URLSearchParams(window.location.search);
       const code = params.get("code");
       axios
@@ -16,10 +23,10 @@ export default function Intermediate() {
           "https://discord.com/api/oauth2/token",
           {
             client_id: "1110861504535871568",
-            client_secret: "1Ea7GmMu62XmlJhZ8qSl-zCzg5ccfSFO",
+            client_secret: client_secret,
             grant_type: "authorization_code",
             code: code,
-            redirect_uri: "https://bet-hero-phi.vercel.app/authenticating",
+            redirect_uri: redirect_uri,
           },
           {
             headers: {
@@ -37,7 +44,9 @@ export default function Intermediate() {
             })
             .then((res) => {
               const username = res.data.username;
+              const userID = res.data.id;
               localStorage.setItem("username", username);
+              localStorage.setItem("userID", userID);
               localStorage.setItem("authenticating", "false");
               navigate("/");
             });

@@ -14,6 +14,7 @@
     "buffer": "^6.0.3",
     "crypto-browserify": "^3.12.0",
     "discord-oauth2": "^2.11.0",
+    "dotenv": "^16.0.3",
     "font-awesome": "^4.7.0",
     "http": "^0.0.1-security",
     "https": "^1.0.0",
