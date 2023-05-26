@@ -4,7 +4,6 @@ const fetchAllQuests = (callback1, callback2, userID) => {
     body: JSON.stringify({ userID: userID }),
     headers: {
       "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*",
     },
     method: "POST",
     mode: "cors",
@@ -29,7 +28,6 @@ const createQuest = async (userID, questText) => {
   await fetch("https://betherobackend.jaydesale.repl.co/storeQuest", {
     headers: {
       "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*",
     },
     body: JSON.stringify({ userID: userID, Quest: questText }),
     method: "POST",
@@ -49,7 +47,6 @@ const deleteQuest = async (questID) => {
   await fetch("https://betherobackend.jaydesale.repl.co/deleteQuest", {
     headers: {
       "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*",
     },
     body: JSON.stringify({ questID: questID }),
     method: "POST",
@@ -69,7 +66,6 @@ const markQuest = async (questID) => {
   await fetch("https://betherobackend.jaydesale.repl.co/markQuest", {
     headers: {
       "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*",
     },
     body: JSON.stringify({ questID: questID }),
     method: "POST",
