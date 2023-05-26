@@ -1,6 +1,6 @@
 import axios from "axios";
 const fetchAllQuests = (callback1, callback2, userID) => {
-  fetch("https://betherobackend.jaydesale.repl.co/fetchQuest", {
+  fetch("https://cors-anywhere.herokuapp.com/fetchQuest", {
     body: JSON.stringify({ userID: userID }),
     headers: {
       "Content-Type": "application/json",
@@ -25,7 +25,7 @@ const fetchAllQuests = (callback1, callback2, userID) => {
     });
 };
 const createQuest = async (userID, questText) => {
-  await fetch("https://betherobackend.jaydesale.repl.co/storeQuest", {
+  await fetch("https://cors-anywhere.herokuapp.com/storeQuest", {
     headers: {
       "Content-Type": "application/json",
     },
@@ -44,7 +44,7 @@ const createQuest = async (userID, questText) => {
     });
 };
 const deleteQuest = async (questID) => {
-  await fetch("https://betherobackend.jaydesale.repl.co/deleteQuest", {
+  await fetch("https://cors-anywhere.herokuapp.com/deleteQuest", {
     headers: {
       "Content-Type": "application/json",
     },
@@ -63,7 +63,7 @@ const deleteQuest = async (questID) => {
     });
 };
 const markQuest = async (questID) => {
-  await fetch("https://betherobackend.jaydesale.repl.co/markQuest", {
+  await fetch("https://cors-anywhere.herokuapp.com/markQuest", {
     headers: {
       "Content-Type": "application/json",
     },
