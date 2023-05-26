@@ -7,6 +7,7 @@ const fetchAllQuests = (callback1, callback2, userID) => {
       "Access-Control-Allow-Origin": "*",
     },
     method: "POST",
+    mode: "cors",
   })
     .then((response) => {
       return response.json();
@@ -32,6 +33,7 @@ const createQuest = async (userID, questText) => {
     },
     body: JSON.stringify({ userID: userID, Quest: questText }),
     method: "POST",
+    mode: "cors",
   })
     .then((response) => {
       return response.json();
@@ -51,6 +53,7 @@ const deleteQuest = async (questID) => {
     },
     body: JSON.stringify({ questID: questID }),
     method: "POST",
+    mode: "cors",
   })
     .then((response) => {
       return response.json();
@@ -70,6 +73,7 @@ const markQuest = async (questID) => {
     },
     body: JSON.stringify({ questID: questID }),
     method: "POST",
+    mode: "cors",
   })
     .then((response) => {
       return response.json();
