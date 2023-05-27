@@ -1,13 +1,16 @@
 import axios from "axios";
 const fetchAllQuests = (callback1, callback2, userID) => {
-  fetch("https://cors-anywhere.herokuapp.com/fetchQuest", {
-    body: JSON.stringify({ userID: userID }),
-    headers: {
-      "Content-Type": "application/json",
-    },
-    method: "POST",
-    mode: "cors",
-  })
+  fetch(
+    "https://cors-anywhere.herokuapp.com/https://betherobackend.jaydesale.repl.co/fetchQuest",
+    {
+      body: JSON.stringify({ userID: userID }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      method: "POST",
+      mode: "cors",
+    }
+  )
     .then((response) => {
       return response.json();
     })
@@ -25,14 +28,17 @@ const fetchAllQuests = (callback1, callback2, userID) => {
     });
 };
 const createQuest = async (userID, questText) => {
-  await fetch("https://cors-anywhere.herokuapp.com/storeQuest", {
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ userID: userID, Quest: questText }),
-    method: "POST",
-    mode: "cors",
-  })
+  await fetch(
+    "https://cors-anywhere.herokuapp.com/https://betherobackend.jaydesale.repl.co/storeQuest",
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ userID: userID, Quest: questText }),
+      method: "POST",
+      mode: "cors",
+    }
+  )
     .then((response) => {
       return response.json();
     })
@@ -44,14 +50,17 @@ const createQuest = async (userID, questText) => {
     });
 };
 const deleteQuest = async (questID) => {
-  await fetch("https://cors-anywhere.herokuapp.com/deleteQuest", {
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ questID: questID }),
-    method: "POST",
-    mode: "cors",
-  })
+  await fetch(
+    "https://cors-anywhere.herokuapp.com/https://betherobackend.jaydesale.repl.co/deleteQuest",
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ questID: questID }),
+      method: "POST",
+      mode: "cors",
+    }
+  )
     .then((response) => {
       return response.json();
     })
@@ -63,14 +72,17 @@ const deleteQuest = async (questID) => {
     });
 };
 const markQuest = async (questID) => {
-  await fetch("https://cors-anywhere.herokuapp.com/markQuest", {
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ questID: questID }),
-    method: "POST",
-    mode: "cors",
-  })
+  await fetch(
+    "https://cors-anywhere.herokuapp.com/https://betherobackend.jaydesale.repl.co/markQuest",
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ questID: questID }),
+      method: "POST",
+      mode: "cors",
+    }
+  )
     .then((response) => {
       return response.json();
     })
