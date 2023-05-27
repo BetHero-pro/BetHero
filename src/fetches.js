@@ -1,21 +1,18 @@
 import axios from "axios";
 const fetchAllQuests = (callback1, callback2, userID) => {
-  fetch(
-    "https://cors-anywhere.herokuapp.com/https://betherobackend.jaydesale.repl.co/fetchQuest",
-    {
-      body: JSON.stringify({ userID: userID }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-      method: "POST",
-      mode: "cors",
-    }
-  )
-    .then((response) => {
-      return response.json();
-    })
-    .then((data) => {
-      const questions = data;
+  axios
+    .post(
+      "https://betherobackend.jaydesale.repl.co/fetchQuest",
+      JSON.stringify({ userID: userID }),
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: false,
+      }
+    )
+    .then((res) => {
+      const questions = res.data;
       callback1(questions);
       callback2(
         questions.filter((question) => {
@@ -28,66 +25,54 @@ const fetchAllQuests = (callback1, callback2, userID) => {
     });
 };
 const createQuest = async (userID, questText) => {
-  await fetch(
-    "https://cors-anywhere.herokuapp.com/https://betherobackend.jaydesale.repl.co/storeQuest",
-    {
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ userID: userID, Quest: questText }),
-      method: "POST",
-      mode: "cors",
-    }
-  )
+  await axios
+    .post(
+      "https://betherobackend.jaydesale.repl.co/storeQuest",
+      JSON.stringify({ userID: userID, Quest: questText }),
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: false,
+      }
+    )
     .then((response) => {
-      return response.json();
-    })
-    .then((data) => {
-      console.log(data);
-    })
-    .catch((err) => {
-      console.log(err);
+      console.log(response.data);
     });
 };
 const deleteQuest = async (questID) => {
-  await fetch(
-    "https://cors-anywhere.herokuapp.com/https://betherobackend.jaydesale.repl.co/deleteQuest",
-    {
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ questID: questID }),
-      method: "POST",
-      mode: "cors",
-    }
-  )
-    .then((response) => {
-      return response.json();
-    })
-    .then((data) => {
-      console.log(data);
+  await axios
+    .post(
+      "https://betherobackend.jaydesale.repl.co/deleteQuest",
+      JSON.stringify({ questID: questID }),
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: false,
+      }
+    )
+    .then((res) => {
+      console.log(res.data);
     })
     .catch((err) => {
       console.log(err);
     });
 };
 const markQuest = async (questID) => {
-  await fetch(
-    "https://cors-anywhere.herokuapp.com/https://betherobackend.jaydesale.repl.co/markQuest",
-    {
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ questID: questID }),
-      method: "POST",
-      mode: "cors",
-    }
-  )
+  await axios
+    .post(
+      "https://betherobackend.jaydesale.repl.co/markQuest",
+      JSON.stringify({ questID: questID }),
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: false,
+      }
+    )
     .then((response) => {
-      return response.json();
-    })
-    .then((data) => {
-      console.log(data);
+      console.log(response.data);
     })
     .catch((err) => {
       console.log(err);
