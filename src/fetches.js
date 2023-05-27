@@ -1,7 +1,7 @@
 import axios from "axios";
 const fetchAllQuests = (callback1, callback2, userID) => {
   fetch(
-    "https://cors-anywhere.herokuapp.com/https://betherobackend.jaydesale.repl.co/fetchQuest",
+    "https://betherobackend.jaydesale.repl.co/fetchQuest",
     {
       body: JSON.stringify({ userID: userID }),
       headers: {
@@ -29,7 +29,7 @@ const fetchAllQuests = (callback1, callback2, userID) => {
 };
 const createQuest = async (userID, questText) => {
   await fetch(
-    "https://cors-anywhere.herokuapp.com/https://betherobackend.jaydesale.repl.co/storeQuest",
+    "https://betherobackend.jaydesale.repl.co/storeQuest",
     {
       headers: {
         "Content-Type": "application/json",
@@ -51,7 +51,7 @@ const createQuest = async (userID, questText) => {
 };
 const deleteQuest = async (questID) => {
   await fetch(
-    "https://cors-anywhere.herokuapp.com/https://betherobackend.jaydesale.repl.co/deleteQuest",
+    "https://betherobackend.jaydesale.repl.co/deleteQuest",
     {
       headers: {
         "Content-Type": "application/json",
@@ -73,7 +73,7 @@ const deleteQuest = async (questID) => {
 };
 const markQuest = async (questID) => {
   await fetch(
-    "https://cors-anywhere.herokuapp.com/https://betherobackend.jaydesale.repl.co/markQuest",
+    "https://betherobackend.jaydesale.repl.co/markQuest",
     {
       headers: {
         "Content-Type": "application/json",
