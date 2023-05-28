@@ -1,7 +1,7 @@
 import axios from "axios";
 const fetchAllQuests = (callback1, callback2, userID) => {
   fetch(
-    "http://34.171.209.43/fetchQuest",
+    "http://34.171.209.43:5000/fetchQuest",
     {
       body: JSON.stringify({ userID: userID }),
       headers: {
@@ -29,7 +29,7 @@ const fetchAllQuests = (callback1, callback2, userID) => {
 };
 const createQuest = async (userID, questText) => {
   await fetch(
-    "http://34.171.209.43/storeQuest",
+    "http://34.171.209.43:5000/storeQuest",
     {
       headers: {
         "Content-Type": "application/json",
@@ -51,7 +51,7 @@ const createQuest = async (userID, questText) => {
 };
 const deleteQuest = async (questID) => {
   await fetch(
-    "http://34.171.209.43/deleteQuest",
+    "http://34.171.209.43:5000/deleteQuest",
     {
       headers: {
         "Content-Type": "application/json",
@@ -73,7 +73,7 @@ const deleteQuest = async (questID) => {
 };
 const markQuest = async (questID) => {
   await fetch(
-    "http://34.171.209.43/markQuest",
+    "http://34.171.209.43:5000/markQuest",
     {
       headers: {
         "Content-Type": "application/json",
