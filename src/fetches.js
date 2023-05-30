@@ -27,6 +27,28 @@ const fetchAllQuests = (callback1, callback2, userID) => {
       console.log(err);
     });
 };
+const userAuth = async (userName) => {
+  await fetch(
+    "http://34.171.209.43:5000/userAuth",
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ userName: userName}),
+      method: "POST",
+      mode: "cors",
+    }
+  )
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => {
+      console.log(data);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
 const createQuest = async (userID, questText) => {
   await fetch(
     "http://34.171.209.43:5000/storeQuest",
@@ -94,4 +116,4 @@ const markQuest = async (questID) => {
     });
 };
 
-export { fetchAllQuests, createQuest, deleteQuest, markQuest };
+export { fetchAllQuests, createQuest, deleteQuest, markQuest, userAuth };

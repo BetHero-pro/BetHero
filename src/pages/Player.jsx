@@ -10,6 +10,7 @@ import {
   createQuest,
   deleteQuest,
   markQuest,
+  userAuth
 } from "../fetches";
 
 const Player = ({ palyerName }) => {
@@ -90,7 +91,7 @@ const Player = ({ palyerName }) => {
               </form>
             ) : (
               <>
-                <h1>{`Hi (${username})`}</h1>
+                <h1>{`Hi ${username}`}</h1>
                 <div>
                   {questions?.map((question, index) => (
                     <React.Fragment key={index}>

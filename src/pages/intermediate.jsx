@@ -7,6 +7,7 @@ import {
   DISCORD_LOCAL_URI,
   DISCORD_PROD_URI,
 } from "../secrets";
+import {userAuth} from "../fetches";
 
 export default function Intermediate() {
   const isAuthenticating = localStorage.getItem("authenticating");
@@ -45,6 +46,9 @@ export default function Intermediate() {
             .then((res) => {
               const username = res.data.username;
               const userID = res.data.id;
+              token = userAuth(username)
+              console.log(token)
+              console.log(token.token)
               localStorage.setItem("username", username);
               localStorage.setItem("userID", userID);
               localStorage.setItem("authenticating", "false");
