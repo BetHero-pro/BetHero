@@ -13,6 +13,7 @@ const Login = () => {
   const handleClick = () => {
     localStorage.setItem("authenticating", "true");
     console.log(redirect_link);
+    navigate("/authenticating");
     window.location.href = redirect_link;
   };
   useEffect(() => {
