@@ -49,6 +49,7 @@ const userAuth = async (userName) => {
       console.log(err);
     });
 };
+
 const createQuest = async (userID, questText) => {
   await fetch(
     "http://34.171.209.43:5000/storeQuest",
