@@ -5,39 +5,36 @@ import { useState } from "react";
 import axios from "axios";
 import Quest from "./Quest";
 import { useNavigate } from "react-router-dom";
+import jwt from "jsonwebtoken";
 import {
   fetchAllQuests,
   createQuest,
   deleteQuest,
   markQuest,
-  userAuth
+  userAuth,
 } from "../fetches";
+import { JWT_SECRET } from "../secrets";
 
 const Player = ({ palyerName }) => {
-  const userID = localStorage.getItem("userID");
+  const jsonToken = localStorage.getItem("jwt");
+  const [user, setUser] = useState({ username: "", userID: "" });
   const [newQuestion, setNewQuestion] = useState("");
   const [questions, setQuestions] = useState([]);
   const [selectedQuestions, setSelectedQuestions] = useState([]);
   const [isQuestion, setIsQuestion] = useState(false);
   const [refresh, toggleRefresh] = useState(false);
   const [disabledButton, setDisabledButton] = useState(false);
+  const [verification, setVerification] = useState(false);
+
   const isSelected = (question) => {
     return selectedQuestions.includes(question);
   };
 
   const onChange = async (question, e) => {
     e.target.disabled = true;
-    if (!isSelected(question)) {
-      await markQuest(question._id);
-    } else {
-      setSelectedQuestions(
-        selectedQuestions.filter((_question) => _question !== question)
-      );
-      await deleteQuest(question._id);
-      await createQuest(userID, question.Quest);
-    }
-    e.target.disabled = false;
+    await deleteQuest(question._id);
     toggleRefresh(!refresh);
+    e.target.disabled = false;
   };
 
   const handleClick = () => {
@@ -48,20 +45,37 @@ const Player = ({ palyerName }) => {
   const handlePlayer = async (e) => {
     e.preventDefault();
     setDisabledButton(true);
-    await createQuest(userID, newQuestion);
+    await createQuest(user.userID, newQuestion);
     setDisabledButton(false);
     toggleRefresh(!refresh);
     setIsQuestion(0);
   };
-  const username = localStorage.getItem("username");
+
   const navigate = useNavigate();
   useEffect(() => {
-    if (username == null || username == "") {
+    if (jsonToken == "") {
       navigate("/welcome");
-    } else {
-      fetchAllQuests(setQuestions, setSelectedQuestions, userID);
+    } else if (user.userID == "") {
+      try {
+        const { data } = jwt.decode(jsonToken, JWT_SECRET);
+        setUser({ username: data[0].userName, userID: data[0]._id });
+        setVerification(true);
+        toggleRefresh(!refresh);
+      } catch {
+        localStorage.setItem("jwt", "");
+        navigate("/welcome");
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (jsonToken == "") {
+      navigate("/welcome");
+    } else if (user.userID !== "") {
+      fetchAllQuests(setQuestions, setSelectedQuestions, user.userID);
     }
   }, [refresh]);
+
   return (
     <>
       <div class="d-flex justify-content-center margin-custom back-white reponsive-container">
@@ -91,7 +105,7 @@ const Player = ({ palyerName }) => {
               </form>
             ) : (
               <>
-                <h1>{`Hi ${username}`}</h1>
+                <h1>{`Hi ${user.username}`}</h1>
                 <div>
                   {questions?.map((question, index) => (
                     <React.Fragment key={index}>
