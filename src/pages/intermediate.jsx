@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import {
@@ -7,9 +7,11 @@ import {
   DISCORD_LOCAL_URI,
   DISCORD_PROD_URI,
 } from "../secrets";
+import { userAuth } from "../fetches";
 
 export default function Intermediate() {
   const isAuthenticating = localStorage.getItem("authenticating");
+  const [jsonToken, setJsonToken] = useState("");
   const navigate = useNavigate();
   useEffect(() => {
     if (isAuthenticating === "true") {
@@ -42,11 +44,9 @@ export default function Intermediate() {
                 authorization: `Bearer ${token}`,
               },
             })
-            .then((res) => {
+            .then(async (res) => {
               const username = res.data.username;
-              const userID = res.data.id;
-              localStorage.setItem("username", username);
-              localStorage.setItem("userID", userID);
+              await userAuth(username);
               localStorage.setItem("authenticating", "false");
               navigate("/");
             });
