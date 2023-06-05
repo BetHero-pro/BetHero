@@ -44,11 +44,13 @@ const Player = ({ palyerName }) => {
 
   const handlePlayer = async (e) => {
     e.preventDefault();
-    setDisabledButton(true);
-    await createQuest(user.userID, newQuestion);
-    setDisabledButton(false);
-    toggleRefresh(!refresh);
-    setIsQuestion(0);
+    if (newQuestion !== "") {
+      setDisabledButton(true);
+      await createQuest(user.userID, newQuestion);
+      setDisabledButton(false);
+      toggleRefresh(!refresh);
+      setIsQuestion(0);
+    }
   };
 
   const navigate = useNavigate();
@@ -61,6 +63,11 @@ const Player = ({ palyerName }) => {
         setUser({ username: data[0].userName, userID: data[0]._id });
         setVerification(true);
         toggleRefresh(!refresh);
+        document.addEventListener("keypress", (e) => {
+          if (e.key == "Enter" && isQuestion == 0) {
+            setIsQuestion(1);
+          }
+        });
       } catch {
         localStorage.setItem("jwt", "");
         navigate("/welcome");
@@ -104,7 +111,7 @@ const Player = ({ palyerName }) => {
                 </div>
               </form>
             ) : (
-              <>
+              <form autoFocus className="quest-form parent">
                 <h1>{`Hi ${user.username}`}</h1>
                 <div>
                   {questions?.map((question, index) => (
@@ -128,7 +135,7 @@ const Player = ({ palyerName }) => {
                     <i class="fa fa-plus"></i>
                   </button>
                 </div>
-              </>
+              </form>
             )}
           </div>
         </div>
