@@ -8,20 +8,20 @@ const Welcome = () => {
 
   return (
     <>
-      <div class="d-flex justify-content-center margin-custom back-white reponsive-container">
-        <div class="d-flex flex-col align-items-center">
-          <div class="">
-            <h1 class="font-title">Welcome to BetHero</h1>
+      <div className="d-flex justify-content-center margin-custom back-white reponsive-container">
+        <div className="d-flex flex-col align-items-center">
+          <div className="">
+            <h1 className="font-title">Welcome to BetHero</h1>
             <h2>(prototype version 0.1)</h2>
-            <div class="d-flex justify-content-center">
+            <div className="d-flex justify-content-center">
               <img width="50%" height="50%" src="Logo.png" />
             </div>
-            <div class="d-flex justify-content-center pt-5">
+            <div className="d-flex justify-content-center pt-5">
               <button
-                class="btn btn-secondary custom-btn"
+                className="btn btn-secondary custom-btn"
                 onClick={handleClick}
               >
-                <span class="fs-4">Enter</span>
+                <span className="fs-4">Enter</span>
               </button>
             </div>
           </div>

@@ -27,7 +27,7 @@
 .App-link {
   color: #61dafb;
 }
-.App-background{
+.App-background {
   background-color: rgb(192, 170, 255);
 }
 
@@ -38,4 +38,17 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.list-container {
+  display: flex;
+  font-size: 18px;
+  background-color: #eee;
+  flex-direction: column;
+}
+.item-container {
+  background-color: #fff;
+  border: 1px solid black;
+  padding: 25px 70px;
+  margin: 15px 50px;
 }

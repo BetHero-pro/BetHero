@@ -6,7 +6,7 @@ import {
   ENV,
   DISCORD_LOCAL_URI,
   DISCORD_PROD_URI,
-} from "../secrets";
+} from "../config/env";
 import { userAuth } from "../fetches";
 
 export default function Intermediate() {
@@ -18,6 +18,7 @@ export default function Intermediate() {
       const client_secret = DISCORD_CLIENT_SECRET;
       const redirect_uri =
         ENV === "local" ? DISCORD_LOCAL_URI : DISCORD_PROD_URI;
+      console.log("redirect_uri:", redirect_uri);
       const params = new URLSearchParams(window.location.search);
       const code = params.get("code");
       axios
@@ -61,8 +62,8 @@ export default function Intermediate() {
 
   return (
     <>
-      <div class="d-flex justify-content-center margin-custom back-white reponsive-container">
-        <div class="d-flex flex-col justify-content-center">
+      <div className="d-flex justify-content-center margin-custom back-white reponsive-container">
+        <div className="d-flex flex-col justify-content-center">
           <div className="my-1 mx-1 parent">
             <h1>Hold Still.</h1>
           </div>
