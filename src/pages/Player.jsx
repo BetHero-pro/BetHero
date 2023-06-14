@@ -1,19 +1,20 @@
-import React, { useEffect } from "react";
-import "../../node_modules/@fortawesome/fontawesome-svg-core/styles.css";
-import "../../node_modules/font-awesome/css/font-awesome.min.css";
-import { useState } from "react";
-import axios from "axios";
-import Quest from "./Quest";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import jwt from "jsonwebtoken";
+// import axios from "axios";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { JWT_SECRET } from "../config/env";
+// import Quest from "./Quest";
 import {
   fetchAllQuests,
   createQuest,
   deleteQuest,
-  markQuest,
-  userAuth,
+  // markQuest,
+  // userAuth,
 } from "../fetches";
-import { JWT_SECRET } from "../secrets";
+
+import "../../node_modules/font-awesome/css/font-awesome.min.css";
+import "../../node_modules/@fortawesome/fontawesome-svg-core/styles.css";
 
 const Player = ({ palyerName }) => {
   const jsonToken = localStorage.getItem("jwt");
@@ -53,18 +54,29 @@ const Player = ({ palyerName }) => {
     }
   };
 
+  const handleDrop = (droppedItem) => {
+    const destinationIndex = droppedItem.destination.index;
+    const sourceIndex = droppedItem.source.index;
+
+    const updatedQuestions = [...questions];
+    const [reorderedQuestion] = updatedQuestions.splice(sourceIndex, 1);
+    updatedQuestions.splice(destinationIndex, 0, reorderedQuestion);
+
+    setQuestions(updatedQuestions);
+  };
+
   const navigate = useNavigate();
   useEffect(() => {
-    if (jsonToken == "") {
+    if (jsonToken === "") {
       navigate("/welcome");
-    } else if (user.userID == "") {
+    } else if (user.userID === "") {
       try {
         const { data } = jwt.decode(jsonToken, JWT_SECRET);
         setUser({ username: data[0].userName, userID: data[0]._id });
         setVerification(true);
         toggleRefresh(!refresh);
         document.addEventListener("keypress", (e) => {
-          if (e.key == "Enter" && isQuestion == 0) {
+          if (e.key === "Enter" && isQuestion === 0) {
             setIsQuestion(1);
           }
         });
@@ -76,7 +88,7 @@ const Player = ({ palyerName }) => {
   }, []);
 
   useEffect(() => {
-    if (jsonToken == "") {
+    if (jsonToken === "") {
       navigate("/welcome");
     } else if (user.userID !== "") {
       fetchAllQuests(setQuestions, setSelectedQuestions, user.userID);
@@ -85,18 +97,18 @@ const Player = ({ palyerName }) => {
 
   return (
     <>
-      <div class="d-flex justify-content-center margin-custom back-white reponsive-container">
-        <div class="d-flex flex-col justify-content-center">
+      <div className="d-flex justify-content-center margin-custom back-white reponsive-container">
+        <div className="d-flex flex-col justify-content-center">
           <div className="my-1 mx-1 parent">
             {isQuestion ? (
               <form className="quest-form parent" onSubmit={handlePlayer}>
                 <h1>Write Quest Name</h1>
-                <div class="d-flex justify-content-center align-items-center middleDiv">
+                <div className="d-flex justify-content-center align-items-center middleDiv">
                   <input
                     autoFocus
                     value={newQuestion}
                     onChange={(e) => setNewQuestion(e.target.value)}
-                    class="custom-input"
+                    className="custom-input"
                   />
                 </div>
 
@@ -106,7 +118,7 @@ const Player = ({ palyerName }) => {
                     type="submit"
                     className="btn-circle"
                   >
-                    <i class="fa fa-check"></i>
+                    <i className="fa fa-check"></i>
                   </button>
                 </div>
               </form>
@@ -114,25 +126,56 @@ const Player = ({ palyerName }) => {
               <form autoFocus className="quest-form parent">
                 <h1>{`Hi ${user.username}`}</h1>
                 <div>
-                  {questions?.map((question, index) => (
-                    <React.Fragment key={index}>
-                      <input
-                        type="checkbox"
-                        name={question}
-                        disabled={false}
-                        className="custom-check"
-                        checked={isSelected(question)}
-                        onChange={(e) => onChange(question, e)}
-                        id={question._id}
-                      />
-                      <label className="px-5 fs-1">{question.Quest}</label>
-                      <br></br>
-                    </React.Fragment>
-                  ))}
+                  <DragDropContext onDragEnd={handleDrop}>
+                    <Droppable droppableId="list-container">
+                      {(provided) => (
+                        <div
+                          className="list-container"
+                          {...provided.droppableProps}
+                          ref={provided.innerRef}
+                        >
+                          {questions.map((question, index) => (
+                            <Draggable
+                              key={question._id}
+                              draggableId={question._id}
+                              index={index}
+                            >
+                              {(provided) => (
+                                <div
+                                  className="item-container"
+                                  ref={provided.innerRef}
+                                  {...provided.dragHandleProps}
+                                  {...provided.draggableProps}
+                                >
+                                  {
+                                    <>
+                                      <input
+                                        type="checkbox"
+                                        name={question}
+                                        disabled={false}
+                                        className="custom-check"
+                                        checked={isSelected(question)}
+                                        onChange={(e) => onChange(question, e)}
+                                        id={question._id}
+                                      />
+                                      <label className="px-5 fs-1">
+                                        {question.Quest}
+                                      </label>
+                                    </>
+                                  }
+                                </div>
+                              )}
+                            </Draggable>
+                          ))}
+                          {provided.placeholder}
+                        </div>
+                      )}
+                    </Droppable>
+                  </DragDropContext>
                 </div>
                 <div className="child d-flex align-items-center justify-content-center py-5">
                   <button className="btn-circle" onClick={handleClick}>
-                    <i class="fa fa-plus"></i>
+                    <i className="fa fa-plus"></i>
                   </button>
                 </div>
               </form>

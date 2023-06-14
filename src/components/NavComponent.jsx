@@ -1,14 +1,14 @@
-import Button from 'react-bootstrap/Button';
-import Container from 'react-bootstrap/Container';
-import Form from 'react-bootstrap/Form';
-import Nav from 'react-bootstrap/Nav';
-import Navbar from 'react-bootstrap/Navbar';
-import NavDropdown from 'react-bootstrap/NavDropdown';
+import Button from "react-bootstrap/Button";
+import Container from "react-bootstrap/Container";
+import Form from "react-bootstrap/Form";
+import Nav from "react-bootstrap/Nav";
+import Navbar from "react-bootstrap/Navbar";
+import NavDropdown from "react-bootstrap/NavDropdown";
 
 function NavComponent() {
   return (
     <>
-    <Navbar bg="dark" variant="dark" class="navbar">
+      <Navbar bg="dark" variant="dark" className="navbar">
         <Container>
           <Navbar.Brand href="#home">BetHero</Navbar.Brand>
           <Nav className="me-auto">
@@ -19,7 +19,6 @@ function NavComponent() {
         </Container>
       </Navbar>
       <br />
-     
     </>
   );
 }

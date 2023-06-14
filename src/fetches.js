@@ -13,6 +13,7 @@ const fetchAllQuests = (callback1, callback2, userID) => {
     })
     .then((data) => {
       const questions = data;
+      console.log(questions);
       callback1(questions);
       callback2(
         questions.filter((question) => {
