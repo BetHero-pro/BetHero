@@ -16,8 +16,7 @@ export default function Intermediate() {
   useEffect(() => {
     if (isAuthenticating === "true") {
       const client_secret = DISCORD_CLIENT_SECRET;
-      const redirect_uri =
-        ENV === "local" ? DISCORD_PROD_URI : DISCORD_LOCAL_URI;
+      const redirect_uri =  DISCORD_PROD_URI;
       console.log("redirect_uri:", redirect_uri);
       const params = new URLSearchParams(window.location.search);
       const code = params.get("code");
