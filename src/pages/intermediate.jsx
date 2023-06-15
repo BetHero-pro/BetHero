@@ -17,7 +17,7 @@ export default function Intermediate() {
     if (isAuthenticating === "true") {
       const client_secret = DISCORD_CLIENT_SECRET;
       const redirect_uri =
-        ENV === "local" ? DISCORD_LOCAL_URI : DISCORD_PROD_URI;
+        ENV === "local" ? DISCORD_PROD_URI : DISCORD_LOCAL_URI;
       console.log("redirect_uri:", redirect_uri);
       const params = new URLSearchParams(window.location.search);
       const code = params.get("code");
