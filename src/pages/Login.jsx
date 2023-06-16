@@ -1,25 +1,22 @@
-import { useEffect } from "react";
-import DiscordButton from "../components/DiscordButton";
-import { useNavigate } from "react-router-dom";
-import { ENV, DISCORD_LOCAL_LINK, DISCORD_PROD_LINK } from "../config/env";
+import { useEffect } from 'react';
+import DiscordButton from '../components/DiscordButton';
+import { useNavigate } from 'react-router-dom';
+import { ENV, DISCORD_LOCAL_LINK, DISCORD_PROD_LINK } from '../config/env';
 
 const Login = () => {
-  const redirect_link =
-    ENV === "local" ? DISCORD_LOCAL_LINK : DISCORD_PROD_LINK;
-  const isAuthenticated =
-    localStorage.getItem("username") === null ||
-    localStorage.getItem("username") === "";
+  const redirect_link = ENV === 'local' ? DISCORD_LOCAL_LINK : DISCORD_PROD_LINK;
+  const isAuthenticated = localStorage.getItem('username') === null || localStorage.getItem('username') === '';
   const navigate = useNavigate();
 
   const handleClick = () => {
-    localStorage.setItem("authenticating", "true");
-    console.log("redirect_link:", redirect_link);
-    navigate("/authenticating");
-    window.location.href = redirect_link;
+    localStorage.setItem('authenticating', 'true');
+    console.log('redirect_link:', redirect_link);
+    // navigate("/authenticating");
+    // window.location.href = redirect_link;
   };
   useEffect(() => {
     if (!isAuthenticated) {
-      navigate("/");
+      navigate('/');
     }
   }, []);
   return (
