@@ -18,7 +18,7 @@ export default function Intermediate() {
       const client_secret = DISCORD_CLIENT_SECRET;
       const redirect_uri =
         ENV === "local" ? DISCORD_LOCAL_URI : DISCORD_PROD_URI;
-      console.log("redirect_uri:", redirect_uri);
+      console.log("redirect_uri:=>",ENV, redirect_uri);
       const params = new URLSearchParams(window.location.search);
       const code = params.get("code");
       axios
