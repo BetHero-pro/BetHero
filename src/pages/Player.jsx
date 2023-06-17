@@ -97,6 +97,9 @@ const Player = ({ palyerName }) => {
     }
   }, [refresh]);
 
+  // get the avater url from local storage for now
+  const userpic = localStorage.getItem('avatarurl');
+
   return (
     <>
       <div className="d-flex justify-content-center margin-custom back-white reponsive-container">
@@ -117,7 +120,14 @@ const Player = ({ palyerName }) => {
               </form>
             ) : (
               <form autoFocus className="quest-form parent">
-                <h1>{`Hi ${user.username}`}</h1>
+                {/* this code is for showing user profile and name */}
+                <div className="flex flex-row ">
+                  <span>
+                    <img className=" w-16 h-16 rounded-md" src={userpic} alt="" />
+                  </span>
+                  <h1> {`Hi ${user.username}`}</h1>
+                </div>
+
                 <div>
                   <DragDropContext onDragEnd={handleDrop}>
                     <Droppable droppableId="list-container">
