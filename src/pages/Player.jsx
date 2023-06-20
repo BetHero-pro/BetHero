@@ -9,6 +9,7 @@ import { fetchAllQuests, createQuest, deleteQuest, setOrder } from '../fetches';
 
 import '../../node_modules/font-awesome/css/font-awesome.min.css';
 import '../../node_modules/@fortawesome/fontawesome-svg-core/styles.css';
+import Timer from '../components/TimerComponent';
 
 const Player = ({ palyerName }) => {
   const jsonToken = localStorage.getItem('jwt');
@@ -48,13 +49,36 @@ const Player = ({ palyerName }) => {
     }
   };
 
-  const handleDrop = async droppedItem => {
+  const handleDropprev = async droppedItem => {
     const destinationIndex = droppedItem.destination.index;
     const sourceIndex = droppedItem.source.index;
 
     let updatedQuestions = [...questions];
     const [reorderedQuestion] = updatedQuestions.splice(sourceIndex, 1);
     updatedQuestions.splice(destinationIndex, 0, reorderedQuestion);
+
+    let updatedOrderData = [];
+    updatedQuestions.forEach((question, index) => {
+      question.order = index + 1;
+      updatedOrderData.push({ questID: question._id, order: index + 1 });
+    });
+
+    setQuestions(updatedQuestions);
+    console.log(updatedOrderData);
+    await setOrder(updatedOrderData);
+  };
+
+  const handleDrop = async result => {
+    if (!result.destination) return;
+
+    const { source, destination } = result;
+    const updatedQuestions = Array.from(questions);
+
+    // Remove the dragged item from the array
+    const [removed] = updatedQuestions.splice(source.index, 1);
+
+    // Insert the dragged item at the destination index
+    updatedQuestions.splice(destination.index, 0, removed);
 
     let updatedOrderData = [];
     updatedQuestions.forEach((question, index) => {
@@ -97,10 +121,21 @@ const Player = ({ palyerName }) => {
     }
   }, [refresh]);
 
+  // get the avater url from local storage for now
+  const userpic = localStorage.getItem('avatarurl');
+
+  // button to go to timer detail functionality
+  function gotoQuestDetailBtn(e, currentQuest, index) {
+    e.preventDefault();
+    alert('im clicked ');
+    console.log(currentQuest, index);
+    navigate('/questdetail', { state: { index: index, currentQuest: currentQuest } });
+  }
+
   return (
     <>
-      <div className="d-flex justify-content-center margin-custom back-white reponsive-container">
-        <div className="d-flex flex-col justify-content-center">
+      <div className="">
+        <div className="">
           <div className="my-1 mx-1 parent">
             {isQuestion ? (
               <form className="quest-form parent" onSubmit={handlePlayer}>
@@ -117,32 +152,43 @@ const Player = ({ palyerName }) => {
               </form>
             ) : (
               <form autoFocus className="quest-form parent">
-                <h1>{`Hi ${user.username}`}</h1>
-                <div>
+                <div className="p-2 ">
                   <DragDropContext onDragEnd={handleDrop}>
                     <Droppable droppableId="list-container">
                       {provided => (
-                        <div className="list-container" {...provided.droppableProps} ref={provided.innerRef}>
+                        <div className="grid grid-cols-4 gap-4 p-4" {...provided.droppableProps} ref={provided.innerRef}>
                           {questions
                             .sort((a, b) => a.order - b.order)
                             .map((question, index) => (
                               <Draggable key={question._id} draggableId={question._id} index={index}>
                                 {provided => (
-                                  <div className="item-container" ref={provided.innerRef} {...provided.dragHandleProps} {...provided.draggableProps}>
-                                    {
-                                      <>
-                                        <input
-                                          type="checkbox"
-                                          name={question}
-                                          disabled={false}
-                                          className="custom-check"
-                                          checked={isSelected(question)}
-                                          onChange={e => onChange(question, e)}
-                                          id={question._id}
-                                        />
-                                        <label className="px-5 fs-1">{question.Quest}</label>
-                                      </>
-                                    }
+                                  <div
+                                    className="item-container rounded-lg shadow-sm bg-yellow-200 p-2 w-[200px] h-[200px]"
+                                    ref={provided.innerRef}
+                                    {...provided.dragHandleProps}
+                                    {...provided.draggableProps}
+                                  >
+                                    <div className="flex items-center justify-center">
+                                      {/* <input
+                          type="checkbox"
+                          name={question}
+                          disabled={false}
+                          className="custom-check mr-2"
+                          checked={isSelected(question)}
+                          onChange={(e) => onChange(question, e)}
+                          id={question._id}
+                        /> */}
+                                      <label className="fs-1 text-green-400 font-medium">{question.Quest}</label>
+                                    </div>
+                                    <div className="text-sm">
+                                      <Timer taskId={question._id} />
+                                    </div>
+                                    <button
+                                      onClick={e => gotoQuestDetailBtn(e, question, index)}
+                                      className="mt-3 mb-4 ml-12 text-sm bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-1 rounded"
+                                    >
+                                      See Details
+                                    </button>
                                   </div>
                                 )}
                               </Draggable>
