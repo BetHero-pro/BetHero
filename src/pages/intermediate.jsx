@@ -49,6 +49,7 @@ export default function Intermediate() {
               localStorage.setItem('avatarurl', avatarUrl);
 
               const username = res.data.username;
+              localStorage.setItem('username', username);
               await userAuth(username);
               localStorage.setItem('authenticating', 'false');
               navigate('/');

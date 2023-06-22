@@ -124,6 +124,9 @@ const Player = ({ palyerName }) => {
   // get the avater url from local storage for now
   const userpic = localStorage.getItem('avatarurl');
 
+  // get username from local storage for now
+  const username = localStorage.getItem('username');
+
   // button to go to timer detail functionality
   function gotoQuestDetailBtn(e, currentQuest, index) {
     e.preventDefault();
@@ -152,6 +155,10 @@ const Player = ({ palyerName }) => {
               </form>
             ) : (
               <form autoFocus className="quest-form parent">
+                <div className=" text-center text-lg font-serif text-gray-700">
+                  Hello,
+                  <span className=" font-semibold ml-2  text-gray-950">{username ? username : 'please login guest'}</span>{' '}
+                </div>
                 <div className="p-2 ">
                   <DragDropContext onDragEnd={handleDrop}>
                     <Droppable droppableId="list-container">
