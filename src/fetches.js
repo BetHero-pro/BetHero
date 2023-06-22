@@ -43,6 +43,7 @@ const userAuth = async userObject => {
     })
     .then(data => {
       localStorage.setItem('jwt', data.token);
+      
     })
     .catch(err => {
       console.log(err);

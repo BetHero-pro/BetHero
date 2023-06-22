@@ -4,6 +4,8 @@ import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import jwtDecode from 'jwt-decode';
+import { useSelector } from 'react-redux';
+
 const navigation = [
   { name: 'Current Quests', href: '#', current: true },
   { name: 'Add Quest', href: '#', current: false },
@@ -31,18 +33,20 @@ export default function NavComponent() {
   //     setUsernameSt(username);
   //   }
   // }, []);
-  const [username, setUserName] = useState();
-  const [avatarurl, setAvatarUrl] = useState();
-  useEffect(() => {
-    let userData = localStorage.getItem('jwt');
-    if (userData) {
-      userData = jwtDecode(userData);
-      console.log(userData.data[0].userName);
-      setUserName(userData.data[0].userName);
-      setAvatarUrl(userData.data[0].avatarID);
-    }
-  }, []);
+  // const [username, setUserName] = useState();
+  // const [avatarurl, setAvatarUrl] = useState();
+  // useEffect(() => {
+  //   let userData = localStorage.getItem('jwt');
+  //   if (userData) {
+  //     userData = jwtDecode(userData);
+  //     console.log(userData.data[0].userName);
+  //     setUserName(userData.data[0].userName);
+  //     setAvatarUrl(userData.data[0].avatarID);
+  //   }
+  // }, []);
 
+  const { username, avatarurl } = useSelector(state => state.user);
+  console.log(username, avatarurl);
   function handleSignOut() {
     localStorage.removeItem('username');
     localStorage.removeItem('jwt');
@@ -108,15 +112,7 @@ export default function NavComponent() {
                   <div>
                     <Menu.Button className="flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                       <span className="sr-only">Open user menu</span>
-                      <img
-                        className="h-8 w-8 rounded-full"
-                        src={
-                          avatarurl
-                            ? avatarurl
-                            : 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
-                        }
-                        alt=""
-                      />
+                      <img className="h-8 w-8 rounded-full" src={avatarurl} alt="" />
                     </Menu.Button>
                   </div>
                   <Transition
@@ -135,7 +131,7 @@ export default function NavComponent() {
                             className=" border-2 p-1 m-2 text-base text-justify rounded-md 
                           text-orange-500"
                           >
-                            {username ? username : 'signed as guest'}
+                            {username}
                           </div>
                         )}
                       </Menu.Item>

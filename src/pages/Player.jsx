@@ -12,6 +12,8 @@ import '../../node_modules/@fortawesome/fontawesome-svg-core/styles.css';
 import Timer from '../components/TimerComponent';
 import jwtDecode from 'jwt-decode';
 
+import { useDispatch, useSelector } from 'react-redux';
+import { setUserData, getUserData } from '../redux_states/userState';
 const Player = ({ palyerName }) => {
   const jsonToken = localStorage.getItem('jwt');
   const [user, setUser] = useState({ username: '', userID: '' });
@@ -128,15 +130,21 @@ const Player = ({ palyerName }) => {
   // // get username from local storage for now
   // const username = localStorage.getItem('username');
 
-  const [username, setUserName] = useState();
-  const [avatarurl, setAvatarUrl] = useState();
+  // redux code for managing user state
+  const dispatch = useDispatch();
+
+  // const [username, setUserName] = useState();
+  // const [avatarurl, setAvatarUrl] = useState();
+  const { username, avatarurl } = useSelector(state => state.user);
   useEffect(() => {
     let userData = localStorage.getItem('jwt');
     if (userData) {
       userData = jwtDecode(userData);
-      console.log(userData.data[0].userName);
-      setUserName(userData.data[0].userName);
-      setAvatarUrl(userData.data[0].userID);
+      console.log(userData.data[0].avatarID);
+      // setUserName(userData.data[0].userName);
+      // setAvatarUrl(userData.data[0].userID);
+      dispatch(setUserData({ username: userData.data[0].userName, avatarurl: userData.data[0].avatarID }));
+      dispatch(getUserData());
     }
   }, []);
 

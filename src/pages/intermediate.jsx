@@ -5,6 +5,8 @@ import { DISCORD_CLIENT_SECRET, ENV, DISCORD_LOCAL_URI, DISCORD_PROD_URI } from 
 import { userAuth } from '../fetches';
 
 export default function Intermediate() {
+  
+
   const isAuthenticating = localStorage.getItem('authenticating');
   const [jsonToken, setJsonToken] = useState('');
   const navigate = useNavigate();
