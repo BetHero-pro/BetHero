@@ -46,11 +46,14 @@ export default function Intermediate() {
               // code for setting user profilepic url
               const avatarUrl = `https://cdn.discordapp.com/avatars/${res.data.id}/${res.data.avatar}.png`;
               console.log(avatarUrl);
-              localStorage.setItem('avatarurl', avatarUrl);
+              // localStorage.setItem('avatarurl', avatarUrl);
 
               const username = res.data.username;
-              localStorage.setItem('username', username);
-              await userAuth(username);
+
+              const userObject = { userName: res.data.username, discordID: res.data.id, avatarID: avatarUrl };
+              console.log(userObject);
+              // localStorage.setItem('username', username);
+              await userAuth(userObject);
               localStorage.setItem('authenticating', 'false');
               navigate('/');
             });

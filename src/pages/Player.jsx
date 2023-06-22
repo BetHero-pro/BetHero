@@ -10,6 +10,7 @@ import { fetchAllQuests, createQuest, deleteQuest, setOrder } from '../fetches';
 import '../../node_modules/font-awesome/css/font-awesome.min.css';
 import '../../node_modules/@fortawesome/fontawesome-svg-core/styles.css';
 import Timer from '../components/TimerComponent';
+import jwtDecode from 'jwt-decode';
 
 const Player = ({ palyerName }) => {
   const jsonToken = localStorage.getItem('jwt');
@@ -121,11 +122,23 @@ const Player = ({ palyerName }) => {
     }
   }, [refresh]);
 
-  // get the avater url from local storage for now
-  const userpic = localStorage.getItem('avatarurl');
+  // // get the avater url from local storage for now
+  // const userpic = localStorage.getItem('avatarurl');
 
-  // get username from local storage for now
-  const username = localStorage.getItem('username');
+  // // get username from local storage for now
+  // const username = localStorage.getItem('username');
+
+  const [username, setUserName] = useState();
+  const [avatarurl, setAvatarUrl] = useState();
+  useEffect(() => {
+    let userData = localStorage.getItem('jwt');
+    if (userData) {
+      userData = jwtDecode(userData);
+      console.log(userData.data[0].userName);
+      setUserName(userData.data[0].userName);
+      setAvatarUrl(userData.data[0].userID);
+    }
+  }, []);
 
   // button to go to timer detail functionality
   function gotoQuestDetailBtn(e, currentQuest, index) {

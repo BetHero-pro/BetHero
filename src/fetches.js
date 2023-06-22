@@ -25,12 +25,16 @@ const fetchAllQuests = (callback1, callback2, userID) => {
       console.log(err);
     });
 };
-const userAuth = async userName => {
-  await fetch('http://34.171.209.43:5000/userAuth', {
+const userAuth = async userObject => {
+  console.log(userObject);
+
+  //TODO 'CHANGE THE API URL TO PROD'
+
+  await fetch('http://localhost:5000/userAuth', {
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ userName: userName }),
+    body: JSON.stringify({ userName: userObject.userName, discordID: userObject.discordID, avatarID: userObject.avatarID }),
     method: 'POST',
     mode: 'cors',
   })

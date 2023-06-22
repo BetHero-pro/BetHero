@@ -3,7 +3,7 @@ import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
-
+import jwtDecode from 'jwt-decode';
 const navigation = [
   { name: 'Current Quests', href: '#', current: true },
   { name: 'Add Quest', href: '#', current: false },
@@ -16,20 +16,30 @@ function classNames(...classes) {
 }
 
 export default function NavComponent() {
-  const [usernamest, setUsernameSt] = useState(null);
-  const [userpicst, setUserPicSt] = useState(null);
+  //MARK 'user name and pic doesnt update '
 
+  // useEffect(() => {
+  //   console.log('useeffect is running');
+  //   // currently getting user pic and name from local storage
+  //   let userpic = localStorage.getItem('avatarurl');
+  //   let username = localStorage.getItem('username');
+  //   if (userpic) {
+  //     setUserPicSt(userpic);
+  //   }
+
+  //   if (username) {
+  //     setUsernameSt(username);
+  //   }
+  // }, []);
+  const [username, setUserName] = useState();
+  const [avatarurl, setAvatarUrl] = useState();
   useEffect(() => {
-    console.log('useeffect is running');
-    // currently getting user pic and name from local storage
-    let userpic = localStorage.getItem('avatarurl');
-    let username = localStorage.getItem('username');
-    if (userpic) {
-      setUserPicSt(userpic);
-    }
-
-    if (username) {
-      setUsernameSt(username);
+    let userData = localStorage.getItem('jwt');
+    if (userData) {
+      userData = jwtDecode(userData);
+      console.log(userData.data[0].userName);
+      setUserName(userData.data[0].userName);
+      setAvatarUrl(userData.data[0].avatarID);
     }
   }, []);
 
@@ -101,8 +111,8 @@ export default function NavComponent() {
                       <img
                         className="h-8 w-8 rounded-full"
                         src={
-                          userpicst
-                            ? userpicst
+                          avatarurl
+                            ? avatarurl
                             : 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
                         }
                         alt=""
@@ -125,7 +135,7 @@ export default function NavComponent() {
                             className=" border-2 p-1 m-2 text-base text-justify rounded-md 
                           text-orange-500"
                           >
-                            {usernamest ? usernamest : 'signed as guest'}
+                            {username ? username : 'signed as guest'}
                           </div>
                         )}
                       </Menu.Item>
