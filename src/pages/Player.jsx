@@ -174,13 +174,15 @@ const Player = ({ palyerName }) => {
   };
 
   function startFirstTask() {
-    const savedStartTime = localStorage.getItem(`timerStartTime_${questions[0]._id}`);
-    if (!savedStartTime) {
-      const startTime = Date.now();
-      localStorage.setItem(`timerStartTime_${questions[0]._id}`, startTime.toString());
-    }
+    if (questions.length > 0) {
+      const savedStartTime = localStorage.getItem(`timerStartTime_${questions[0]._id}`);
+      if (!savedStartTime) {
+        const startTime = Date.now();
+        localStorage.setItem(`timerStartTime_${questions[0]._id}`, startTime.toString());
+      }
 
-    navigate('/questdetail', { state: { taskid: questions[0]._id, currentQuest: questions[0] } });
+      navigate('/questdetail', { state: { taskid: questions[0]._id, currentQuest: questions[0] } });
+    }
   }
 
   return (

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { ArrowLeftIcon, CheckBadgeIcon, CheckIcon } from '@heroicons/react/24/outline';
 import { useNavigate } from 'react-router-dom';
@@ -8,6 +8,7 @@ const QuestDetail = () => {
   const location = useLocation();
   const [startTime, setStartTime] = useState(null);
   const [elapsedTime, setElapsedTime] = useState(0);
+  const timerRef = useRef(null);
 
   useEffect(() => {
     const savedStartTime = localStorage.getItem(`timerStartTime_${location.state.taskid}`);
@@ -17,7 +18,7 @@ const QuestDetail = () => {
   }, [location.state.taskid]);
 
   useEffect(() => {
-    const interval = setInterval(() => {
+    timerRef.current = setInterval(() => {
       if (startTime) {
         const elapsedSeconds = Math.floor((Date.now() - startTime) / 1000);
         setElapsedTime(elapsedSeconds);
@@ -25,15 +26,25 @@ const QuestDetail = () => {
     }, 1000);
 
     return () => {
-      clearInterval(interval);
+      clearInterval(timerRef.current);
     };
   }, [startTime]);
 
-  const leaveTask = () => {
+  const stopTimer = e => {
+    e.preventDefault();
+    if (timerRef.current !== null) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+  };
+
+  const leaveTask = e => {
     localStorage.removeItem(`timerStartTime_${location.state.currentQuest._id}`);
     // Additional logic for leaving the task goes here
-
-    alert('add leave task func');
+    setElapsedTime(0);
+    e.preventDefault();
+    stopTimer(e);
+    navigate('/');
   };
 
   const completeTask = async e => {

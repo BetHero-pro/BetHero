@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ArrowLeftIcon } from '@heroicons/react/24/outline';
+import { ArrowLeftIcon, CheckIcon } from '@heroicons/react/24/outline';
 import { useNavigate } from 'react-router-dom';
 const AddQuest = ({ onSubmit }) => {
   const [newQuestion, setNewQuestion] = useState('');
@@ -17,20 +17,27 @@ const AddQuest = ({ onSubmit }) => {
   }
 
   return (
-    <form className="quest-form parent" onSubmit={handlePlayer}>
-      <div className="flex">
+    <form className="quest-form parent bg-blue-200 w-full h-screen text-bold" onSubmit={handlePlayer}>
+      <div className="flex pt-6">
         <ArrowLeftIcon
           onClick={backArrowClick}
           className=" bg-white  border-black   cursor-pointer w-12 h-12 p-2 ml-3 shadow-xl border rounded-full "
         />
-        <h1 className="ml-[400px]">Write Quest Name</h1>
+        <h1 className="ml-[450px] flex flex-col">
+          A new journey ,<span className=" text-center font-bold capitalize italic text-4xl">warrior</span>
+        </h1>
       </div>
-      <div className="d-flex justify-content-center align-items-center middleDiv">
-        <input autoFocus value={newQuestion} onChange={e => setNewQuestion(e.target.value)} className="custom-input" />
-      </div>
-      <div className="child d-flex align-items-center justify-content-center py-5">
-        <button type="submit" className="btn-circle">
-          <i className="fa fa-check"></i>
+      <div className="flex flex-col pt-12 justify-center items-center">
+        <input
+          className="w-[300px] rounded-lg h-20 text-center italic text-3xl"
+          placeholder="Quest Name"
+          autoFocus
+          value={newQuestion}
+          onChange={e => setNewQuestion(e.target.value)}
+        />
+
+        <button type="submit" className="pt-12">
+          <CheckIcon className="w-12 h-12 rounded-xl shadow-lg border-black border-2 shadow-slate-700 bg-green-300" />
         </button>
       </div>
     </form>
