@@ -21,14 +21,15 @@ const Login = () => {
   }, []);
   return (
     <>
-      <div className="d-flex justify-content-center margin-custom back-white reponsive-container">
-        <div className="d-flex flex-col align-items-center">
-          <div className="">
-            <h1 className="font-title">Login</h1>
-            <div className="d-flex justify-content-center py-5 my-5">
-              <DiscordButton handleClick={handleClick} isSSO={true} />
-            </div>
-          </div>
+      <div className="flex-col mx-auto bg-white mt-[50px] w-[400px] h-[500px] text-center p-8 rounded-lg shadow-lg">
+        <h1 className="text-3xl font-bold mb-4">Login</h1>
+        <div className="flex justify-center py-4 my-4">
+          <button className="bg-blue-500 text-white font-bold px-4 py-2 rounded-md mr-4">Sign Up</button>
+          <button className="bg-blue-500 text-white font-bold px-4 py-2 rounded-md">Login</button>
+        </div>
+        <p className="border-2 mt-8"></p>
+        <div className="flex justify-center py-2 my-2">
+          <DiscordButton handleClick={handleClick} isSSO={true} />
         </div>
       </div>
     </>

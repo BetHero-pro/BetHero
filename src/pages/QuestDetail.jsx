@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import { ArrowLeftIcon, CheckBadgeIcon, CheckIcon } from '@heroicons/react/24/outline';
+import { useNavigate } from 'react-router-dom';
+import { deleteQuest } from '../fetches';
 
 const QuestDetail = () => {
   const location = useLocation();
@@ -7,11 +10,11 @@ const QuestDetail = () => {
   const [elapsedTime, setElapsedTime] = useState(0);
 
   useEffect(() => {
-    const savedStartTime = localStorage.getItem(`timerStartTime_${location.state.currentQuest._id}`);
+    const savedStartTime = localStorage.getItem(`timerStartTime_${location.state.taskid}`);
     if (savedStartTime) {
       setStartTime(parseInt(savedStartTime));
     }
-  }, [location.state.currentQuest._id]);
+  }, [location.state.taskid]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -29,13 +32,19 @@ const QuestDetail = () => {
   const leaveTask = () => {
     localStorage.removeItem(`timerStartTime_${location.state.currentQuest._id}`);
     // Additional logic for leaving the task goes here
+
     alert('add leave task func');
   };
 
-  const completeTask = () => {
+  const completeTask = async e => {
     localStorage.removeItem(`timerStartTime_${location.state.currentQuest._id}`);
     // Additional logic for completing the task goes here
-    alert('add complete task func');
+
+    e.target.disabled = true;
+    await deleteQuest(location.state.currentQuest._id);
+
+    e.target.disabled = false;
+    navigate('/');
   };
 
   const formatTime = timeInSeconds => {
@@ -44,24 +53,30 @@ const QuestDetail = () => {
     return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
   };
 
+  const navigate = useNavigate();
+  function backArrowClick() {
+    navigate('/');
+  }
+
   return (
-    <div>
-      <div>
-        <img
-          className="rounded-full bg-gray-300 h-24 w-24 mx-auto mt-8"
-          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQi2mtUeJ-RJaVLYKfSms-3ZRIRM73-IPHM1ae5TSG5&s"
-          alt=""
+    <div className="flex flex-col bg-blue-200 w-screen h-screen">
+      <div className="flex items-center">
+        <ArrowLeftIcon
+          onClick={backArrowClick}
+          className="  bg-white border-black   cursor-pointer w-12 h-12 p-2 ml-3 shadow-xl border rounded-full "
         />
+        <h2 className="text-3xl text-blue-300 border bg-white rounded-xl w-[30%] mx-auto font-semibold italic text-center p-4 m-4">
+          {location.state.currentQuest.Quest}
+        </h2>
       </div>
-      <h2 className="text-2xl font-semibold text-center mt-4">{location.state.currentQuest.Quest}</h2>
-      <div className="text-center mt-2">Elapsed Time: {formatTime(elapsedTime)}</div>
+      <div>
+        <img className="rounded-full bg-gray-300 h-24 w-24 mx-auto mt-8" src="monster.png" alt="" />
+      </div>
+      <div className="text-center mt-4 italic text-4xl"> {formatTime(elapsedTime)}</div>
       <div className="flex justify-center mt-8">
-        <button className="px-4 py-2 mr-4 bg-red-500 text-white rounded hover:bg-red-600" onClick={leaveTask}>
-          Leave Task
-        </button>
-        <button className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600" onClick={completeTask}>
-          Complete Task
-        </button>
+        <img onClick={leaveTask} className="w-20 h-20 bg-transparent rounded p-2  cursor-pointer " src="leave.jpg" alt="" />
+        <img className="w-20 h-20 bg-transparent rounded p-2  cursor-pointer " src="hourglass.jpg" alt="" />
+        <CheckIcon onClick={e => completeTask(e)} className="w-20 h-20 bg-green-300 rounded-full p-3  cursor-pointer" />
       </div>
     </div>
   );
