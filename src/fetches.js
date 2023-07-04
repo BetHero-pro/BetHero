@@ -30,7 +30,7 @@ const userAuth = async userObject => {
 
   //TODO 'CHANGE THE API URL TO PROD'
 
-  await fetch('http://localhost:5000/userAuth', {
+  await fetch('http://34.72.99.45/userAuth', {
     headers: {
       'Content-Type': 'application/json',
     },
