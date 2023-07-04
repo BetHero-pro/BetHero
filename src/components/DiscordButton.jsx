@@ -1,14 +1,9 @@
-import React from "react";
-import ReactDOM from "react-dom";
+import React from 'react';
 
 const DiscordButton = ({ isSSO, url, handleClick }) => (
-  <a href={url} onClick={handleClick}>
+  <a className=" cursor-pointer border-2 flex items-center shadow-md rounded-lg p-2 hover:bg-slate-500" href={url} onClick={handleClick}>
     <div style={{ width: 45, height: 45, marginRight: 15 }}>
-      <svg
-        id="Layer_1"
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 245 240"
-      >
+      <svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 245 240">
         <path
           className="st0"
           d="M104.4 103.9c-5.7 0-10.2 5-10.2 11.1s4.6 11.1 10.2 11.1c5.7 0 10.2-5 10.2-11.1.1-6.1-4.5-11.1-10.2-11.1zM140.9 103.9c-5.7 0-10.2 5-10.2 11.1s4.6 11.1 10.2 11.1c5.7 0 10.2-5 10.2-11.1s-4.5-11.1-10.2-11.1z"
@@ -19,9 +14,7 @@ const DiscordButton = ({ isSSO, url, handleClick }) => (
         />
       </svg>
     </div>
-    <span className="fs-3">
-      {isSSO ? "Log in with Discord" : "Join the Discord"}
-    </span>
+    <span className="text-lg">{isSSO ? 'Log in with Discord' : 'Join the Discord'}</span>
   </a>
 );
 

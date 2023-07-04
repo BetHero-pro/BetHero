@@ -1,29 +1,27 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 
 const Welcome = () => {
   const navigate = useNavigate();
   const handleClick = () => {
-    navigate("/login");
+    navigate('/login');
   };
 
   return (
     <>
-      <div className="d-flex justify-content-center margin-custom back-white reponsive-container">
-        <div className="d-flex flex-col align-items-center">
-          <div className="">
-            <h1 className="font-title">Welcome to BetHero</h1>
-            <h2>(prototype version 0.1)</h2>
-            <div className="d-flex justify-content-center">
-              <img width="50%" height="50%" src="Logo.png" />
-            </div>
-            <div className="d-flex justify-content-center pt-5">
-              <button
-                className="btn btn-secondary custom-btn"
-                onClick={handleClick}
-              >
-                <span className="fs-4">Enter</span>
-              </button>
-            </div>
+      <div className="flex justify-start items-start h-screen">
+        <div className="absolute inset-0  flex items-center justify-center">
+          <img src="Logo.png" alt="Background" className="object-cover w-full h-full  " />
+        </div>
+        <div className="relative z-10 text-center ml-16 mt-12 ">
+          <h3 className="lg:text-4xl font-bold italic">Welcome</h3>
+          <h3 className="lg:text-2xl font-bold italic">to</h3>
+          <h1 className="lg:text-8xl font-bold italic">BetHero</h1>
+          <h2 className="text-xl">(prototype version 0.1.1)</h2>
+          <div className="mt-8"></div>
+          <div className="mt-10">
+            <button onClick={handleClick} className="px-6 py-3 w-[200px] lg:text-2xl bg-blue-300  text-white font-bold rounded-md hover:bg-blue-600">
+              Enter
+            </button>
           </div>
         </div>
       </div>

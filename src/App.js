@@ -13,7 +13,6 @@ import QuestDetail from './pages/QuestDetail';
 function App() {
   return (
     <>
-      <NavComponent />
       <Router>
         <Routes>
           <Route Component={Welcome} path="/welcome" exact />

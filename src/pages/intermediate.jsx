@@ -5,6 +5,8 @@ import { DISCORD_CLIENT_SECRET, ENV, DISCORD_LOCAL_URI, DISCORD_PROD_URI } from 
 import { userAuth } from '../fetches';
 
 export default function Intermediate() {
+  
+
   const isAuthenticating = localStorage.getItem('authenticating');
   const [jsonToken, setJsonToken] = useState('');
   const navigate = useNavigate();
@@ -46,10 +48,14 @@ export default function Intermediate() {
               // code for setting user profilepic url
               const avatarUrl = `https://cdn.discordapp.com/avatars/${res.data.id}/${res.data.avatar}.png`;
               console.log(avatarUrl);
-              localStorage.setItem('avatarurl', avatarUrl);
+              // localStorage.setItem('avatarurl', avatarUrl);
 
               const username = res.data.username;
-              await userAuth(username);
+
+              const userObject = { userName: res.data.username, discordID: res.data.id, avatarID: avatarUrl };
+              console.log(userObject);
+              // localStorage.setItem('username', username);
+              await userAuth(userObject);
               localStorage.setItem('authenticating', 'false');
               navigate('/');
             });

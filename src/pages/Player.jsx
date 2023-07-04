@@ -6,15 +6,20 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { JWT_SECRET } from '../config/env';
 // import Quest from "./Quest";
 import { fetchAllQuests, createQuest, deleteQuest, setOrder } from '../fetches';
-
+import { ArrowLeftIcon, ArrowRightOnRectangleIcon } from '@heroicons/react/24/outline';
+import { PlayIcon, PlusIcon } from '@heroicons/react/24/outline';
 import '../../node_modules/font-awesome/css/font-awesome.min.css';
 import '../../node_modules/@fortawesome/fontawesome-svg-core/styles.css';
 import Timer from '../components/TimerComponent';
+import jwtDecode from 'jwt-decode';
 
+import { useDispatch, useSelector } from 'react-redux';
+import { setUserData, getUserData } from '../redux_states/userState';
+import AddQuest from '../components/addquest';
 const Player = ({ palyerName }) => {
   const jsonToken = localStorage.getItem('jwt');
   const [user, setUser] = useState({ username: '', userID: '' });
-  const [newQuestion, setNewQuestion] = useState('');
+
   const [questions, setQuestions] = useState([]);
   const [selectedQuestions, setSelectedQuestions] = useState([]);
   const [isQuestion, setIsQuestion] = useState(false);
@@ -33,21 +38,30 @@ const Player = ({ palyerName }) => {
     e.target.disabled = false;
   };
 
-  const handleClick = () => {
-    setIsQuestion(1);
-    setNewQuestion('');
-  };
-
-  const handlePlayer = async e => {
-    e.preventDefault();
-    if (newQuestion !== '') {
-      setDisabledButton(true);
-      await createQuest(user.userID, newQuestion);
-      setDisabledButton(false);
-      toggleRefresh(!refresh);
-      setIsQuestion(0);
+  // when new question is added
+  useEffect(() => {
+    if (jsonToken === '') {
+      navigate('/welcome');
+    } else if (user.userID !== '') {
+      fetchAllQuests(setQuestions, setSelectedQuestions, user.userID);
     }
-  };
+  }, [refresh]);
+
+  // const handleClick = () => {
+  //   setIsQuestion(1);
+  //   setNewQuestion('');
+  // };
+
+  // const handlePlayer = async e => {
+  //   e.preventDefault();
+  //   if (newQuestion !== '') {
+  //     setDisabledButton(true);
+  //     await createQuest(user.userID, newQuestion);
+  //     setDisabledButton(false);
+  //     toggleRefresh(!refresh);
+  //     setIsQuestion(0);
+  //   }
+  // };
 
   const handleDropprev = async droppedItem => {
     const destinationIndex = droppedItem.destination.index;
@@ -113,16 +127,29 @@ const Player = ({ palyerName }) => {
     }
   }, []);
 
-  useEffect(() => {
-    if (jsonToken === '') {
-      navigate('/welcome');
-    } else if (user.userID !== '') {
-      fetchAllQuests(setQuestions, setSelectedQuestions, user.userID);
-    }
-  }, [refresh]);
+  // // get the avater url from local storage for now
+  // const userpic = localStorage.getItem('avatarurl');
 
-  // get the avater url from local storage for now
-  const userpic = localStorage.getItem('avatarurl');
+  // // get username from local storage for now
+  // const username = localStorage.getItem('username');
+
+  // redux code for managing user state
+  const dispatch = useDispatch();
+
+  // const [username, setUserName] = useState();
+  // const [avatarurl, setAvatarUrl] = useState();
+  const { username, avatarurl } = useSelector(state => state.user);
+  useEffect(() => {
+    let userData = localStorage.getItem('jwt');
+    if (userData) {
+      userData = jwtDecode(userData);
+      console.log(userData.data[0].avatarID);
+      // setUserName(userData.data[0].userName);
+      // setAvatarUrl(userData.data[0].userID);
+      dispatch(setUserData({ username: userData.data[0].userName, avatarurl: userData.data[0].avatarID }));
+      dispatch(getUserData());
+    }
+  }, []);
 
   // button to go to timer detail functionality
   function gotoQuestDetailBtn(e, currentQuest, index) {
@@ -132,83 +159,105 @@ const Player = ({ palyerName }) => {
     navigate('/questdetail', { state: { index: index, currentQuest: currentQuest } });
   }
 
+  function backArrowClick() {
+    navigate('/welcome');
+  }
+
+  const handleAddQuest = async newQuestion => {
+    if (newQuestion !== '') {
+      setDisabledButton(true);
+      await createQuest(user.userID, newQuestion);
+      setDisabledButton(false);
+      toggleRefresh(!refresh);
+      setIsQuestion(false);
+    }
+  };
+
+  function startFirstTask() {
+    if (questions.length > 0) {
+      const savedStartTime = localStorage.getItem(`timerStartTime_${questions[0]._id}`);
+      if (!savedStartTime) {
+        const startTime = Date.now();
+        localStorage.setItem(`timerStartTime_${questions[0]._id}`, startTime.toString());
+      }
+
+      navigate('/questdetail', { state: { taskid: questions[0]._id, currentQuest: questions[0] } });
+    }
+  }
+
   return (
     <>
-      <div className="">
-        <div className="">
-          <div className="my-1 mx-1 parent">
-            {isQuestion ? (
-              <form className="quest-form parent" onSubmit={handlePlayer}>
-                <h1>Write Quest Name</h1>
-                <div className="d-flex justify-content-center align-items-center middleDiv">
-                  <input autoFocus value={newQuestion} onChange={e => setNewQuestion(e.target.value)} className="custom-input" />
+      {isQuestion ? (
+        <AddQuest onSubmit={handleAddQuest} />
+      ) : (
+        <>
+          <div className="bg-blue-100 w-full h-full">
+            <div className="flex justify-between pt-3   items-center">
+              <ArrowLeftIcon
+                onClick={backArrowClick}
+                className=" bg-white border-black   cursor-pointer w-12 h-12 p-2 ml-3 shadow-xl border rounded-full "
+              />
+              <div className="flex-grow flex justify-center space-x-2 items-center">
+                <img className="w-12 h-12 rounded-full" src={avatarurl} alt="user" />
+                <div className="text-center text-lg font-serif text-gray-700">
+                  Hello,
+                  <span className=" font-semibold ml-2  text-gray-950">{username ? username : 'please login guest'}</span>{' '}
                 </div>
+              </div>
+              <div className="ml-auto mr-4">
+                <button
+                  className=" rounded-3xl p-3 text-white bg-blue-500"
+                  onClick={() => {
+                    setIsQuestion(true);
+                  }}
+                >
+                  AddQuest
+                </button>
+              </div>
+            </div>
+            <div className="p-6">
+              <div className="overflow-auto bg-white pt-4 flex flex-col mx-auto justify-start shadow-md rounded-2xl border-2 border-black items-center lg:w-[600px] h-[400px]">
+                {questions.map((quest, index) => (
+                  <div key={quest._id} className=" rounded-lg flex  items-center p-2 justify-between mb-2 w-full max-w-[95%] bg-orange-100">
+                    <div className="flex items-center  space-x-2">
+                      <input
+                        type="checkbox"
+                        name={quest}
+                        disabled={false}
+                        className=" mr-2 w-8 h-8 "
+                        checked={isSelected(quest)}
+                        onChange={e => onChange(quest, e)}
+                        id={quest._id}
+                      />
+                      <label className="text-xl font-bold">{quest.Quest}</label>
+                    </div>
+                    <div className="flex  items-center ">
+                      <ArrowRightOnRectangleIcon
+                        onClick={e => gotoQuestDetailBtn(e, quest, index)}
+                        className=" ml-8 rounded-2xl p-2 text-xs text-white w-8 h-8 bg-blue-500"
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
 
-                <div className="child d-flex align-items-center justify-content-center py-5">
-                  <button disabled={disabledButton} type="submit" className="btn-circle">
-                    <i className="fa fa-check"></i>
-                  </button>
-                </div>
-              </form>
-            ) : (
-              <form autoFocus className="quest-form parent">
-                <div className="p-2 ">
-                  <DragDropContext onDragEnd={handleDrop}>
-                    <Droppable droppableId="list-container">
-                      {provided => (
-                        <div className="grid grid-cols-4 gap-4 p-4" {...provided.droppableProps} ref={provided.innerRef}>
-                          {questions
-                            .sort((a, b) => a.order - b.order)
-                            .map((question, index) => (
-                              <Draggable key={question._id} draggableId={question._id} index={index}>
-                                {provided => (
-                                  <div
-                                    className="item-container rounded-lg shadow-sm bg-yellow-200 p-2 w-[200px] h-[200px]"
-                                    ref={provided.innerRef}
-                                    {...provided.dragHandleProps}
-                                    {...provided.draggableProps}
-                                  >
-                                    <div className="flex items-center justify-center">
-                                      {/* <input
-                          type="checkbox"
-                          name={question}
-                          disabled={false}
-                          className="custom-check mr-2"
-                          checked={isSelected(question)}
-                          onChange={(e) => onChange(question, e)}
-                          id={question._id}
-                        /> */}
-                                      <label className="fs-1 text-green-400 font-medium">{question.Quest}</label>
-                                    </div>
-                                    <div className="text-sm">
-                                      <Timer taskId={question._id} />
-                                    </div>
-                                    <button
-                                      onClick={e => gotoQuestDetailBtn(e, question, index)}
-                                      className="mt-3 mb-4 ml-12 text-sm bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-1 rounded"
-                                    >
-                                      See Details
-                                    </button>
-                                  </div>
-                                )}
-                              </Draggable>
-                            ))}
-                          {provided.placeholder}
-                        </div>
-                      )}
-                    </Droppable>
-                  </DragDropContext>
-                </div>
-                <div className="child d-flex align-items-center justify-content-center py-5">
-                  <button className="btn-circle" onClick={handleClick}>
-                    <i className="fa fa-plus"></i>
-                  </button>
-                </div>
-              </form>
-            )}
+            <div className="flex justify-center space-x-2">
+              <PlayIcon
+                onClick={startFirstTask}
+                className="w-12 h-12 bg-white cursor-pointer border border-black   rounded-full p-2 text-green-400"
+              />
+
+              <PlusIcon
+                className=" bg-white cursor-pointer rounded-full border border-black w-12 h-12  text-black p-2 "
+                onClick={() => {
+                  setIsQuestion(true);
+                }}
+              />
+            </div>
           </div>
-        </div>
-      </div>
+        </>
+      )}
     </>
   );
 };
