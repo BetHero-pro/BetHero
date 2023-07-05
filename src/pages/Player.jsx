@@ -6,7 +6,7 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { JWT_SECRET } from '../config/env';
 // import Quest from "./Quest";
 import { fetchAllQuests, createQuest, deleteQuest, setOrder } from '../fetches';
-import { ArrowLeftIcon, ArrowRightOnRectangleIcon } from '@heroicons/react/24/outline';
+import { PowerIcon, ArrowRightOnRectangleIcon } from '@heroicons/react/24/outline';
 import { PlayIcon, PlusIcon } from '@heroicons/react/24/outline';
 import '../../node_modules/font-awesome/css/font-awesome.min.css';
 import '../../node_modules/@fortawesome/fontawesome-svg-core/styles.css';
@@ -191,9 +191,9 @@ const Player = ({ palyerName }) => {
         <AddQuest onSubmit={handleAddQuest} />
       ) : (
         <>
-          <div className="bg-blue-100 w-full h-full">
+          <div className="bg-blue-100 w-screen h-screen">
             <div className="flex justify-between pt-3   items-center">
-              <ArrowLeftIcon
+              <PowerIcon
                 onClick={backArrowClick}
                 className=" bg-white border-black   cursor-pointer w-12 h-12 p-2 ml-3 shadow-xl border rounded-full "
               />
