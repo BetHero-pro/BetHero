@@ -8,8 +8,7 @@ import { JWT_SECRET } from '../config/env';
 import { fetchAllQuests, createQuest, deleteQuest, setOrder } from '../fetches';
 import { PowerIcon, ArrowRightOnRectangleIcon } from '@heroicons/react/24/outline';
 import { PlayIcon, PlusIcon } from '@heroicons/react/24/outline';
-import '../../node_modules/font-awesome/css/font-awesome.min.css';
-import '../../node_modules/@fortawesome/fontawesome-svg-core/styles.css';
+
 import Timer from '../components/TimerComponent';
 import jwtDecode from 'jwt-decode';
 
