@@ -155,7 +155,7 @@ const Player = ({ palyerName }) => {
     e.preventDefault();
     alert('im clicked ');
     console.log(currentQuest, index);
-    navigate('/questdetail', { state: { index: index, currentQuest: currentQuest,userid:user.userID} });
+    navigate('/questdetail', { state: { index: index, currentQuest: currentQuest, userid: user.userID } });
   }
 
   function backArrowClick() {
@@ -180,7 +180,7 @@ const Player = ({ palyerName }) => {
         localStorage.setItem(`timerStartTime_${questions[0]._id}`, startTime.toString());
       }
 
-      navigate('/questdetail', { state: { taskid: questions[0]._id, currentQuest: questions[0],userid:user.userID} });
+      navigate('/questdetail', { state: { taskid: questions[0]._id, currentQuest: questions[0], userid: user.userID } });
     }
   }
 
@@ -214,31 +214,56 @@ const Player = ({ palyerName }) => {
                 </button>
               </div>
             </div>
-            <div className="p-6">
-              <div className="overflow-auto bg-white pt-4 flex flex-col mx-auto justify-start shadow-md rounded-2xl border-2 border-black items-center lg:w-[600px] h-[400px]">
-                {questions.map((quest, index) => (
-                  <div key={quest._id} className=" rounded-lg flex  items-center p-2 justify-between mb-2 w-full max-w-[95%] bg-orange-100">
-                    <div className="flex items-center  space-x-2">
-                      <input
-                        type="checkbox"
-                        name={quest}
-                        disabled={false}
-                        className=" mr-2 w-8 h-8 "
-                        checked={isSelected(quest)}
-                        onChange={e => onChange(quest, e)}
-                        id={quest._id}
-                      />
-                      <label className="text-xl font-bold">{quest.Quest}</label>
+
+            <div>
+              <DragDropContext onDragEnd={handleDrop}>
+                <Droppable droppableId="list-container">
+                  {provided => (
+                    <div className="p-6">
+                      <div
+                        {...provided.droppableProps}
+                        ref={provided.innerRef}
+                        className="overflow-auto bg-white pt-4 flex flex-col mx-auto justify-start shadow-md rounded-2xl border-2 border-black items-center lg:w-[600px] h-[400px]"
+                      >
+                        {questions
+                          .sort((a, b) => a.order - b.order)
+                          .map((quest, index) => (
+                            <Draggable key={quest._id} draggableId={quest._id} index={index}>
+                              {provided => (
+                                <div
+                                  ref={provided.innerRef}
+                                  {...provided.dragHandleProps}
+                                  {...provided.draggableProps}
+                                  className=" rounded-lg flex  items-center p-2 justify-between mb-2 w-full max-w-[95%] bg-orange-100"
+                                >
+                                  <div className="flex items-center  space-x-2">
+                                    <input
+                                      type="checkbox"
+                                      name={quest}
+                                      disabled={false}
+                                      className=" mr-2 w-8 h-8 "
+                                      checked={isSelected(quest)}
+                                      onChange={e => onChange(quest, e)}
+                                      id={quest._id}
+                                    />
+                                    <label className="text-xl font-bold">{quest.Quest}</label>
+                                  </div>
+                                  <div className="flex  items-center ">
+                                    <ArrowRightOnRectangleIcon
+                                      onClick={e => gotoQuestDetailBtn(e, quest, index)}
+                                      className=" ml-8 rounded-2xl p-2 text-xs text-white w-8 h-8 bg-blue-500"
+                                    />
+                                  </div>
+                                </div>
+                              )}
+                            </Draggable>
+                          ))}
+                        {provided.placeholder}
+                      </div>
                     </div>
-                    <div className="flex  items-center ">
-                      <ArrowRightOnRectangleIcon
-                        onClick={e => gotoQuestDetailBtn(e, quest, index)}
-                        className=" ml-8 rounded-2xl p-2 text-xs text-white w-8 h-8 bg-blue-500"
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
+                  )}
+                </Droppable>
+              </DragDropContext>
             </div>
 
             <div className="flex justify-center space-x-2">

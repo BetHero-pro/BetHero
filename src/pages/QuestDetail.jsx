@@ -9,12 +9,12 @@ const QuestDetail = () => {
   const [startTime, setStartTime] = useState(null);
   const [elapsedTime, setElapsedTime] = useState(0);
   const timerRef = useRef(null);
+
   useEffect(() => {
     const savedStartTime = localStorage.getItem(`timerStartTime_${location.state.taskid}`);
     if (savedStartTime) {
       setStartTime(parseInt(savedStartTime));
     }
-    
   }, [location.state.taskid]);
 
   useEffect(() => {
@@ -55,21 +55,26 @@ const QuestDetail = () => {
     await deleteQuest(location.state.currentQuest._id);
 
     e.target.disabled = false;
-    
-    const {questions, result} = await fetchAllQuests1(location.state.userid);
-    if(!result) return ;
-    
-    if (questions.length > 0) {
+
+    const { data, result } = await fetchAllQuests1(location.state.userid);
+    console.log(result);
+
+    if (!result) return;
+
+    if (data.length > 0) {
+      // now we have to conside dnd order this is why applying sort
+      const questions = [...data].sort((a, b) => a.order - b.order);
+      console.log('sorted data is');
+      console.log(questions);
       const savedStartTime = localStorage.getItem(`timerStartTime_${questions[0]._id}`);
       if (!savedStartTime) {
         const startTime = Date.now();
         localStorage.setItem(`timerStartTime_${questions[0]._id}`, startTime.toString());
       }
 
-      navigate('/questdetail', { state: { taskid: questions[0]._id, currentQuest: questions[0], userid:location.state.userid} });
-    }
-    else{
-
+      navigate('/questdetail', { state: { taskid: questions[0]._id, currentQuest: questions[0], userid: location.state.userid } });
+    } else {
+      console.log('no item left');
       navigate('/');
     }
   };

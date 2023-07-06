@@ -25,7 +25,7 @@ const fetchAllQuests = (callback1, callback2, userID) => {
       console.log(err);
     });
 };
-const fetchAllQuests1 = (userID) => {
+const fetchAllQuests1 = userID => {
   return new Promise((resolve, reject) => {
     fetch('http://34.171.209.43:5000/fetchQuest', {
       body: JSON.stringify({ userID: userID }),
@@ -39,12 +39,16 @@ const fetchAllQuests1 = (userID) => {
         return response.json();
       })
       .then(data => {
-        resolve({questions:data, result: true});
+        console.log('data from fetch1 is');
+        console.log(data);
+
+        resolve({ data: data, result: true });
       })
       .catch(err => {
-        resolve({questions: err, result: false})
+        console.log(err);
+        resolve({ data: err, result: false });
       });
-  })
+  });
 };
 const userAuth = async userObject => {
   console.log(userObject);
@@ -64,7 +68,6 @@ const userAuth = async userObject => {
     })
     .then(data => {
       localStorage.setItem('jwt', data.token);
-      
     })
     .catch(err => {
       console.log(err);
@@ -132,4 +135,4 @@ const setOrder = async updatedOrderData => {
   });
 };
 
-export { fetchAllQuests,fetchAllQuests1, createQuest, deleteQuest, markQuest, userAuth, setOrder };
+export { fetchAllQuests, fetchAllQuests1, createQuest, deleteQuest, markQuest, userAuth, setOrder };
