@@ -2,19 +2,19 @@ import { useState, useRef, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { ArrowLeftIcon, CheckBadgeIcon, CheckIcon } from '@heroicons/react/24/outline';
 import { useNavigate } from 'react-router-dom';
-import { deleteQuest } from '../fetches';
+import { deleteQuest, fetchAllQuests1 } from '../fetches';
 
 const QuestDetail = () => {
   const location = useLocation();
   const [startTime, setStartTime] = useState(null);
   const [elapsedTime, setElapsedTime] = useState(0);
   const timerRef = useRef(null);
-
   useEffect(() => {
     const savedStartTime = localStorage.getItem(`timerStartTime_${location.state.taskid}`);
     if (savedStartTime) {
       setStartTime(parseInt(savedStartTime));
     }
+    
   }, [location.state.taskid]);
 
   useEffect(() => {
@@ -55,7 +55,23 @@ const QuestDetail = () => {
     await deleteQuest(location.state.currentQuest._id);
 
     e.target.disabled = false;
-    navigate('/');
+    
+    const {questions, result} = await fetchAllQuests1(location.state.userid);
+    if(!result) return ;
+    
+    if (questions.length > 0) {
+      const savedStartTime = localStorage.getItem(`timerStartTime_${questions[0]._id}`);
+      if (!savedStartTime) {
+        const startTime = Date.now();
+        localStorage.setItem(`timerStartTime_${questions[0]._id}`, startTime.toString());
+      }
+
+      navigate('/questdetail', { state: { taskid: questions[0]._id, currentQuest: questions[0], userid:location.state.userid} });
+    }
+    else{
+
+      navigate('/');
+    }
   };
 
   const formatTime = timeInSeconds => {

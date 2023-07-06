@@ -155,7 +155,7 @@ const Player = ({ palyerName }) => {
     e.preventDefault();
     alert('im clicked ');
     console.log(currentQuest, index);
-    navigate('/questdetail', { state: { index: index, currentQuest: currentQuest } });
+    navigate('/questdetail', { state: { index: index, currentQuest: currentQuest,userid:user.userID} });
   }
 
   function backArrowClick() {
@@ -180,7 +180,7 @@ const Player = ({ palyerName }) => {
         localStorage.setItem(`timerStartTime_${questions[0]._id}`, startTime.toString());
       }
 
-      navigate('/questdetail', { state: { taskid: questions[0]._id, currentQuest: questions[0] } });
+      navigate('/questdetail', { state: { taskid: questions[0]._id, currentQuest: questions[0],userid:user.userID} });
     }
   }
 
