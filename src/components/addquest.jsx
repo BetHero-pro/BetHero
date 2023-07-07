@@ -17,13 +17,13 @@ const AddQuest = ({ onSubmit }) => {
   }
 
   return (
-    <form className="quest-form parent bg-blue-200 w-full h-screen text-bold" onSubmit={handlePlayer}>
-      <div className="flex pt-6">
+    <form className="flex flex-col align-middle  bg-blue-200 w-screen h-screen text-bold" onSubmit={handlePlayer}>
+      <div className="flex pt-3  items-center">
         <ArrowLeftIcon
           onClick={backArrowClick}
           className=" bg-white  border-black   cursor-pointer w-12 h-12 p-2 ml-3 shadow-xl border rounded-full "
         />
-        <h1 className="ml-[450px] flex flex-col">
+        <h1 className=" mx-auto items-center  flex flex-col">
           A new journey ,<span className=" text-center font-bold capitalize italic text-4xl">warrior</span>
         </h1>
       </div>

@@ -15,6 +15,8 @@ import jwtDecode from 'jwt-decode';
 import { useDispatch, useSelector } from 'react-redux';
 import { setUserData, getUserData } from '../redux_states/userState';
 import AddQuest from '../components/addquest';
+import { useHotkeys } from 'react-hotkeys-hook';
+
 const Player = ({ palyerName }) => {
   const jsonToken = localStorage.getItem('jwt');
   const [user, setUser] = useState({ username: '', userID: '' });
@@ -25,6 +27,8 @@ const Player = ({ palyerName }) => {
   const [refresh, toggleRefresh] = useState(false);
   const [disabledButton, setDisabledButton] = useState(false);
   const [verification, setVerification] = useState(false);
+
+  useHotkeys('enter', () => setIsQuestion(true));
 
   const isSelected = question => {
     return selectedQuestions.includes(question);
@@ -247,12 +251,6 @@ const Player = ({ palyerName }) => {
                                       id={quest._id}
                                     />
                                     <label className="text-xl font-bold">{quest.Quest}</label>
-                                  </div>
-                                  <div className="flex  items-center ">
-                                    <ArrowRightOnRectangleIcon
-                                      onClick={e => gotoQuestDetailBtn(e, quest, index)}
-                                      className=" ml-8 rounded-2xl p-2 text-xs text-white w-8 h-8 bg-blue-500"
-                                    />
                                   </div>
                                 </div>
                               )}
