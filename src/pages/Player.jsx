@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import jwt from 'jsonwebtoken';
 // import axios from "axios";
@@ -17,7 +17,15 @@ import { setUserData, getUserData } from '../redux_states/userState';
 import AddQuest from '../components/addquest';
 import { useHotkeys } from 'react-hotkeys-hook';
 
+//icons
+import { AiOutlineArrowDown as DownArrow } from 'react-icons/ai'
+
 const Player = ({ palyerName }) => {
+  const bottomOfDivQuests = useRef(null)
+
+  const handleBottomScrollBtn = () => {
+    bottomOfDivQuests?.current?.scrollIntoView({behavior: 'smooth'})
+  }
   const jsonToken = localStorage.getItem('jwt');
   const [user, setUser] = useState({ username: '', userID: '' });
 
@@ -67,6 +75,7 @@ const Player = ({ palyerName }) => {
   // };
 
   const handleDropprev = async droppedItem => {
+
     const destinationIndex = droppedItem.destination.index;
     const sourceIndex = droppedItem.source.index;
 
@@ -229,6 +238,7 @@ const Player = ({ palyerName }) => {
                         ref={provided.innerRef}
                         className="overflow-auto bg-white pt-4 flex flex-col mx-auto justify-start shadow-md rounded-2xl border-2 border-black items-center lg:w-[600px] h-[400px]"
                       >
+                        <button onClick={handleBottomScrollBtn} className='flex fixed self-end mr-5 bg-white p-2 rounded-full border-black shadow-lg border-2 hover:transform hover:scale-110 transition duration-500'><DownArrow size={20}/></button>
                         {questions
                           .sort((a, b) => a.order - b.order)
                           .map((quest, index) => (
@@ -257,6 +267,7 @@ const Player = ({ palyerName }) => {
                             </Draggable>
                           ))}
                         {provided.placeholder}
+                        <div ref={bottomOfDivQuests}/>
                       </div>
                     </div>
                   )}
