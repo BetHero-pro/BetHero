@@ -6,14 +6,14 @@ const AddQuest = ({ onSubmit }) => {
   const handlePlayer = async e => {
     e.preventDefault();
     if (newQuestion !== '') {
-      onSubmit(newQuestion);
+      onSubmit({ newQuestion: newQuestion, status: true });
       setNewQuestion('');
     }
   };
 
-  const navigate = useNavigate();
   function backArrowClick() {
-    navigate('/');
+    console.log('go back from add quest');
+    onSubmit({ status: false });
   }
 
   return (

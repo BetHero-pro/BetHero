@@ -166,12 +166,14 @@ const Player = ({ palyerName }) => {
     navigate('/welcome');
   }
 
-  const handleAddQuest = async newQuestion => {
-    if (newQuestion !== '') {
+  const handleAddQuest = async state => {
+    if (state.status === true) {
       setDisabledButton(true);
-      await createQuest(user.userID, newQuestion);
+      await createQuest(user.userID, state.newQuestion);
       setDisabledButton(false);
       toggleRefresh(!refresh);
+      setIsQuestion(false);
+    } else {
       setIsQuestion(false);
     }
   };
