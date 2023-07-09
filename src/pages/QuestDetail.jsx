@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { ArrowLeftIcon, CheckBadgeIcon, CheckIcon } from '@heroicons/react/24/outline';
+import { ArrowLeftIcon, CheckBadgeIcon, CheckIcon, ForwardIcon } from '@heroicons/react/24/outline';
 import { useNavigate } from 'react-router-dom';
 import { deleteQuest, fetchAllQuests1 } from '../fetches';
 
@@ -8,13 +8,14 @@ const QuestDetail = () => {
   const location = useLocation();
   const [startTime, setStartTime] = useState(null);
   const [elapsedTime, setElapsedTime] = useState(0);
+  const [questIndex, setQuestIndex] = useState(0);
   const timerRef = useRef(null);
-
   useEffect(() => {
     const savedStartTime = localStorage.getItem(`timerStartTime_${location.state.taskid}`);
     if (savedStartTime) {
       setStartTime(parseInt(savedStartTime));
     }
+
   }, [location.state.taskid]);
 
   useEffect(() => {
@@ -25,10 +26,11 @@ const QuestDetail = () => {
         setElapsedTime(elapsedSeconds);
       }
     }, 1000);
-
+    
     return () => {
       clearInterval(timerRef.current);
     };
+    
   }, [startTime]);
 
   const stopTimer = e => {
@@ -105,7 +107,18 @@ const QuestDetail = () => {
   function backArrowClick() {
     navigate('/');
   }
-
+  const skipQuest = (e) => {
+    const { quests, userid } = location.state;
+    localStorage.removeItem(`timerStartTime_${location.state.currentQuest._id}`);
+    if (questIndex + 1 < quests.length) {
+      stopTimer(e)
+      const startTime = Date.now();
+      setStartTime(startTime);
+      setQuestIndex(questIndex + 1);
+      const nextQuest = quests[questIndex + 1];
+      navigate('/questdetail', { state: { taskid: nextQuest._id, currentQuest: nextQuest, userid, quests } });
+    }
+  };
   return (
     <div className="flex flex-col bg-blue-200 w-screen h-screen">
       <div className="flex items-center">
@@ -125,6 +138,9 @@ const QuestDetail = () => {
         <img onClick={leaveTask} className="w-20 h-20 bg-transparent rounded p-2  cursor-pointer " src="leave.jpg" alt="" />
         <img className="w-20 h-20 bg-transparent rounded p-2  cursor-pointer " src="hourglass.jpg" alt="" />
         <CheckIcon onClick={e => completeTask(e)} className="w-20 h-20 bg-green-300 rounded-full p-3  cursor-pointer" />
+        <button onClick={e => skipQuest(e)} className="w-20 h-20 bg-blue-300 rounded-full p-3  cursor-pointer">
+          <ForwardIcon/>
+          </button>
       </div>
     </div>
   );

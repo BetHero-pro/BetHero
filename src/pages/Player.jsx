@@ -195,7 +195,7 @@ const Player = ({ palyerName }) => {
         localStorage.setItem(`timerStartTime_${questions[0]._id}`, startTime.toString());
       }
 
-      navigate('/questdetail', { state: { taskid: questions[0]._id, currentQuest: questions[0], userid: user.userID } });
+      navigate('/questdetail', { state: { taskid: questions[0]._id, currentQuest: questions[0], userid: user.userID, quests: questions } });
     }
   }
 
