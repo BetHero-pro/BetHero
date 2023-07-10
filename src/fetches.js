@@ -123,6 +123,7 @@ const markQuest = async questID => {
 };
 
 const setOrder = async updatedOrderData => {
+  console.log(updatedOrderData)
   await fetch('http://34.171.209.43:5000/setOrder', {
     headers: {
       'Content-Type': 'application/json',

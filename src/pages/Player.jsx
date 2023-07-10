@@ -6,7 +6,7 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { JWT_SECRET } from '../config/env';
 // import Quest from "./Quest";
 import { fetchAllQuests, createQuest, deleteQuest, setOrder } from '../fetches';
-import { PowerIcon, ArrowRightOnRectangleIcon } from '@heroicons/react/24/outline';
+import { PowerIcon, ArrowSmallDownIcon } from '@heroicons/react/24/outline';
 import { PlayIcon, PlusIcon } from '@heroicons/react/24/outline';
 
 import Timer from '../components/TimerComponent';
@@ -24,7 +24,7 @@ const Player = ({ palyerName }) => {
   const bottomOfDivQuests = useRef(null)
 
   const handleBottomScrollBtn = () => {
-    bottomOfDivQuests?.current?.scrollIntoView({behavior: 'smooth'})
+    bottomOfDivQuests?.current?.scrollIntoView({ behavior: 'smooth' })
   }
   const jsonToken = localStorage.getItem('jwt');
   const [user, setUser] = useState({ username: '', userID: '' });
@@ -199,6 +199,36 @@ const Player = ({ palyerName }) => {
     }
   }
 
+  const [updateOrder, setUpdateOrder] = useState(false);
+  const pushToEnd = async (element) => {
+    console.log(element)
+    const index = questions.findIndex(item => item._id === element);
+    console.log(index)
+    if (index > -1) {
+      const lastQuestion = questions[questions.length - 1];
+      console.log(lastQuestion)
+      const updatedQuestions = [...questions]; // Create a shallow copy of the questions array
+      updatedQuestions[index] = {
+        ...updatedQuestions[index],
+        order: lastQuestion.order + 1,
+      };
+      setQuestions(updatedQuestions)
+      setUpdateOrder(true)
+
+    }
+  }
+
+  useEffect(() => {
+    console.log("updating")
+    let updatedOrderData = [];
+    questions.forEach((question, index) => {
+      question.order = index + 1;
+      updatedOrderData.push({ questID: question._id, order: index + 1 });
+    });
+    setOrder(updatedOrderData);
+
+  }, [updateOrder])
+
   return (
     <>
       {isQuestion ? (
@@ -231,16 +261,18 @@ const Player = ({ palyerName }) => {
             </div>
 
             <div>
+
               <DragDropContext onDragEnd={handleDrop}>
                 <Droppable droppableId="list-container">
                   {provided => (
                     <div className="p-6">
+
                       <div
                         {...provided.droppableProps}
                         ref={provided.innerRef}
                         className="overflow-auto bg-white pt-4 flex flex-col mx-auto justify-start shadow-md rounded-2xl border-2 border-black items-center lg:w-[600px] h-[400px]"
                       >
-                        <button onClick={handleBottomScrollBtn} className='flex fixed self-end mr-5 bg-white p-2 rounded-full border-black shadow-lg border-2 hover:transform hover:scale-110 transition duration-500'><DownArrow size={20}/></button>
+                        <button onClick={handleBottomScrollBtn} className='flex fixed top-[80px] ml-[550px]  bg-white p-2 rounded-full border-black shadow-lg border-2 hover:transform hover:scale-110 transition duration-500'><DownArrow size={20} /></button>
                         {questions
                           .sort((a, b) => a.order - b.order)
                           .map((quest, index) => (
@@ -252,7 +284,8 @@ const Player = ({ palyerName }) => {
                                   {...provided.draggableProps}
                                   className=" rounded-lg flex  items-center p-2 justify-between mb-2 w-full max-w-[95%] bg-orange-100"
                                 >
-                                  <div className="flex items-center  space-x-2">
+
+                                  <div className='flex items-center  space-x-2'>
                                     <input
                                       type="checkbox"
                                       name={quest}
@@ -264,12 +297,22 @@ const Player = ({ palyerName }) => {
                                     />
                                     <label className="text-xl font-bold">{quest.Quest}</label>
                                   </div>
+
+                                  <div className="group inline-block relative">
+                                    <ArrowSmallDownIcon
+                                      onClick={(e) => { pushToEnd(quest._id) }}
+                                      className='w-8 h-8  bg-white border-2 border-black  p-1 rounded-full ' onClick={(e) => pushToEnd(quest._id)} />
+                                    <div className="hidden group-hover:block group-hover:cursor-pointer bg-white cursor-pointer text-black py-2 px-4 z-50 rounded absolute right-12 border-2  ">
+                                      Move me to the end
+                                    </div>
+                                  </div>
                                 </div>
+
                               )}
                             </Draggable>
                           ))}
                         {provided.placeholder}
-                        <div ref={bottomOfDivQuests}/>
+                        <div ref={bottomOfDivQuests} />
                       </div>
                     </div>
                   )}
@@ -292,7 +335,8 @@ const Player = ({ palyerName }) => {
             </div>
           </div>
         </>
-      )}
+      )
+      }
     </>
   );
 };
