@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { ArrowLeftIcon, CheckIcon, ForwardIcon } from '@heroicons/react/24/outline';
+import { ArrowLeftIcon, CheckBadgeIcon, CheckIcon, ForwardIcon } from '@heroicons/react/24/outline';
 import { useNavigate } from 'react-router-dom';
 import { deleteQuest, fetchAllQuests1 } from '../fetches';
 
@@ -15,6 +15,7 @@ const QuestDetail = () => {
     if (savedStartTime) {
       setStartTime(parseInt(savedStartTime));
     }
+
   }, [location.state.taskid]);
 
   useEffect(() => {
@@ -29,8 +30,50 @@ const QuestDetail = () => {
     return () => {
       clearInterval(timerRef.current);
     };
+
   }, [startTime]);
 
+  useEffect(() => {
+    const tag = document.createElement('script');
+    tag.src = 'https://www.youtube.com/iframe_api';
+    const firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+    window.onYouTubeIframeAPIReady = initializePlayer;
+
+    return () => {
+      delete window.onYouTubeIframeAPIReady;
+    };
+  }, []);
+
+  const initializePlayer = () => {
+    // Initialize the YouTube player
+    new window.YT.Player('player', {
+      videoId: 'jfKfPfyJRdk', // Replace with the YouTube video ID
+      playerVars: {
+        autoplay: 0,
+        controls: 0,
+        rel: 0,
+        showinfo: 0,
+      },
+      events: {
+        onReady: onPlayerReady,
+      },
+    });
+  };
+
+  const onPlayerReady = (event) => {
+    const player = event.target;
+    const playButton = document.getElementById('play-button');
+
+    playButton.addEventListener('click', () => {
+      if (player.getPlayerState() === window.YT.PlayerState.PLAYING) {
+        player.pauseVideo();
+      } else {
+        player.playVideo();
+      }
+    });
+  };
   const stopTimer = e => {
     e.preventDefault();
     if (timerRef.current !== null) {
@@ -62,7 +105,7 @@ const QuestDetail = () => {
 
     if (!result) return;
 
-    if (data?.length > 0) {
+    if (data.length > 0) {
       // now we have to conside dnd order this is why applying sort
       const questions = [...data].sort((a, b) => a.order - b.order);
       console.log('sorted data is');
@@ -105,11 +148,11 @@ const QuestDetail = () => {
   function backArrowClick() {
     navigate('/');
   }
-  const skipQuest = e => {
+  const skipQuest = (e) => {
     const { quests, userid } = location.state;
     localStorage.removeItem(`timerStartTime_${location.state.currentQuest._id}`);
-    if (questIndex + 1 < quests?.length) {
-      stopTimer(e);
+    if (questIndex + 1 < quests.length) {
+      stopTimer(e)
       const startTime = Date.now();
       setStartTime(startTime);
       setQuestIndex(questIndex + 1);
@@ -119,17 +162,20 @@ const QuestDetail = () => {
   };
   return (
     <div className="flex flex-col bg-blue-200 w-screen h-screen">
-      <div style={{ position: 'fixed', top: '40px', left: '30px' }}>
-        <ArrowLeftIcon onClick={backArrowClick} className="bg-white border-black cursor-pointer w-12 h-12 p-2 ml-3 shadow-xl border rounded-full" />
+      <div className="flex items-center">
+        <ArrowLeftIcon
+          onClick={backArrowClick}
+          className="   bg-white border-black   cursor-pointer w-12 h-12 p-2 ml-3 shadow-xl border rounded-full "
+        />
+        <h2 className=" text-3xl text-blue-300 border bg-white rounded-xl w-[30%] mx-auto font-semibold italic text-center p-4 m-4">
+          {location.state.currentQuest.Quest}
+        </h2>
+        <script src="https://www.youtube.com/iframe_api"></script>
+        <div id="player" style={{ display: 'none' }}>ssz</div>
+        <button id="play-button"> <img className="w-20 h-20 rounded-full p-3" src="music.png" alt="" /></button>
       </div>
-      <h2 className=" text-3xl text-blue-300 border bg-white rounded-xl w-[30%] mx-auto font-semibold italic text-center p-4 m-4">
-        {location.state.currentQuest.Quest}
-      </h2>
-      <div className="flex justify-center mt-8">
-        <div class="row gap-12">
-          {/* <img style={{ transform: 'scaleX(-1)' }} className="col w-24 h-24" src="warrior.png" alt="" /> */}
-          <img className="col rounded-full h-24 w-24" src="pokemon-sleep.gif" alt="" />
-        </div>
+      <div>
+        <img className="rounded-full bg-gray-300 h-24 w-24 mx-auto mt-8" src="monster.png" alt="" />
       </div>
       <div className="text-center mt-4 italic text-4xl"> {formatTime(elapsedTime)}</div>
       <div className="flex justify-center mt-8">

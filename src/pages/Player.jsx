@@ -51,13 +51,11 @@ const Player = ({ palyerName }) => {
 
   // when new question is added
   useEffect(() => {
-    // if (jsonToken === '') {
-    //   navigate('/welcome');
-    // } else if (user.userID !== '') {
-    //   fetchAllQuests(setQuestions, setSelectedQuestions, user.userID);
-    // }
-    fetchAllQuests(setQuestions, setSelectedQuestions, user.userID);
-
+    if (jsonToken === '') {
+      navigate('/welcome');
+    } else if (user.userID !== '') {
+      fetchAllQuests(setQuestions, setSelectedQuestions, user.userID);
+    }
   }, [refresh]);
 
   // const handleClick = () => {
@@ -168,6 +166,7 @@ const Player = ({ palyerName }) => {
   // button to go to timer detail functionality
   function gotoQuestDetailBtn(e, currentQuest, index) {
     e.preventDefault();
+    alert('im clicked ');
     console.log(currentQuest, index);
     navigate('/questdetail', { state: { index: index, currentQuest: currentQuest, userid: user.userID } });
   }
@@ -263,7 +262,7 @@ const Player = ({ palyerName }) => {
 
             <div>
 
-              <DragDropContext onDragEnd={handleDrop}>
+            <DragDropContext onDragEnd={handleDrop}>
                 <Droppable droppableId="list-container">
                   {provided => (
                     <div className="p-6">
@@ -322,7 +321,6 @@ const Player = ({ palyerName }) => {
             </div>
 
             <div className="flex justify-center space-x-2">
-              <button className='w-13 h-13 cursor-pointer border border-black rounded-full bg-white' onClick={startFirstTask}><img src="/sleep.png" className='w-10 h-10 p-2'/></button>
               <PlayIcon
                 onClick={startFirstTask}
                 className="w-12 h-12 bg-white cursor-pointer border border-black   rounded-full p-2 text-green-400"
