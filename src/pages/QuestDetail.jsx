@@ -62,7 +62,7 @@ const QuestDetail = () => {
 
     if (!result) return;
 
-    if (data.length > 0) {
+    if (data?.length > 0) {
       // now we have to conside dnd order this is why applying sort
       const questions = [...data].sort((a, b) => a.order - b.order);
       console.log('sorted data is');
@@ -108,7 +108,7 @@ const QuestDetail = () => {
   const skipQuest = e => {
     const { quests, userid } = location.state;
     localStorage.removeItem(`timerStartTime_${location.state.currentQuest._id}`);
-    if (questIndex + 1 < quests.length) {
+    if (questIndex + 1 < quests?.length) {
       stopTimer(e);
       const startTime = Date.now();
       setStartTime(startTime);
@@ -127,8 +127,8 @@ const QuestDetail = () => {
       </h2>
       <div className="flex justify-center mt-8">
         <div class="row gap-12">
-          <img style={{ transform: 'scaleX(-1)' }} className="col w-24 h-24" src="warrior.png" alt="" />
-          <img className="col rounded-full h-24 w-24" src="monster.png" alt="" />
+          {/* <img style={{ transform: 'scaleX(-1)' }} className="col w-24 h-24" src="warrior.png" alt="" /> */}
+          <img className="col rounded-full h-24 w-24" src="pokemon-sleep.gif" alt="" />
         </div>
       </div>
       <div className="text-center mt-4 italic text-4xl"> {formatTime(elapsedTime)}</div>
