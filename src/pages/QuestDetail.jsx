@@ -128,7 +128,7 @@ const QuestDetail = () => {
       <div className="flex justify-center mt-8">
         <div class="row gap-12">
           {/* <img style={{ transform: 'scaleX(-1)' }} className="col w-24 h-24" src="warrior.png" alt="" /> */}
-          <img className="col rounded-full h-24 w-24" src="pokemon-sleep.gif" alt="" />
+          <img className="col rounded-full h-24 w-24" src="monster.png" alt="" />
         </div>
       </div>
       <div className="text-center mt-4 italic text-4xl"> {formatTime(elapsedTime)}</div>
