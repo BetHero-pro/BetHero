@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { JWT_SECRET } from '../config/env';
 // import Quest from "./Quest";
-import { fetchAllQuests, createQuest, deleteQuest, setOrder } from '../fetches';
+import { fetchAllQuests, createQuest, deleteQuest, setOrder, markQuest } from '../fetches';
 import { PowerIcon, ArrowSmallDownIcon } from '@heroicons/react/24/outline';
 import { PlayIcon, PlusIcon } from '@heroicons/react/24/outline';
 
@@ -44,7 +44,7 @@ const Player = ({ palyerName }) => {
 
   const onChange = async (question, e) => {
     e.target.disabled = true;
-    await deleteQuest(question._id);
+    await markQuest(question._id);
     toggleRefresh(!refresh);
     e.target.disabled = false;
   };
