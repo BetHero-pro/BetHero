@@ -16,6 +16,13 @@ const AddQuest = ({ onSubmit }) => {
     onSubmit({ status: false });
   }
 
+  document.addEventListener("keydown", function (e) {
+    if(e.key == "Escape") {
+      console.log('go back from add quest');
+      onSubmit({ status: false });
+    }
+  });
+
   return (
     <form className="flex flex-col align-middle  bg-blue-200 w-screen h-screen text-bold" onSubmit={handlePlayer}>
       <div className="flex pt-3  items-center">
