@@ -12,7 +12,7 @@ const fetchAllQuests = (callback1, callback2, userID) => {
       return response.json();
     })
     .then(data => {
-      const questions = data;
+      const questions = data.filter(item => item.isChecked !== true);
       console.log(questions);
       callback1(questions);
       callback2(
