@@ -200,6 +200,18 @@ const Player = ({ palyerName }) => {
     }
   }
 
+  function startWanderingTask() {
+    if (questions.length > 0) {
+      const savedStartTime = localStorage.getItem(`timerStartTime_${questions[0]._id}`);
+      if (!savedStartTime) {
+        const startTime = Date.now();
+        localStorage.setItem(`timerStartTime_${questions[0]._id}`, startTime.toString());
+      }
+
+      navigate('/wanderingdetail', { state: { taskid: questions[0]._id, currentQuest: questions[0], userid: user.userID, quests: questions } });
+    }
+  }
+
   const [updateOrder, setUpdateOrder] = useState(false);
   const pushToEnd = async (element) => {
     console.log(element)
@@ -322,6 +334,7 @@ const Player = ({ palyerName }) => {
             </div>
 
             <div className="flex justify-center space-x-2">
+              <button className='w-13 h-13 cursor-pointer border border-black rounded-full bg-white' onClick={startWanderingTask}><img src="/wandering.png" className='w-10 h-10 p-2'/></button>
               <button className='w-13 h-13 cursor-pointer border border-black rounded-full bg-white' onClick={startFirstTask}><img src="/sleep.png" className='w-10 h-10 p-2'/></button>
               <PlayIcon
                 onClick={startFirstTask}
