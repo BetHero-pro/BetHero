@@ -19,6 +19,7 @@ import { useHotkeys } from 'react-hotkeys-hook';
 
 //icons
 import { AiOutlineArrowDown as DownArrow } from 'react-icons/ai'
+import StatusLight from '../components/playerStatus';
 
 const Player = ({ palyerName }) => {
   const bottomOfDivQuests = useRef(null)
@@ -200,16 +201,26 @@ const Player = ({ palyerName }) => {
     }
   }
 
-  function startWanderingTask() {
-    if (questions.length > 0) {
-      const savedStartTime = localStorage.getItem(`timerStartTime_${questions[0]._id}`);
-      if (!savedStartTime) {
-        const startTime = Date.now();
-        localStorage.setItem(`timerStartTime_${questions[0]._id}`, startTime.toString());
-      }
+  function startRestTask() {
 
-      navigate('/wanderingdetail', { state: { taskid: questions[0]._id, currentQuest: questions[0], userid: user.userID, quests: questions } });
+    const savedRestTime = localStorage.getItem('restTime');
+    if (!savedRestTime) {
+      const restTime = Date.now();
+      localStorage.setItem('restTime', restTime.toString());
     }
+
+    navigate('/restPage');
+
+  }
+
+  function startWanderingTask() {
+    const savedWanderingTime = localStorage.getItem('wanderingTime');
+    if (!savedWanderingTime) {
+      const wanderingTime = Date.now();
+      localStorage.setItem('wanderingTime', wanderingTime.toString());
+    }
+
+    navigate('/wanderingpage');
   }
 
   const [updateOrder, setUpdateOrder] = useState(false);
@@ -242,6 +253,16 @@ const Player = ({ palyerName }) => {
 
   }, [updateOrder])
 
+
+  const userinfo = [
+    {
+      id: 1, name: 'John', userStatus: {
+        play: false,
+        rest: true,
+        wandering: false,
+      }
+    }];
+
   return (
     <>
       {isQuestion ? (
@@ -254,14 +275,20 @@ const Player = ({ palyerName }) => {
                 onClick={backArrowClick}
                 className=" bg-white border-black   cursor-pointer w-12 h-12 p-2 ml-3 shadow-xl border rounded-full "
               />
-              <div className="flex-grow flex justify-center space-x-2 items-center">
-                <img className="w-12 h-12 rounded-full" src={avatarurl} alt="user" />
-                <div className="text-center text-lg font-serif text-gray-700">
-                  Hello,
-                  <span className=" font-semibold ml-2  text-gray-950">{username ? username : 'please login guest'}</span>{' '}
+
+              <div className=" lg:w-[400px] mx-auto rounded-lg    flex flex-col items-center">
+                <div className="   flex justify-center space-x-2 items-center ">
+                  <img className="  w-12 h-12 rounded-full" src={avatarurl} alt="user" />
+                  <div className="text-center  text-lg font-serif text-gray-700">
+                    Hello,
+                    <span className=" font-semibold ml-2  text-gray-950">{username ? username : 'please login guest'}</span>{' '}
+                  </div>
+                </div>
+                <div className="">
+                  <StatusLight status={userinfo[0].userStatus} />
                 </div>
               </div>
-              <div className="ml-auto mr-4">
+              <div className=" mr-4">
                 <button
                   className=" rounded-3xl p-3 text-white bg-blue-500"
                   onClick={() => {
@@ -334,8 +361,8 @@ const Player = ({ palyerName }) => {
             </div>
 
             <div className="flex justify-center space-x-2">
-              <button className='w-13 h-13 cursor-pointer border border-black rounded-full bg-white' onClick={startWanderingTask}><img src="/wandering.png" className='w-10 h-10 p-2'/></button>
-              <button className='w-13 h-13 cursor-pointer border border-black rounded-full bg-white' onClick={startFirstTask}><img src="/sleep.png" className='w-10 h-10 p-2'/></button>
+              <button className='w-13 h-13 cursor-pointer border border-black rounded-full bg-white' onClick={startWanderingTask}><img src="/wandering.png" className='w-10 h-10 p-2' /></button>
+              <button className='w-13 h-13 cursor-pointer border border-black rounded-full bg-white' onClick={startRestTask}><img src="/sleep.png" className='w-10 h-10 p-2' /></button>
               <PlayIcon
                 onClick={startFirstTask}
                 className="w-12 h-12 bg-white cursor-pointer border border-black   rounded-full p-2 text-green-400"

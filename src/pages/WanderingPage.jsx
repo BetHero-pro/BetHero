@@ -2,20 +2,19 @@ import { useState, useRef, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { ArrowLeftIcon, CheckIcon, ForwardIcon } from '@heroicons/react/24/outline';
 import { useNavigate } from 'react-router-dom';
-import { deleteQuest, fetchAllQuests1 } from '../fetches';
 
-const WanderingDetail = () => {
-  const location = useLocation();
+const WanderingPage = () => {
+
   const [startTime, setStartTime] = useState(null);
   const [elapsedTime, setElapsedTime] = useState(0);
-  const [questIndex, setQuestIndex] = useState(0);
+
   const timerRef = useRef(null);
   useEffect(() => {
-    const savedStartTime = localStorage.getItem(`timerStartTime_${location.state.taskid}`);
-    if (savedStartTime) {
-      setStartTime(parseInt(savedStartTime));
+    const savedWanderingTime = localStorage.getItem('wanderingTime');
+    if (savedWanderingTime) {
+      setStartTime(parseInt(savedWanderingTime));
     }
-  }, [location.state.taskid]);
+  }, []);
 
   useEffect(() => {
     timerRef.current = setInterval(() => {
@@ -40,7 +39,7 @@ const WanderingDetail = () => {
   };
 
   const leaveTask = e => {
-    localStorage.removeItem(`timerStartTime_${location.state.currentQuest._id}`);
+    localStorage.removeItem('wanderingTime');
     // Additional logic for leaving the task goes here
     setElapsedTime(0);
     e.preventDefault();
@@ -49,35 +48,9 @@ const WanderingDetail = () => {
   };
 
   const completeTask = async e => {
-    localStorage.removeItem(`timerStartTime_${location.state.currentQuest._id}`);
-    // Additional logic for completing the task goes here
+    localStorage.removeItem('wanderingTime');
 
-    e.target.disabled = true;
-    await deleteQuest(location.state.currentQuest._id);
-
-    e.target.disabled = false;
-
-    const { data, result } = await fetchAllQuests1(location.state.userid);
-    console.log(result);
-
-    if (!result) return;
-
-    if (data?.length > 0) {
-      // now we have to conside dnd order this is why applying sort
-      const questions = [...data].sort((a, b) => a.order - b.order);
-      console.log('sorted data is');
-      console.log(questions);
-      const savedStartTime = localStorage.getItem(`timerStartTime_${questions[0]._id}`);
-      if (!savedStartTime) {
-        const startTime = Date.now();
-        localStorage.setItem(`timerStartTime_${questions[0]._id}`, startTime.toString());
-      }
-
-      navigate('/questdetail', { state: { taskid: questions[0]._id, currentQuest: questions[0], userid: location.state.userid } });
-    } else {
-      console.log('no item left');
-      navigate('/');
-    }
+    navigate('/')
   };
 
   function padTo2Digits(num) {
@@ -105,18 +78,20 @@ const WanderingDetail = () => {
   function backArrowClick() {
     navigate('/');
   }
+
   return (
     <div className="flex flex-col bg-blue-200 w-screen h-screen">
       <div style={{ position: 'fixed', top: '40px', left: '30px' }}>
         <ArrowLeftIcon onClick={backArrowClick} className="bg-white border-black cursor-pointer w-12 h-12 p-2 ml-3 shadow-xl border rounded-full" />
       </div>
       <h2 className=" text-3xl text-blue-300 border bg-white rounded-xl w-[30%] mx-auto font-semibold italic text-center p-4 m-4">
-        {location.state.currentQuest.Quest}
+        with age comes greater trouble,
+        not knowing where you are is a trouble
       </h2>
       <div className="flex justify-center mt-8">
         <div class="row gap-12">
-          {/* <img style={{ transform: 'scaleX(-1)' }} className="col w-24 h-24" src="warrior.png" alt="" /> */}
-          <img className="col rounded-full h-24 w-24" src="wizard.gif" alt="" />
+
+          <img className="col rounded-full h-24 w-24" src="/wizard.gif" alt="" />
         </div>
       </div>
       <div className="text-center mt-4 italic text-4xl"> {formatTime(elapsedTime)}</div>
@@ -124,9 +99,10 @@ const WanderingDetail = () => {
         <img onClick={leaveTask} className="w-20 h-20 bg-transparent rounded p-2  cursor-pointer " src="leave.jpg" alt="" />
         <img className="w-20 h-20 bg-transparent rounded p-2  cursor-pointer " src="hourglass.jpg" alt="" />
         <CheckIcon onClick={e => completeTask(e)} className="w-20 h-20 bg-green-300 rounded-full p-3  cursor-pointer" />
+
       </div>
     </div>
   );
 };
 
-export default WanderingDetail;
+export default WanderingPage;

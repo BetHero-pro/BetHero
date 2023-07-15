@@ -9,7 +9,9 @@ import Quest from './pages/Quest';
 import Intermediate from './pages/intermediate';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import QuestDetail from './pages/QuestDetail';
-import WanderingDetail from './pages/WanderingDetail';
+import WanderingDetail from './pages/WanderingPage';
+import RestPage from './pages/RestPage';
+import WanderingPage from './pages/WanderingPage';
 
 function App() {
   return (
@@ -21,7 +23,9 @@ function App() {
           <Route Component={Player} path="/" exact />
           <Route Component={Intermediate} path="/authenticating" exact />
           <Route Component={QuestDetail} path="/questdetail" exact />
-          <Route Component={WanderingDetail} path="/wanderingdetail" exact />
+          <Route Component={WanderingPage} path="/wanderingpage" exact />
+          <Route Component={RestPage} path="/restPage" exact />
+
         </Routes>
       </Router>
     </>
