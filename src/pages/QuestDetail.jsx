@@ -135,7 +135,7 @@ const QuestDetail = () => {
         </div>
       </div>
       <div className="text-center mt-4 italic text-4xl"> {formatTime(elapsedTime)}</div>
-      <div className="flex justify-center mt-8">
+      <div className="flex justify-center mt-8 gap-3">
         <img onClick={leaveTask} className="w-20 h-20 bg-transparent rounded p-2  cursor-pointer " src="leave.jpg" alt="" />
         <img className="w-20 h-20 bg-transparent rounded p-2  cursor-pointer " src="hourglass.jpg" alt="" />
         <img onClick={e => completeTask(e)} className="w-20 h-20 bg-transparent rounded p-2  cursor-pointer " src="Sword.jpg" alt="" />
