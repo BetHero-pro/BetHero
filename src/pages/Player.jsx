@@ -37,6 +37,9 @@ const Player = ({ palyerName }) => {
   const [disabledButton, setDisabledButton] = useState(false);
   const [verification, setVerification] = useState(false);
 
+
+  useHotkeys('shift+enter', () => startFirstTask());
+
   useHotkeys('enter', () => setIsQuestion(true));
 
   const isSelected = question => {
