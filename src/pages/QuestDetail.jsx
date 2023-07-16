@@ -138,7 +138,7 @@ const QuestDetail = () => {
       <div className="flex justify-center mt-8">
         <img onClick={leaveTask} className="w-20 h-20 bg-transparent rounded p-2  cursor-pointer " src="leave.jpg" alt="" />
         <img className="w-20 h-20 bg-transparent rounded p-2  cursor-pointer " src="hourglass.jpg" alt="" />
-        <CheckIcon onClick={e => completeTask(e)} className="w-20 h-20 bg-green-300 rounded-full p-3  cursor-pointer" />
+        <img onClick={e => completeTask(e)} className="w-20 h-20 bg-transparent rounded p-2  cursor-pointer " src="Sword.jpg" alt="" />
         <button onClick={e => skipQuest(e)} className="w-20 h-20 bg-blue-300 rounded-full p-3  cursor-pointer">
           <ForwardIcon />
         </button>
