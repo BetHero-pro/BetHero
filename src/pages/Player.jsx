@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { JWT_SECRET } from '../config/env';
 // import Quest from "./Quest";
-import { fetchAllQuests, createQuest, deleteQuest, setOrder, markQuest } from '../fetches';
+import { fetchAllQuests, createQuest, sendUserStatus, setOrder, markQuest } from '../fetches';
 import { PowerIcon, ArrowSmallDownIcon } from '@heroicons/react/24/outline';
 import { PlayIcon, PlusIcon } from '@heroicons/react/24/outline';
 
@@ -22,6 +22,53 @@ import { AiOutlineArrowDown as DownArrow } from 'react-icons/ai'
 import StatusLight from '../components/playerStatus';
 
 const Player = ({ palyerName }) => {
+
+  useEffect(() => {
+    const handleUserStatus = (online) => {
+      const token = localStorage.getItem('jwt');
+      try{
+        const dt = jwtDecode(token);
+        const userData = dt.data[0];
+        sendUserStatus(userData.userName, userData._id, userData.avatarID, online);
+      }catch(e){
+        console.log(e)
+      }
+      
+    };
+
+    // User is online when the component is mounted
+    handleUserStatus(true);
+
+    const handleBeforeUnload = () => {
+      // User is offline when the window is closed
+      handleUserStatus(false);
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        // User becomes inactive when the window/tab is not visible
+        handleUserStatus(false);
+      } else {
+        // User becomes active again when the window/tab becomes visible
+        handleUserStatus(true);
+      }
+    };
+
+    // Add event listeners for beforeunload and visibilitychange
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    // Clean-up function when the component is unmounted
+    return () => {
+      // Remove event listeners
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+
+      // User is offline when the component is unmounted
+      handleUserStatus(false);
+    };
+  }, []);
+
   const bottomOfDivQuests = useRef(null)
 
   const handleBottomScrollBtn = () => {
@@ -295,10 +342,10 @@ const Player = ({ palyerName }) => {
                 <button
                   className=" rounded-3xl p-3 text-white bg-blue-500"
                   onClick={() => {
-                    setIsQuestion(true);
+                    navigate('/onlineplayers');
                   }}
                 >
-                  AddQuest
+                  pub
                 </button>
               </div>
             </div>

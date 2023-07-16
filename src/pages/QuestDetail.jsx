@@ -5,8 +5,10 @@ import { useNavigate } from 'react-router-dom';
 import { deleteQuest, fetchAllQuests1 } from '../fetches';
 import { useHotkeys } from 'react-hotkeys-hook';
 import '../css/styles.css'
+import jwtDecode from 'jwt-decode';
 
 const QuestDetail = () => {
+
   const location = useLocation();
   const [startTime, setStartTime] = useState(null);
   const [elapsedTime, setElapsedTime] = useState(0);

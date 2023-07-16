@@ -12,6 +12,7 @@ import QuestDetail from './pages/QuestDetail';
 import WanderingDetail from './pages/WanderingPage';
 import RestPage from './pages/RestPage';
 import WanderingPage from './pages/WanderingPage';
+import OnlinePlayers from './pages/OnlinePlayers';
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
           <Route Component={QuestDetail} path="/questdetail" exact />
           <Route Component={WanderingPage} path="/wanderingpage" exact />
           <Route Component={RestPage} path="/restPage" exact />
+          <Route Component={OnlinePlayers} path="/onlineplayers" exact />
 
         </Routes>
       </Router>
