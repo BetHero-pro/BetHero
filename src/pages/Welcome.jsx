@@ -16,7 +16,7 @@ const Welcome = () => {
           <h3 className="text-4xl xl:text-[48px] font-bold italic">Welcome</h3>
           <h3 className="text-2xl xl:text-[48px] font-bold italic">to</h3>
           <h1 className="text-[64px] sm:text-8xl xl:text-[120px] font-bold italic">BetHero</h1>
-          <h2 className="text-xl xl:text-[30px] italic  font-bold">(Prototype 0.1.1)</h2>
+          <h2 className="text-xl xl:text-[30px] italic  font-bold">(Prototype Version 0.0.3)</h2>
           <div className="mt-8"></div>
           <div className="mt-10">
             <button
