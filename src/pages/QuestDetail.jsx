@@ -151,10 +151,17 @@ const QuestDetail = () => {
   }
 
   useHotkeys('esc', () => backArrowClick())
+
+  useHotkeys('enter', (e) => completeTask(e));
+
   const navigate = useNavigate();
   function backArrowClick() {
     navigate('/');
   }
+
+
+
+
   const skipQuest = e => {
     const { quests, userid } = location.state;
     localStorage.removeItem(`timerStartTime_${location.state.currentQuest._id}`);

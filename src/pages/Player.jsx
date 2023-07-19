@@ -6,7 +6,7 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { JWT_SECRET } from '../config/env';
 // import Quest from "./Quest";
 import { fetchAllQuests, createQuest, sendUserStatus, setOrder, markQuest } from '../fetches';
-import { PowerIcon, ArrowSmallDownIcon } from '@heroicons/react/24/outline';
+import { PowerIcon, ArrowSmallDownIcon, ArrowSmallUpIcon } from '@heroicons/react/24/outline';
 import { PlayIcon, PlusIcon } from '@heroicons/react/24/outline';
 
 import Timer from '../components/TimerComponent';
@@ -26,14 +26,14 @@ const Player = ({ palyerName }) => {
   useEffect(() => {
     const handleUserStatus = (online) => {
       const token = localStorage.getItem('jwt');
-      try{
+      try {
         const dt = jwtDecode(token);
         const userData = dt.data[0];
         sendUserStatus(userData.userName, userData._id, userData.avatarID, online);
-      }catch(e){
+      } catch (e) {
         console.log(e)
       }
-      
+
     };
 
     // User is online when the component is mounted
@@ -275,6 +275,7 @@ const Player = ({ palyerName }) => {
 
   const [updateOrder, setUpdateOrder] = useState(false);
   const pushToEnd = async (element) => {
+    console.log("pushing to end")
     console.log(element)
     const index = questions.findIndex(item => item._id === element);
     console.log(index)
@@ -289,6 +290,24 @@ const Player = ({ palyerName }) => {
       setQuestions(updatedQuestions)
       setUpdateOrder(true)
 
+    }
+  }
+
+  const pushToStart = async (element) => {
+    console.log('pushing to start')
+
+    const index = questions.findIndex(item => item._id === element);
+    console.log(index);
+    if (index > -1) {
+      const firstQuestion = questions[0]; // Get the first question
+      console.log(firstQuestion);
+      const updatedQuestions = [...questions]; // Create a shallow copy of the questions array
+      updatedQuestions[index] = {
+        ...updatedQuestions[index],
+        order: firstQuestion.order - 1, // Decrease the order to make it the first question
+      };
+      setQuestions(updatedQuestions);
+      setUpdateOrder(true);
     }
   }
 
@@ -312,6 +331,8 @@ const Player = ({ palyerName }) => {
         wandering: false,
       }
     }];
+
+
 
   return (
     <>
@@ -388,13 +409,18 @@ const Player = ({ palyerName }) => {
                                     <label className="text-xl font-bold">{quest.Quest}</label>
                                   </div>
 
-                                  <div className="group inline-block relative">
+                                  <div className="group flex space-x-2 relative">
+                                    <ArrowSmallUpIcon
+                                      onClick={(e) => { pushToStart(quest._id) }}
+                                      className='w-8 h-8  bg-white border-2 border-black  p-1 rounded-full ' />
+
+
+
                                     <ArrowSmallDownIcon
                                       onClick={(e) => { pushToEnd(quest._id) }}
-                                      className='w-8 h-8  bg-white border-2 border-black  p-1 rounded-full ' onClick={(e) => pushToEnd(quest._id)} />
-                                    <div className="hidden group-hover:block group-hover:cursor-pointer bg-white cursor-pointer text-black py-2 px-4 z-50 rounded absolute right-12 border-2  ">
-                                      Move me to the end
-                                    </div>
+                                      className='w-8 h-8  bg-white border-2 border-black  p-1 rounded-full ' />
+
+
                                   </div>
                                 </div>
 
