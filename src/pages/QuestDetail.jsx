@@ -122,7 +122,7 @@ const QuestDetail = () => {
         localStorage.setItem(`timerStartTime_${questions[0]._id}`, startTime.toString());
       }
 
-      navigate('/', { state: { taskid: questions[0]._id, currentQuest: questions[0], userid: location.state.userid } });
+      navigate('/questdetail', { state: { taskid: questions[0]._id, currentQuest: questions[0], userid: location.state.userid } });
     } else {
       console.log('no item left');
       navigate('/');
@@ -171,12 +171,12 @@ const QuestDetail = () => {
     <div className="flex flex-col bg-blue-200 w-screen h-screen">
       <div style={{ position: 'fixed', top: '40px', left: '30px' }}>
         <ArrowLeftIcon onClick={backArrowClick} className="bg-white border-black cursor-pointer w-12 h-12 p-2 ml-3 shadow-xl border rounded-full" />
-        <div className="flex items-center"> 
-        <script src="https://www.youtube.com/iframe_api"></script>
-        <div id="player" style={{ display: 'none' }}>ssz</div>
-        <button id="play-button"><img className="w-20 h-20 rounded-full p-3" src="music.png" alt="" /></button>
+        <div className="flex items-center">
+          <script src="https://www.youtube.com/iframe_api"></script>
+          <div id="player" style={{ display: 'none' }}>ssz</div>
+          <button id="play-button"><img className="w-20 h-20 rounded-full p-3" src="music.png" alt="" /></button>
+        </div>
       </div>
-    </div>
       <h2 className=" text-3xl text-blue-300 border bg-white rounded-xl w-[30%] mx-auto font-semibold italic text-center p-4 m-4">
         {location.state.currentQuest.Quest}
       </h2>

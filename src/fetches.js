@@ -39,10 +39,13 @@ const fetchAllQuests1 = userID => {
         return response.json();
       })
       .then(data => {
+        const questions = data.filter(item => item.isChecked !== true);
         console.log('data from fetch1 is');
         console.log(data);
+        console.log('after sorting this data is');
+        console.log(questions);
 
-        resolve({ data: data, result: true });
+        resolve({ data: questions, result: true });
       })
       .catch(err => {
         console.log(err);
@@ -74,33 +77,33 @@ const userAuth = async userObject => {
     });
 };
 
-const sendUserStatus = async(userName,userID,avatarID,action) =>{
-  await fetch('http://localhost:5000/ActiveUsers',{
-   headers: {
-    'Content-Type': 'application/json',
+const sendUserStatus = async (userName, userID, avatarID, action) => {
+  await fetch('http://localhost:5000/ActiveUsers', {
+    headers: {
+      'Content-Type': 'application/json',
     },
-    body: JSON.stringify({uname:userName,userID: userID,avatarID:avatarID,action:action}),
+    body: JSON.stringify({ uname: userName, userID: userID, avatarID: avatarID, action: action }),
     method: 'POST',
     mode: 'cors',
   }).then(response => {
-  console.log(response.data);
+    console.log(response.data);
   });
 
 };
 
-const GetAllOnlineUsers = async() =>{
-  await fetch('http://localhost:5000/getActiveUsers',{
-   headers: {
-    'Content-Type': 'application/json',
+const GetAllOnlineUsers = async () => {
+  await fetch('http://localhost:5000/getActiveUsers', {
+    headers: {
+      'Content-Type': 'application/json',
     },
     method: 'POST',
     mode: 'cors',
   }).then(response => {
     return response.json();
   })
-  .then(data => {
-    console.log(data.userLis[0])
-  })
+    .then(data => {
+      console.log(data.userLis[0])
+    })
 
 };
 
@@ -172,4 +175,4 @@ const setOrder = async updatedOrderData => {
   });
 };
 
-export { fetchAllQuests, fetchAllQuests1, createQuest, deleteQuest, markQuest, userAuth, setOrder,sendUserStatus,GetAllOnlineUsers };
+export { fetchAllQuests, fetchAllQuests1, createQuest, deleteQuest, markQuest, userAuth, setOrder, sendUserStatus, GetAllOnlineUsers };
