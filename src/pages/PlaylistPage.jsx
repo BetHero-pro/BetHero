@@ -14,7 +14,7 @@ const PlaylistPage = () => {
       </div>
       <h2 className=" text-3xl text-blue-300 border bg-white rounded-xl w-[30%] mx-auto font-semibold italic text-center p-4 m-4">Playlist</h2>
       <div className="flex justify-center mt-8">
-        <div class="row gap-12 max-w-[400px] max-h-[75px]">
+        <div className="row gap-12 max-w-[400px] max-h-[75px]">
           {playlistData.map((playlist, index) => (
             <PlaylistItem key={index} {...playlist} />
           ))}
