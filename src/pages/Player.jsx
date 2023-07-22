@@ -20,6 +20,7 @@ import { useHotkeys } from 'react-hotkeys-hook';
 //icons
 import { AiOutlineArrowDown as DownArrow } from 'react-icons/ai'
 import StatusLight from '../components/playerStatus';
+import CoinBar from '../components/CoinBar';
 
 const Player = ({ palyerName }) => {
 
@@ -341,13 +342,14 @@ const Player = ({ palyerName }) => {
       ) : (
         <>
           <div className="bg-blue-100 w-screen h-screen">
-            <div className="flex justify-between pt-3   items-center">
-              <PowerIcon
-                onClick={backArrowClick}
-                className=" bg-white border-black   cursor-pointer w-12 h-12 p-2 ml-3 shadow-xl border rounded-full "
-              />
-
-              <div className=" lg:w-[400px] mx-auto rounded-lg    flex flex-col items-center">
+            <div className="flex justify-between pt-3 items-start">
+              <div className='flex flex-col items-start'>
+                <PowerIcon
+                  onClick={backArrowClick}
+                  className=" bg-white border-black cursor-pointer w-12 h-12 p-2 ml-3 shadow-xl border rounded-full "
+                />
+              </div>
+              <div className=" lg:w-[400px] mx-auto rounded-lg flex flex-col items-center mt-4">
                 <div className="   flex justify-center space-x-2 items-center ">
                   <img className="  w-12 h-12 rounded-full" src={avatarurl} alt="user" />
                   <div className="text-center  text-lg font-serif text-gray-700">
@@ -355,11 +357,14 @@ const Player = ({ palyerName }) => {
                     <span className=" font-semibold ml-2  text-gray-950">{username ? username : 'please login guest'}</span>{' '}
                   </div>
                 </div>
-                <div className="">
+                <div>
                   <StatusLight status={userinfo[0].userStatus} />
                 </div>
+                <div className="mt-3">
+                  <CoinBar />
+                </div>
               </div>
-              <div className=" mr-4">
+              <div className="flex flex-col mr-4">
                 <button
                   className=" rounded-3xl p-3 text-white bg-blue-500"
                   onClick={() => {
@@ -368,11 +373,18 @@ const Player = ({ palyerName }) => {
                 >
                   pub
                 </button>
+                <button
+                  className=" rounded-3xl p-3 text-white bg-blue-500 mt-4"
+                  onClick={() => {
+                    navigate('/bet');
+                  }}
+                >
+                  bet
+                </button>
               </div>
             </div>
 
             <div>
-
               <DragDropContext onDragEnd={handleDrop}>
                 <Droppable droppableId="list-container">
                   {provided => (

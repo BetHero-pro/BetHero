@@ -13,6 +13,7 @@ import WanderingDetail from './pages/WanderingPage';
 import RestPage from './pages/RestPage';
 import WanderingPage from './pages/WanderingPage';
 import OnlinePlayers from './pages/OnlinePlayers';
+import BetPage from './pages/BetPage';
 
 function App() {
   return (
@@ -27,7 +28,7 @@ function App() {
           <Route Component={WanderingPage} path="/wanderingpage" exact />
           <Route Component={RestPage} path="/restPage" exact />
           <Route Component={OnlinePlayers} path="/onlineplayers" exact />
-
+          <Route Component={BetPage} path="/bet" exact />
         </Routes>
       </Router>
     </>
