@@ -10,7 +10,13 @@ const Welcome = () => {
     <>
       <div className="flex justify-center lg:justify-start items-start h-screen">
         <div className="absolute inset-0  flex items-center justify-center">
-          <img src="Logo.png" alt="Background" className="object-cover w-full h-full  " />
+          <img
+            srcSet="welcome-mobile.png 768w, welcome-desktop-transformed-x2.png 1600w, welcome-desktop-transformed-x4.png"
+            sizes="(max-width: 768px) 768px, (max-width: 1600px) 1600px, 100vw"
+            src="welcome-desktop.png"
+            alt="Background"
+            className="object-cover w-full h-full object-right xl:object-top"
+          />
         </div>
         <div className="relative flex flex-col items-center z-10 text-center mt-16 lg:ml-20 lg:mt-16 xl:ml-28 xl:mt-20 ">
           <h3 className="text-4xl xl:text-[48px] font-bold italic">Welcome</h3>
