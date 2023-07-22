@@ -1,16 +1,32 @@
+import { useState } from 'react';
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { useNavigate } from 'react-router-dom';
+import useLocalStorageWithExpiry from '../hooks/useLocalStorageWithExpiry';
 
 const BetPage = () => {
+  const [activeCoin, setActiveCoin] = useState(null);
   const navigate = useNavigate();
+  const [storedCoin, setStoredCoin] = useLocalStorageWithExpiry('betCoin', null);
+
   function backArrowClick() {
     navigate('/');
   }
 
   const onClick = betValue => {
-    // use localStorage as 'redux' reset on navigation
-    localStorage.setItem('betCoin', betValue);
+    setActiveCoin(betValue)
   };
+
+  const onClickApprove = () => {
+    if (activeCoin === null) return;
+    // use localStorage as 'redux' reset on navigation
+    setStoredCoin(activeCoin); // set the value using the function returned by the hook
+    // also set a timer
+    localStorage.setItem("betTimer", Date.now());
+
+    // reset completed quest
+    localStorage.setItem('questCompleteNum', 0);
+    backArrowClick();
+  }
 
   return (
     <div className="flex flex-col bg-blue-200 w-screen h-screen">
@@ -23,13 +39,13 @@ const BetPage = () => {
         <div className="flex justify-center mt-8">
           <div className="grid grid-cols-3 gap-12">
             {tempCoinData.map((coin, index) => (
-              <CoinItem key={coin.value} onClick={onClick} data={coin} />
+              <CoinItem key={coin.value} onClick={onClick} data={coin} activeCoin={activeCoin} />
             ))}
           </div>
         </div>
         <div className="mt-8 flex justify-center items-center gap-16">
-          <img className="w-28" src="image-bet-red-cross.png" alt="" />
-          <img className="w-28" src="image-bet.png" alt="" />
+        <button onClick={backArrowClick}><img className="w-28" src="image-bet-red-cross.png" alt="" /></button>
+        <button onClick={onClickApprove}><img className={`w-28 ${activeCoin !== null ? 'hover:bg-green-300' : ''} `} src="image-bet.png" alt="" /></button>
         </div>
       </div>
     </div>
@@ -63,10 +79,10 @@ const tempCoinData = [
   },
 ];
 
-const CoinItem = ({ onClick, data }) => (
+const CoinItem = ({ onClick, activeCoin, data }) => (
   <div
     onClick={() => onClick(data.value)}
-    className="hover:cursor-pointer border-2 border-solid border-black rounded-full items-center justify-center flex-col text-center item-center w-24 h-24 p-2 hover:border-gray-500"
+    className={`hover:cursor-pointer border-2 border-solid rounded-full items-center justify-center flex-col text-center item-center w-24 h-24 p-2 ${activeCoin === data.value ? 'border-green-300' : 'border-black hover:border-gray-500'}`}
   >
     <p className="m-0 font-bold">{data.title}</p>
     <img className="w-14 h-14 bg-transparent cursor-pointer ml-3" src="coin.png" alt="" />

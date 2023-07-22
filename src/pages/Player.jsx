@@ -18,7 +18,7 @@ import AddQuest from '../components/addquest';
 import { useHotkeys } from 'react-hotkeys-hook';
 
 //icons
-import { AiOutlineArrowDown as DownArrow } from 'react-icons/ai'
+import { AiOutlineArrowDown as DownArrow } from 'react-icons/ai';
 import StatusLight from '../components/playerStatus';
 import CoinBar from '../components/CoinBar';
 
@@ -336,7 +336,6 @@ const Player = ({ palyerName }) => {
         wandering: false,
       }
     }];
-
 
 
   return (
