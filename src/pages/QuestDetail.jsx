@@ -98,6 +98,16 @@ const QuestDetail = () => {
   };
 
   const completeTask = async e => {
+    // TODO: set questCompleteNum based on click
+    // can be handle with redux, zustand, backend, context, etc.
+    const currentCompletedQuests = parseInt(localStorage.getItem('questCompleteNum'));
+
+    if (isNaN(currentCompletedQuests)) {
+      localStorage.setItem('questCompleteNum', 1);
+    } else {
+      localStorage.setItem('questCompleteNum', currentCompletedQuests + 1);
+    }
+
     localStorage.removeItem(`timerStartTime_${location.state.currentQuest._id}`);
     // Additional logic for completing the task goes here
 
