@@ -8,7 +8,7 @@ const CoinBar = () => {
   const currentCompletedQuests = parseInt(localStorage.getItem('questCompleteNum'));
   console.log('currentCompletedQuests', currentCompletedQuests);
   return (
-    <form>
+    <form id="coinbar-component">
       <Slider.Root
         className="relative flex items-center select-none touch-none w-[200px] h-5"
         defaultValue={[currentCompletedQuests ?? 0]}
