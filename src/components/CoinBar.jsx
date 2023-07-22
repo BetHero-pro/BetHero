@@ -6,7 +6,6 @@ const CoinBar = () => {
   // get localStorage
   const betCoin = localStorage.getItem('betCoin');
   const currentCompletedQuests = parseInt(localStorage.getItem('questCompleteNum'));
-  console.log('currentCompletedQuests', currentCompletedQuests);
   return (
     <form id="coinbar-component">
       <Slider.Root
