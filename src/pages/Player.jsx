@@ -273,6 +273,10 @@ const Player = ({ palyerName }) => {
     navigate('/wanderingpage');
   }
 
+  function startPlaylistTask() {
+    navigate('/playlistpage');
+  }
+
   const [updateOrder, setUpdateOrder] = useState(false);
   const pushToEnd = async (element) => {
     console.log("pushing to end")
@@ -437,6 +441,7 @@ const Player = ({ palyerName }) => {
             </div>
 
             <div className="flex justify-center space-x-2">
+              <button className='w-13 h-13 cursor-pointer border border-black rounded-full bg-white' onClick={startPlaylistTask}><img src="/playlist.png" className='w-10 h-10 p-2' /></button>
               <button className='w-13 h-13 cursor-pointer border border-black rounded-full bg-white' onClick={startWanderingTask}><img src="/wandering.png" className='w-10 h-10 p-2' /></button>
               <button className='w-13 h-13 cursor-pointer border border-black rounded-full bg-white' onClick={startRestTask}><img src="/sleep.png" className='w-10 h-10 p-2' /></button>
               <PlayIcon
