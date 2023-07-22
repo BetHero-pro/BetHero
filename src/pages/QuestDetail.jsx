@@ -1,19 +1,20 @@
 import { useState, useRef, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { ArrowLeftIcon, CheckBadgeIcon, CheckIcon, ForwardIcon } from '@heroicons/react/24/outline';
+import { ArrowLeftIcon, ForwardIcon } from '@heroicons/react/24/outline';
 import { useNavigate } from 'react-router-dom';
 import { deleteQuest, fetchAllQuests1 } from '../fetches';
 import { useHotkeys } from 'react-hotkeys-hook';
-import '../css/styles.css'
-import jwtDecode from 'jwt-decode';
+import '../css/styles.css';
 
 const QuestDetail = () => {
-
   const location = useLocation();
   const [startTime, setStartTime] = useState(null);
   const [elapsedTime, setElapsedTime] = useState(0);
   const [questIndex, setQuestIndex] = useState(0);
   const timerRef = useRef(null);
+  const playerRef = useRef(null);
+  const [isPlaying, setIsPlaying] = useState(false); // State variable to track video play status
+
   useEffect(() => {
     const savedStartTime = localStorage.getItem(`timerStartTime_${location.state.taskid}`);
     if (savedStartTime) {
@@ -42,40 +43,51 @@ const QuestDetail = () => {
     const firstScriptTag = document.getElementsByTagName('script')[0];
     firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-    window.onYouTubeIframeAPIReady = initializePlayer;
+    const initializePlayer = () => {
+      if (!playerRef.current) {
+        playerRef.current = new window.YT.Player('player', {
+          height: '0',
+          width: '0',
+          videoId: 'jfKfPfyJRdk', // Replace with the YouTube video ID
+          playerVars: {
+            autoplay: 0,
+            controls: 0,
+            rel: 0,
+            showinfo: 0,
+          },
+          events: {
+            onReady: (event) => {
+              playerRef.current = event.target;
+            },
+          },
+        });
+      }
+    };
+
+    if (window.YT && window.YT.Player) {
+      initializePlayer();
+    } else {
+      window.onYouTubeIframeAPIReady = initializePlayer;
+    }
 
     return () => {
+      if (playerRef.current) {
+        playerRef.current.destroy();
+      }
       delete window.onYouTubeIframeAPIReady;
     };
-  }, []);
+  }, [location]);
 
-  const initializePlayer = () => {
-    // Initialize the YouTube player
-    new window.YT.Player('player', {
-      videoId: 'jfKfPfyJRdk', // Replace with the YouTube video ID
-      playerVars: {
-        autoplay: 0,
-        controls: 0,
-        rel: 0,
-        showinfo: 0,
-      },
-      events: {
-        onReady: onPlayerReady,
-      },
-    });
-  };
-
-  const onPlayerReady = (event) => {
-    const player = event.target;
-    const playButton = document.getElementById('play-button');
-
-    playButton.addEventListener('click', () => {
-      if (player.getPlayerState() === window.YT.PlayerState.PLAYING) {
-        player.pauseVideo();
+  const togglePlayPause = () => {
+    if (playerRef.current) {
+      if (isPlaying) {
+        playerRef.current.pauseVideo();
+        setIsPlaying(false);
       } else {
-        player.playVideo();
+        playerRef.current.playVideo();
+        setIsPlaying(true);
       }
-    });
+    }
   };
 
   const stopTimer = e => {
@@ -191,7 +203,7 @@ const QuestDetail = () => {
         <div className="flex items-center">
           <script src="https://www.youtube.com/iframe_api"></script>
           <div id="player" style={{ display: 'none' }}>ssz</div>
-          <button id="play-button"><img className="w-20 h-20 rounded-full p-3" src="music.png" alt="" /></button>
+          <button id="play-button" onClick={togglePlayPause}><img className="w-20 h-20 rounded-full p-3" src="music.png" alt="" /></button>
         </div>
       </div>
       <h2 className=" text-3xl text-blue-300 border bg-white rounded-xl w-[30%] mx-auto font-semibold italic text-center p-4 m-4">
