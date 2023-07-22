@@ -1,4 +1,3 @@
-import axios from 'axios';
 const fetchAllQuests = (callback1, callback2, userID) => {
   fetch('http://34.171.209.43:5000/fetchQuest', {
     body: JSON.stringify({ userID: userID }),
@@ -78,7 +77,7 @@ const userAuth = async userObject => {
 };
 
 const sendUserStatus = async (userName, userID, avatarID, action) => {
-  await fetch('http://localhost:5000/ActiveUsers', {
+  await fetch('http://34.171.209.43:5000/ActiveUsers', {
     headers: {
       'Content-Type': 'application/json',
     },
@@ -88,29 +87,21 @@ const sendUserStatus = async (userName, userID, avatarID, action) => {
   }).then(response => {
     console.log(response.data);
   });
-
 };
 
 const GetAllOnlineUsers = async () => {
-  await fetch('http://localhost:5000/getActiveUsers', {
+  return fetch('http://34.171.209.43:5000/getActiveUsers', {
     headers: {
       'Content-Type': 'application/json',
     },
     method: 'POST',
     mode: 'cors',
-  }).then(response => {
-    return response.json();
   })
+    .then(response => response.json())
     .then(data => {
-      console.log(data.userLis[0])
-    })
-
+      return data.userLis;
+    });
 };
-
-
-
-
-
 
 const createQuest = async (userID, questText) => {
   await fetch('http://34.171.209.43:5000/storeQuest', {
