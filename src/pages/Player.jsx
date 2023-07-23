@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import jwt from 'jsonwebtoken';
 // import axios from "axios";
@@ -9,7 +9,6 @@ import { fetchAllQuests, createQuest, sendUserStatus, setOrder, markQuest } from
 import { PowerIcon, ArrowSmallDownIcon, ArrowSmallUpIcon } from '@heroicons/react/24/outline';
 import { PlayIcon, PlusIcon } from '@heroicons/react/24/outline';
 
-import Timer from '../components/TimerComponent';
 import jwtDecode from 'jwt-decode';
 
 import { useDispatch, useSelector } from 'react-redux';
@@ -368,22 +367,8 @@ const Player = ({ palyerName }) => {
                 </div>
               </div>
               <div className="flex flex-col mr-4">
-                <button
-                  className=" rounded-3xl p-3 text-white bg-blue-500"
-                  onClick={() => {
-                    navigate('/onlineplayers');
-                  }}
-                >
-                  pub
-                </button>
-                <button
-                  className=" rounded-3xl p-3 text-white bg-blue-500 mt-4"
-                  onClick={() => {
-                    navigate('/bet');
-                  }}
-                >
-                  bet
-                </button>
+                <button onClick={() => {navigate('/onlineplayers')}}><img src="/pub.png" className='w-20 h-20 p-2' /></button>
+                <button onClick={() => {navigate('/bet')}}><img src="/bet.png" className='w-20 h-20 p-2' /></button>
               </div>
             </div>
 
