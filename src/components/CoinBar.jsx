@@ -37,7 +37,7 @@ const CoinBar = () => {
   return (
     <div className="flex space-x-4 items-center text-center justify-center">
       <BetScore />
-      <form>
+      <form id="coinbar-component">
         <Slider.Root
           className="relative flex items-center select-none touch-none w-[200px] h-5"
           defaultValue={[currentCompletedQuests ? currentCompletedQuests : 0]}
