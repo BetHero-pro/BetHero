@@ -85,6 +85,8 @@ const Player = ({ palyerName }) => {
   const [disabledButton, setDisabledButton] = useState(false);
   const [verification, setVerification] = useState(false);
 
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filteredQuests, setFilteredQuests] = useState([]);
 
   useHotkeys('shift+enter', () => startFirstTask());
 
@@ -337,8 +339,17 @@ const Player = ({ palyerName }) => {
       }
     }];
 
+  
+    const handleSearchInputChange = (e) => {
+      const query = e.target.value.toLowerCase();
+      setSearchQuery(query);
+      const filtered = questions.filter((quest) =>
+        quest.Quest.toLowerCase().includes(query)
+      );
+      setFilteredQuests(filtered);
+    };
 
-
+  const allQuestions = (searchQuery === '' ? questions : filteredQuests).sort((a, b) => a.order - b.order)
   return (
     <>
       {isQuestion ? (
@@ -366,6 +377,16 @@ const Player = ({ palyerName }) => {
                 </div>
                 <div className="mt-3">
                   <CoinBar />
+                </div>
+                <div className='mt-3'>
+                <div class="w-64 relative">
+                    <input
+                      type="text"
+                      onChange={handleSearchInputChange}
+                      placeholder="Search Quest Name"
+                      class="w-full py-2 px-4 border-black border-2 rounded-md"
+                    />
+                  </div>
                 </div>
               </div>
               <div className="flex flex-col mr-4">
@@ -400,8 +421,7 @@ const Player = ({ palyerName }) => {
                         className="overflow-auto bg-white pt-4 flex flex-col mx-auto justify-start shadow-md rounded-2xl border-2 border-black items-center lg:w-[600px] h-[400px]"
                       >
                         <button onClick={handleBottomScrollBtn} className='flex fixed top-[80px] ml-[550px]  bg-white p-2 rounded-full border-black shadow-lg border-2 hover:transform hover:scale-110 transition duration-500'><DownArrow size={20} /></button>
-                        {questions
-                          .sort((a, b) => a.order - b.order)
+                        {allQuestions
                           .map((quest, index) => (
                             <Draggable key={quest._id} draggableId={quest._id} index={index}>
                               {provided => (
