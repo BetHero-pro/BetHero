@@ -6,7 +6,8 @@ import useLocalStorageWithExpiry from '../hooks/useLocalStorageWithExpiry';
 const BetPage = () => {
   const [activeCoin, setActiveCoin] = useState(null);
   const navigate = useNavigate();
-  const [storedCoin, setStoredCoin] = useLocalStorageWithExpiry('betCoin', null);
+  // eslint-disable-next-line no-unused-vars
+  const [_, setStoredCoin] = useLocalStorageWithExpiry('betCoin', null);
 
   function backArrowClick() {
     navigate('/');
@@ -17,14 +18,12 @@ const BetPage = () => {
   };
 
   const onClickApprove = () => {
+    // if no coin is selected, do nothing
     if (activeCoin === null) return;
-    // use localStorage as 'redux' reset on navigation
-    setStoredCoin(activeCoin); // set the value using the function returned by the hook
-    // also set a timer
+    // set betCoin, completedQuest & betTimer in local storage & navigate to "/"
+    setStoredCoin(activeCoin);
     localStorage.setItem("betTimer", Date.now());
-
-    // reset completed quest
-    localStorage.setItem('questCompleteNum', 0);
+    localStorage.setItem("questCompleteNum", 0);
     backArrowClick();
   }
 
