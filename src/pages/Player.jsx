@@ -5,9 +5,9 @@ import jwt from 'jsonwebtoken';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { JWT_SECRET } from '../config/env';
 // import Quest from "./Quest";
-import { fetchAllQuests, createQuest, sendUserStatus, setOrder, markQuest } from '../fetches';
+import { fetchAllQuests, createQuest, sendUserStatus, setOrder, markQuest, createLog } from '../fetches';
 import { PowerIcon, ArrowSmallDownIcon, ArrowSmallUpIcon } from '@heroicons/react/24/outline';
-import { PlayIcon, PlusIcon } from '@heroicons/react/24/outline';
+import { PlayIcon, PlusIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 
 import jwtDecode from 'jwt-decode';
 
@@ -20,6 +20,7 @@ import { useHotkeys } from 'react-hotkeys-hook';
 import { AiOutlineArrowDown as DownArrow } from 'react-icons/ai';
 import StatusLight from '../components/playerStatus';
 import CoinBar from '../components/CoinBar';
+import PlayerLogs from '../components/playerLogs';
 
 const Player = ({ palyerName }) => {
 
@@ -231,6 +232,7 @@ const Player = ({ palyerName }) => {
     if (state.status === true) {
       setDisabledButton(true);
       await createQuest(user.userID, state.newQuestion);
+      await createLog(user.userID, state.newQuestion, 'newQuest')
       setDisabledButton(false);
       toggleRefresh(!refresh);
       setIsQuestion(false);
@@ -337,6 +339,8 @@ const Player = ({ palyerName }) => {
     }];
 
 
+  const [openLogs, setOpenLogs] = useState(false);
+  useHotkeys('q', () => setOpenLogs(false));
   return (
     <>
       {isQuestion ? (
@@ -367,8 +371,8 @@ const Player = ({ palyerName }) => {
                 </div>
               </div>
               <div className="flex flex-col mr-4">
-                <button onClick={() => {navigate('/onlineplayers')}}><img src="/pub.png" className='w-20 h-20 p-2' /></button>
-                <button onClick={() => {navigate('/bet')}}><img src="/bet.png" className='w-20 h-20 p-2' /></button>
+                <button onClick={() => { navigate('/onlineplayers') }}><img src="/pub.png" className='w-20 h-20 p-2' /></button>
+                <button onClick={() => { navigate('/bet') }}><img src="/bet.png" className='w-20 h-20 p-2' /></button>
               </div>
             </div>
 
@@ -437,6 +441,12 @@ const Player = ({ palyerName }) => {
             </div>
 
             <div className="flex justify-center space-x-2">
+              <ExclamationTriangleIcon
+                onClick={(e) => setOpenLogs(true)}
+                className="w-12 h-12 bg-white cursor-pointer border border-black   rounded-full p-2 text-orange-400"
+              />
+              <PlayerLogs shouldOpen={openLogs} userId={user.userID} />
+
               <button className='w-13 h-13 cursor-pointer border border-black rounded-full bg-white' onClick={startPlaylistTask}><img src="/playlist.png" className='w-10 h-10 p-2' /></button>
               <button className='w-13 h-13 cursor-pointer border border-black rounded-full bg-white' onClick={startWanderingTask}><img src="/wandering.png" className='w-10 h-10 p-2' /></button>
               <button className='w-13 h-13 cursor-pointer border border-black rounded-full bg-white' onClick={startRestTask}><img src="/sleep.png" className='w-10 h-10 p-2' /></button>
