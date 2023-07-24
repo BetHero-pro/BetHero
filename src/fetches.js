@@ -1,6 +1,7 @@
-import axios from 'axios';
+import { URI } from './config/env.js';
+
 const fetchAllQuests = (callback1, callback2, userID) => {
-  fetch('http://34.171.209.43:5000/fetchQuest', {
+  fetch(URI + '/fetchQuest', {
     body: JSON.stringify({ userID: userID }),
     headers: {
       'Content-Type': 'application/json',
@@ -27,7 +28,7 @@ const fetchAllQuests = (callback1, callback2, userID) => {
 };
 const fetchAllQuests1 = userID => {
   return new Promise((resolve, reject) => {
-    fetch('http://34.171.209.43:5000/fetchQuest', {
+    fetch(URI + '/fetchQuest', {
       body: JSON.stringify({ userID: userID }),
       headers: {
         'Content-Type': 'application/json',
@@ -58,7 +59,7 @@ const userAuth = async userObject => {
 
   //TODO 'CHANGE THE API URL TO PROD'
 
-  await fetch('http://34.171.209.43:5000/userAuth', {
+  await fetch(URI + '/userAuth', {
     headers: {
       'Content-Type': 'application/json',
     },
@@ -78,7 +79,8 @@ const userAuth = async userObject => {
 };
 
 const sendUserStatus = async (userName, userID, avatarID, action) => {
-  await fetch('http://34.171.209.43:5000/ActiveUsers', {
+  return;
+  await fetch(URI + '/ActiveUsers', {
     headers: {
       'Content-Type': 'application/json',
     },
@@ -91,7 +93,7 @@ const sendUserStatus = async (userName, userID, avatarID, action) => {
 };
 
 const GetAllOnlineUsers = async () => {
-  return fetch('http://34.171.209.43:5000/getActiveUsers', {
+  return fetch(URI + '/getActiveUsers', {
     headers: {
       'Content-Type': 'application/json',
     },
@@ -105,7 +107,7 @@ const GetAllOnlineUsers = async () => {
 };
 
 const createQuest = async (userID, questText) => {
-  await fetch('http://34.171.209.43:5000/storeQuest', {
+  await fetch(URI + '/storeQuest', {
     headers: {
       'Content-Type': 'application/json',
     },
@@ -118,7 +120,7 @@ const createQuest = async (userID, questText) => {
 };
 
 const deleteQuest = async questID => {
-  await fetch('http://34.171.209.43:5000/deleteQuest', {
+  await fetch(URI + '/deleteQuest', {
     headers: {
       'Content-Type': 'application/json',
     },
@@ -137,7 +139,7 @@ const deleteQuest = async questID => {
     });
 };
 const markQuest = async questID => {
-  await fetch('http://34.171.209.43:5000/markQuest', {
+  await fetch(URI + '/markQuest', {
     headers: {
       'Content-Type': 'application/json',
     },
@@ -154,8 +156,9 @@ const markQuest = async questID => {
 };
 
 const setOrder = async updatedOrderData => {
-  console.log(updatedOrderData)
-  await fetch('http://34.171.209.43:5000/setOrder', {
+  return;
+  console.log(updatedOrderData);
+  await fetch(URI + '/setOrder', {
     headers: {
       'Content-Type': 'application/json',
     },
