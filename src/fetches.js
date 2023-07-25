@@ -167,4 +167,44 @@ const setOrder = async updatedOrderData => {
   });
 };
 
-export { fetchAllQuests, fetchAllQuests1, createQuest, deleteQuest, markQuest, userAuth, setOrder, sendUserStatus, GetAllOnlineUsers };
+
+// store logs
+const createLog = async (userid, name, state) => {
+  await fetch('http://localhost:5000/storeLogs', {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ userid: userid, name: name, state: state }),
+    method: 'POST',
+    mode: 'cors',
+  }).then(response => {
+    console.log(response.data);
+  });
+};
+
+
+
+const fetchAllLogs = (callback1, userID) => {
+  fetch('http://localhost:5000/fetchLogs', {
+    body: JSON.stringify({ userid: userID }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    method: 'POST',
+    mode: 'cors',
+  })
+    .then(response => {
+      return response.json();
+    })
+    .then(data => {
+
+      console.log(data);
+      callback1(data);
+
+    })
+    .catch(err => {
+      console.log(err);
+    });
+};
+
+export { fetchAllQuests, fetchAllQuests1, createQuest, deleteQuest, markQuest, userAuth, setOrder, sendUserStatus, GetAllOnlineUsers, createLog, fetchAllLogs };
