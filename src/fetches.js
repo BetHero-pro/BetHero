@@ -173,7 +173,7 @@ const setOrder = async updatedOrderData => {
 
 // store logs
 const createLog = async (userid, name, state) => {
-  await fetch('http://localhost:5000/storeLogs', {
+  await fetch(URI + "/storeLogs', {
     headers: {
       'Content-Type': 'application/json',
     },
@@ -188,7 +188,7 @@ const createLog = async (userid, name, state) => {
 
 
 const fetchAllLogs = (callback1, userID) => {
-  fetch('http://localhost:5000/fetchLogs', {
+  await fetch(URI + "/fetchLogs', {
     body: JSON.stringify({ userid: userID }),
     headers: {
       'Content-Type': 'application/json',
