@@ -26,17 +26,10 @@ export const Navbar = ({ Content, RightSide }) => {
 };
 
 export const NavbarPage = ({ title, RightSide }) => {
-  const navigate = useNavigate();
-  function backArrowClick() {
-    navigate('/');
-  }
-
   return (
     <div className="flex justify-between">
       <div className="flex-1 relative">
-        <div className="absolute left-4 top-10 transform -translate-y-1/2">
-          <ArrowLeftIcon onClick={backArrowClick} className="bg-white border-black cursor-pointer w-12 h-12 p-2  shadow-xl border rounded-full" />
-        </div>
+        <ArrowLeftComponent />
       </div>
       <div className="flex-1">
         <h2 className=" text-3xl text-blue-300 border bg-white rounded-xl mx-auto font-semibold italic text-center p-4 m-4">{title}</h2>
@@ -44,6 +37,18 @@ export const NavbarPage = ({ title, RightSide }) => {
       <div className="flex-1 flex justify-end">
         <div className="pr-4">{RightSide}</div>
       </div>
+    </div>
+  );
+};
+
+export const ArrowLeftComponent = () => {
+  const navigate = useNavigate();
+  function backArrowClick() {
+    navigate('/');
+  }
+  return (
+    <div className="absolute left-4 top-10 transform -translate-y-1/2">
+      <ArrowLeftIcon onClick={backArrowClick} className="bg-white border-black cursor-pointer w-12 h-12 p-2  shadow-xl border rounded-full" />
     </div>
   );
 };
