@@ -1,10 +1,8 @@
 import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import jwt from 'jsonwebtoken';
-// import axios from "axios";
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { JWT_SECRET } from '../config/env';
-// import Quest from "./Quest";
 import { fetchAllQuests, createQuest, sendUserStatus, setOrder, markQuest, createLog } from '../fetches';
 import { PowerIcon, ArrowSmallDownIcon, ArrowSmallUpIcon } from '@heroicons/react/24/outline';
 import { PlayIcon, PlusIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline';
@@ -20,21 +18,21 @@ import { useHotkeys } from 'react-hotkeys-hook';
 import { AiOutlineArrowDown as DownArrow } from 'react-icons/ai';
 import StatusLight from '../components/playerStatus';
 import CoinBar from '../components/CoinBar';
+import { Navbar } from '../ui/navbar';
 import PlayerLogs from '../components/playerLogs';
 
-const Player = ({ palyerName }) => {
 
+const Player = () => {
   useEffect(() => {
-    const handleUserStatus = (online) => {
+    const handleUserStatus = online => {
       const token = localStorage.getItem('jwt');
       try {
         const dt = jwtDecode(token);
         const userData = dt.data[0];
         sendUserStatus(userData.userName, userData._id, userData.avatarID, online);
       } catch (e) {
-        console.log(e)
+        console.log(e);
       }
-
     };
 
     // User is online when the component is mounted
@@ -70,11 +68,11 @@ const Player = ({ palyerName }) => {
     };
   }, []);
 
-  const bottomOfDivQuests = useRef(null)
+  const bottomOfDivQuests = useRef(null);
 
   const handleBottomScrollBtn = () => {
-    bottomOfDivQuests?.current?.scrollIntoView({ behavior: 'smooth' })
-  }
+    bottomOfDivQuests?.current?.scrollIntoView({ behavior: 'smooth' });
+  };
   const jsonToken = localStorage.getItem('jwt');
   const [user, setUser] = useState({ username: '', userID: '' });
 
@@ -84,7 +82,6 @@ const Player = ({ palyerName }) => {
   const [refresh, toggleRefresh] = useState(false);
   const [disabledButton, setDisabledButton] = useState(false);
   const [verification, setVerification] = useState(false);
-
 
   useHotkeys('shift+enter', () => startFirstTask());
 
@@ -109,7 +106,6 @@ const Player = ({ palyerName }) => {
     //   fetchAllQuests(setQuestions, setSelectedQuestions, user.userID);
     // }
     fetchAllQuests(setQuestions, setSelectedQuestions, user.userID);
-
   }, [refresh]);
 
   // const handleClick = () => {
@@ -129,7 +125,6 @@ const Player = ({ palyerName }) => {
   // };
 
   const handleDropprev = async droppedItem => {
-
     const destinationIndex = droppedItem.destination.index;
     const sourceIndex = droppedItem.source.index;
 
@@ -254,7 +249,6 @@ const Player = ({ palyerName }) => {
   }
 
   function startRestTask() {
-
     const savedRestTime = localStorage.getItem('restTime');
     if (!savedRestTime) {
       const restTime = Date.now();
@@ -262,7 +256,6 @@ const Player = ({ palyerName }) => {
     }
 
     navigate('/restPage');
-
   }
 
   function startWanderingTask() {
@@ -280,27 +273,26 @@ const Player = ({ palyerName }) => {
   }
 
   const [updateOrder, setUpdateOrder] = useState(false);
-  const pushToEnd = async (element) => {
-    console.log("pushing to end")
-    console.log(element)
+  const pushToEnd = async element => {
+    console.log('pushing to end');
+    console.log(element);
     const index = questions.findIndex(item => item._id === element);
-    console.log(index)
+    console.log(index);
     if (index > -1) {
       const lastQuestion = questions[questions.length - 1];
-      console.log(lastQuestion)
+      console.log(lastQuestion);
       const updatedQuestions = [...questions]; // Create a shallow copy of the questions array
       updatedQuestions[index] = {
         ...updatedQuestions[index],
         order: lastQuestion.order + 1,
       };
-      setQuestions(updatedQuestions)
-      setUpdateOrder(true)
-
+      setQuestions(updatedQuestions);
+      setUpdateOrder(true);
     }
-  }
+  };
 
-  const pushToStart = async (element) => {
-    console.log('pushing to start')
+  const pushToStart = async element => {
+    console.log('pushing to start');
 
     const index = questions.findIndex(item => item._id === element);
     console.log(index);
@@ -315,29 +307,29 @@ const Player = ({ palyerName }) => {
       setQuestions(updatedQuestions);
       setUpdateOrder(true);
     }
-  }
+  };
 
   useEffect(() => {
-    console.log("updating")
+    console.log('updating');
     let updatedOrderData = [];
     questions.forEach((question, index) => {
       question.order = index + 1;
       updatedOrderData.push({ questID: question._id, order: index + 1 });
     });
     setOrder(updatedOrderData);
-
-  }, [updateOrder])
-
+  }, [updateOrder]);
 
   const userinfo = [
     {
-      id: 1, name: 'John', userStatus: {
+      id: 1,
+      name: 'John',
+      userStatus: {
         play: false,
         rest: true,
         wandering: false,
-      }
-    }];
-
+      },
+    },
+  ];
 
   const [openLogs, setOpenLogs] = useState(false);
   useHotkeys('q', () => setOpenLogs(false));
@@ -348,46 +340,45 @@ const Player = ({ palyerName }) => {
       ) : (
         <>
           <div className="bg-blue-100 w-screen h-screen">
-            <div className="flex justify-between pt-3 items-start">
-              <div className='flex flex-col items-start'>
-                <PowerIcon
-                  onClick={backArrowClick}
-                  className=" bg-white border-black cursor-pointer w-12 h-12 p-2 ml-3 shadow-xl border rounded-full "
-                />
-              </div>
-              <div className=" lg:w-[400px] mx-auto rounded-lg flex flex-col items-center mt-4">
-                <div className="   flex justify-center space-x-2 items-center ">
-                  <img className="  w-12 h-12 rounded-full" src={avatarurl} alt="user" />
-                  <div className="text-center  text-lg font-serif text-gray-700">
-                    Hello,
-                    <span className=" font-semibold ml-2  text-gray-950">{username ? username : 'please login guest'}</span>{' '}
+            <Navbar
+              Content={
+                <>
+                  <div className="   flex justify-center space-x-2 items-center ">
+                    <img className="  w-12 h-12 rounded-full" src={avatarurl} alt="user" />
+                    <div className="text-center  text-lg font-serif text-gray-700">
+                      Hello,
+                      <span className=" font-semibold ml-2  text-gray-950">{username ? username : 'please login guest'}</span>{' '}
+                    </div>
                   </div>
-                </div>
-                <div>
                   <StatusLight status={userinfo[0].userStatus} />
-                </div>
-                <div className="mt-3">
-                  <CoinBar />
-                </div>
-              </div>
-              <div className="flex flex-col mr-4">
-                <button onClick={() => { navigate('/onlineplayers') }}><img src="/pub.png" className='w-20 h-20 p-2' /></button>
-                <button onClick={() => { navigate('/bet') }}><img src="/bet.png" className='w-20 h-20 p-2' /></button>
-              </div>
-            </div>
-
+                  <div className="mt-3">
+                    <CoinBar />
+                  </div>
+                </>
+              }
+              RightSide={
+                <>
+                  <NavButton onNavigate={() => navigate('/bet')} imgSrc="/bet.png" />
+                  <NavButton onNavigate={() => navigate('/onlineplayers')} imgSrc="/pub.png" />
+                </>
+              }
+            />
             <div>
               <DragDropContext onDragEnd={handleDrop}>
                 <Droppable droppableId="list-container">
                   {provided => (
                     <div className="p-6">
-
                       <div
                         {...provided.droppableProps}
                         ref={provided.innerRef}
                         className="overflow-auto bg-white pt-4 flex flex-col mx-auto justify-start shadow-md rounded-2xl border-2 border-black items-center lg:w-[600px] h-[400px]"
                       >
-                        <button onClick={handleBottomScrollBtn} className='flex fixed top-[80px] ml-[550px]  bg-white p-2 rounded-full border-black shadow-lg border-2 hover:transform hover:scale-110 transition duration-500'><DownArrow size={20} /></button>
+                        <button
+                          onClick={handleBottomScrollBtn}
+                          className="flex fixed top-[80px] ml-[550px]  bg-white p-2 rounded-full border-black shadow-lg border-2 hover:transform hover:scale-110 transition duration-500"
+                        >
+                          <DownArrow size={20} />
+                        </button>
                         {questions
                           .sort((a, b) => a.order - b.order)
                           .map((quest, index) => (
@@ -399,8 +390,7 @@ const Player = ({ palyerName }) => {
                                   {...provided.draggableProps}
                                   className=" rounded-lg flex  items-center p-2 justify-between mb-2 w-full max-w-[95%] bg-orange-100"
                                 >
-
-                                  <div className='flex items-center  space-x-2'>
+                                  <div className="flex items-center  space-x-2">
                                     <input
                                       type="checkbox"
                                       name={quest}
@@ -415,19 +405,20 @@ const Player = ({ palyerName }) => {
 
                                   <div className="group flex space-x-2 relative">
                                     <ArrowSmallUpIcon
-                                      onClick={(e) => { pushToStart(quest._id) }}
-                                      className='w-8 h-8  bg-white border-2 border-black  p-1 rounded-full ' />
-
-
+                                      onClick={e => {
+                                        pushToStart(quest._id);
+                                      }}
+                                      className="w-8 h-8  bg-white border-2 border-black  p-1 rounded-full "
+                                    />
 
                                     <ArrowSmallDownIcon
-                                      onClick={(e) => { pushToEnd(quest._id) }}
-                                      className='w-8 h-8  bg-white border-2 border-black  p-1 rounded-full ' />
-
-
+                                      onClick={e => {
+                                        pushToEnd(quest._id);
+                                      }}
+                                      className="w-8 h-8  bg-white border-2 border-black  p-1 rounded-full "
+                                    />
                                   </div>
                                 </div>
-
                               )}
                             </Draggable>
                           ))}
@@ -464,10 +455,15 @@ const Player = ({ palyerName }) => {
             </div>
           </div>
         </>
-      )
-      }
+      )}
     </>
   );
 };
+
+const NavButton = ({ onNavigate, imgSrc }) => (
+  <button onClick={onNavigate}>
+    <img alt="some-alt-title" src={imgSrc} className="w-20 h-20 p-2" />
+  </button>
+);
 
 export default Player;
