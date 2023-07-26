@@ -41,6 +41,16 @@ export const NavbarPage = ({ title, RightSide }) => {
   );
 };
 
+export const NavbarAlternative = ({ title, children }) => (
+  <div className="flex flex-col bg-blue-200 w-screen h-screen">
+    <ArrowLeftComponent />
+    <div className="flex flex-col mt-8 items-center">
+      <h1 className="text-4xl font-bold underline">{title}</h1>
+      <div className="pt-8 gap-4 flex flex-col">{children}</div>
+    </div>
+  </div>
+);
+
 export const ArrowLeftComponent = () => {
   const navigate = useNavigate();
   function backArrowClick() {
