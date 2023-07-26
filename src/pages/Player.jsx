@@ -272,6 +272,10 @@ const Player = () => {
     navigate('/playlistpage');
   }
 
+  function startLogTask() {
+    navigate('/logpage');
+  }
+
   const [updateOrder, setUpdateOrder] = useState(false);
   const pushToEnd = async element => {
     console.log('pushing to end');
@@ -437,7 +441,7 @@ const Player = () => {
                 className="w-12 h-12 bg-white cursor-pointer border border-black   rounded-full p-2 text-orange-400"
               />
               <PlayerLogs shouldOpen={openLogs} userId={user.userID} />
-
+              <button className='w-13 h-13 cursor-pointer border border-black rounded-full bg-white' onClick={startLogTask}><img src="/log.png" className='w-10 h-10 p-2' /></button>
               <button className='w-13 h-13 cursor-pointer border border-black rounded-full bg-white' onClick={startPlaylistTask}><img src="/playlist.png" className='w-10 h-10 p-2' /></button>
               <button className='w-13 h-13 cursor-pointer border border-black rounded-full bg-white' onClick={startWanderingTask}><img src="/wandering.png" className='w-10 h-10 p-2' /></button>
               <button className='w-13 h-13 cursor-pointer border border-black rounded-full bg-white' onClick={startRestTask}><img src="/sleep.png" className='w-10 h-10 p-2' /></button>
