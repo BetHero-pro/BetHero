@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { GetAllOnlineUsers } from '../fetches';
-import { ArrowLeftComponent } from '../ui/navbar';
+import { NavbarAlternative } from '../ui/navbar';
 
 const OnlinePlayers = () => {
   const [onlineUsers, setOnlineUsers] = useState([]);
@@ -26,19 +26,13 @@ const OnlinePlayers = () => {
   }, []);
 
   return (
-    <div className="flex flex-col bg-blue-200 w-screen h-screen">
-      <ArrowLeftComponent />
-      <div className="flex flex-col mt-8 items-center">
-        <h1 className="text-4xl font-bold underline">BetHero Pub</h1>
-        <div className="pt-8 gap-4 flex flex-col">
-          {onlineUsers.length === 0 ? (
-            <div>Loading...</div>
-          ) : (
-            onlineUsers.map((user, index) => <PubItem key={index} userName={user.userName} avatarID={user.avatarID} />)
-          )}
-        </div>
-      </div>
-    </div>
+    <NavbarAlternative title="BetHero Pub">
+      {onlineUsers.length === 0 ? (
+        <div>Loading...</div>
+      ) : (
+        onlineUsers.map((user, index) => <PubItem key={index} userName={user.userName} avatarID={user.avatarID} />)
+      )}
+    </NavbarAlternative>
   );
 };
 
