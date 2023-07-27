@@ -7,6 +7,7 @@ import { useHotkeys } from 'react-hotkeys-hook';
 import '../css/styles.css';
 import { MusicPlayer } from '../components/music-player';
 import { NavbarPage } from '../ui/navbar';
+import { createLog } from '../fetches';
 
 const QuestDetail = () => {
   const location = useLocation();
@@ -15,9 +16,14 @@ const QuestDetail = () => {
   const [questIndex, setQuestIndex] = useState(0);
   const timerRef = useRef(null);
   useEffect(() => {
+    console.log("new task detail")
     const savedStartTime = localStorage.getItem(`timerStartTime_${location.state.taskid}`);
     if (savedStartTime) {
+      console.log("saved time was here")
       setStartTime(parseInt(savedStartTime));
+    }
+    else {
+
     }
   }, [location.state.taskid]);
 
@@ -25,15 +31,27 @@ const QuestDetail = () => {
     timerRef.current = setInterval(() => {
       if (startTime) {
         const elapsedSeconds = Math.floor((Date.now() - startTime) / 1000);
+        // log here
+        console.log("creating a log")
+
+
 
         setElapsedTime(elapsedSeconds);
       }
     }, 1000);
 
+
+
     return () => {
       clearInterval(timerRef.current);
     };
   }, [startTime]);
+
+
+  useEffect(() => {
+    // on start quest log
+
+  }, [elapsedTime])
 
   const stopTimer = e => {
     e.preventDefault();
@@ -87,8 +105,14 @@ const QuestDetail = () => {
         localStorage.setItem(`timerStartTime_${questions[0]._id}`, startTime.toString());
       }
 
+      // handling logs her
+      createLog(location.state.userid, location.state.currentQuest.Quest, "completed")
+      createLog(location.state.userid, questions[0].Quest, "started")
+      // ===================
       navigate('/questdetail', { state: { taskid: questions[0]._id, currentQuest: questions[0], userid: location.state.userid } });
     } else {
+      // handling logs her
+      createLog(location.state.userid, location.state.currentQuest.Quest, "completed")
       console.log('no item left');
       navigate('/');
     }

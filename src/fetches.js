@@ -173,6 +173,7 @@ const setOrder = async updatedOrderData => {
 
 // store logs
 const createLog = async (userid, name, state) => {
+  console.log("creating a log")
   await fetch(URI + '/storeLogs', {
     headers: {
       'Content-Type': 'application/json',
@@ -200,9 +201,9 @@ const fetchAllLogs = async (callback1, userID) => {
       return response.json();
     })
     .then(data => {
-
-      console.log(data);
-      callback1(data);
+      const ndata = data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      console.log(ndata);
+      callback1(ndata);
 
     })
     .catch(err => {

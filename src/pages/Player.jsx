@@ -92,8 +92,14 @@ const Player = () => {
   };
 
   const onChange = async (question, e) => {
+    console.log("completing task")
+    console.log(question)
+    createLog(user.userID, question.Quest, "completed")
     e.target.disabled = true;
+
     await markQuest(question._id);
+    // handling logs here
+
     toggleRefresh(!refresh);
     e.target.disabled = false;
   };
@@ -227,7 +233,7 @@ const Player = () => {
     if (state.status === true) {
       setDisabledButton(true);
       await createQuest(user.userID, state.newQuestion);
-      await createLog(user.userID, state.newQuestion, 'newQuest')
+      await createLog(user.userID, state.newQuestion, "created newQuest")
       setDisabledButton(false);
       toggleRefresh(!refresh);
       setIsQuestion(false);
@@ -242,6 +248,11 @@ const Player = () => {
       if (!savedStartTime) {
         const startTime = Date.now();
         localStorage.setItem(`timerStartTime_${questions[0]._id}`, startTime.toString());
+
+
+        // handling logs here
+        console.log("no savd time")
+        createLog(user.userID, questions[0].Quest, "started")
       }
 
       navigate('/questdetail', { state: { taskid: questions[0]._id, currentQuest: questions[0], userid: user.userID, quests: questions } });
