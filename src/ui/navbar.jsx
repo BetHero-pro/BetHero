@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { PowerIcon, ArrowLeftIcon } from '@heroicons/react/24/outline';
+import { useHotkeys } from 'react-hotkeys-hook';
 
 export const Navbar = ({ Content, RightSide }) => {
   const navigate = useNavigate();
@@ -41,11 +42,23 @@ export const NavbarPage = ({ title, RightSide }) => {
   );
 };
 
+export const NavbarAlternative = ({ title, children }) => (
+  <div className="flex flex-col bg-blue-200 w-screen h-screen">
+    <ArrowLeftComponent />
+    <div className="flex flex-col mt-8 items-center">
+      <h1 className="text-4xl font-bold underline">{title}</h1>
+      <div className="pt-8 gap-4 flex flex-col">{children}</div>
+    </div>
+  </div>
+);
+
 export const ArrowLeftComponent = () => {
   const navigate = useNavigate();
   function backArrowClick() {
     navigate('/');
   }
+  //esc hotkey
+  useHotkeys('esc', () => backArrowClick());
   return (
     <div className="absolute left-4 top-10 transform -translate-y-1/2">
       <ArrowLeftIcon onClick={backArrowClick} className="bg-white border-black cursor-pointer w-12 h-12 p-2  shadow-xl border rounded-full" />
