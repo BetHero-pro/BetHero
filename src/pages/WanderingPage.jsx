@@ -1,9 +1,11 @@
 import { useState, useRef, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
-import { ArrowLeftIcon, CheckIcon, ForwardIcon } from '@heroicons/react/24/outline';
+import { CheckIcon } from '@heroicons/react/24/outline';
 import { useNavigate } from 'react-router-dom';
+import { NavbarPage } from '../ui/navbar';
+import { MusicPlayer } from '../components/music-player';
 
 const WanderingPage = () => {
+  const navigate = useNavigate();
 
   const [startTime, setStartTime] = useState(null);
   const [elapsedTime, setElapsedTime] = useState(0);
@@ -49,8 +51,7 @@ const WanderingPage = () => {
 
   const completeTask = async e => {
     localStorage.removeItem('wanderingTime');
-
-    navigate('/')
+    navigate('/');
   };
 
   function padTo2Digits(num) {
@@ -74,23 +75,11 @@ const WanderingPage = () => {
     return `${padTo2Digits(hours)}:${padTo2Digits(minutes)}:${padTo2Digits(seconds)}`;
   }
 
-  const navigate = useNavigate();
-  function backArrowClick() {
-    navigate('/');
-  }
-
   return (
     <div className="flex flex-col bg-blue-200 w-screen h-screen">
-      <div style={{ position: 'fixed', top: '40px', left: '30px' }}>
-        <ArrowLeftIcon onClick={backArrowClick} className="bg-white border-black cursor-pointer w-12 h-12 p-2 ml-3 shadow-xl border rounded-full" />
-      </div>
-      <h2 className=" text-3xl text-blue-300 border bg-white rounded-xl w-[30%] mx-auto font-semibold italic text-center p-4 m-4">
-        with age comes greater trouble,
-        not knowing where you are is a trouble
-      </h2>
+      <NavbarPage title="with age comes greater trouble, not knowing where you are is a trouble" RightSide={<MusicPlayer />} />
       <div className="flex justify-center mt-8">
         <div class="row gap-12">
-
           <img className="col rounded-full h-24 w-24" src="/wizard.gif" alt="" />
         </div>
       </div>
@@ -99,7 +88,6 @@ const WanderingPage = () => {
         <img onClick={leaveTask} className="w-20 h-20 bg-transparent rounded p-2  cursor-pointer " src="leave.jpg" alt="" />
         <img className="w-20 h-20 bg-transparent rounded p-2  cursor-pointer " src="hourglass.jpg" alt="" />
         <CheckIcon onClick={e => completeTask(e)} className="w-20 h-20 bg-green-300 rounded-full p-3  cursor-pointer" />
-
       </div>
     </div>
   );
