@@ -14,6 +14,7 @@ import OnlinePlayers from './pages/OnlinePlayers';
 import BetPage from './pages/BetPage';
 import PlaylistPage from './pages/PlaylistPage';
 import LogPage from './pages/LogPage'
+import PlaylistMainPage from './pages/PlaylistMainPage';
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
           <Route Component={OnlinePlayers} path="/onlineplayers" exact />
           <Route Component={BetPage} path="/bet" exact />
           <Route Component={PlaylistPage} path="/playlistpage" exact />
+          <Route Component={PlaylistMainPage} path="/playlistmainpage" exact />
           <Route Component={LogPage} path="/logpage" exact />
         </Routes>
       </Router>
