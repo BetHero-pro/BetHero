@@ -83,6 +83,9 @@ const Player = () => {
   const [disabledButton, setDisabledButton] = useState(false);
   const [verification, setVerification] = useState(false);
 
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filteredQuests, setFilteredQuests] = useState([]);
+  
   useHotkeys('shift+enter', () => startFirstTask());
 
   useHotkeys('enter', () => setIsQuestion(true));
@@ -346,6 +349,18 @@ const Player = () => {
     },
   ];
 
+  // quest name search input
+  const handleSearchInputChange = (e) => {
+    const query = e.target.value.toLowerCase();
+    setSearchQuery(query);
+    const filtered = questions.filter((quest) =>
+      quest.Quest.toLowerCase().includes(query)
+    );
+    setFilteredQuests(filtered);
+  };
+  const allQuestions = (searchQuery === '' ? questions : filteredQuests).sort((a, b) => a.order - b.order)
+
+
   const [openLogs, setOpenLogs] = useState(false);
   useHotkeys('q', () => setOpenLogs(false));
   return (
@@ -368,6 +383,16 @@ const Player = () => {
                   <StatusLight status={userinfo[0].userStatus} />
                   <div className="mt-3">
                     <CoinBar />
+                  </div>
+                  <div className='mt-3'>
+                  <div class="w-64 relative">
+                      <input
+                        type="text"
+                        onChange={handleSearchInputChange}
+                        placeholder="Search Quest Name"
+                        class="w-full py-2 px-4 border-black border-2 rounded-md"
+                      />
+                    </div>
                   </div>
                 </>
               }
@@ -394,8 +419,7 @@ const Player = () => {
                         >
                           <DownArrow size={20} />
                         </button>
-                        {questions
-                          .sort((a, b) => a.order - b.order)
+                        {allQuestions
                           .map((quest, index) => (
                             <Draggable key={quest._id} draggableId={quest._id} index={index}>
                               {provided => (

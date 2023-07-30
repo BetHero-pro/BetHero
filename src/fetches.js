@@ -58,7 +58,8 @@ const userAuth = async userObject => {
   console.log(userObject);
 
   //TODO 'CHANGE THE API URL TO PROD'
-
+  console.log("URI IS ")
+  console.log(URI)
   await fetch(URI + '/userAuth', {
     headers: {
       'Content-Type': 'application/json',
