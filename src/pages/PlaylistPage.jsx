@@ -88,7 +88,7 @@ const PlaylistPage = () => {
 const PlaylistItem = ({ name, onClick }) => {
   return (
     <div onClick={onClick} className="bg-gray-200 flex flex-col items-center justify-center">
-      <p className="m-0">{name}</p>
+      <p className="m-0">{name} </p>
     </div>
   );
 };
