@@ -6,3 +6,10 @@ export function getUserId() {
   const userData = dt.data[0];
   return userData._id;
 }
+
+export function getUserData() {
+  const jsonToken = localStorage.getItem('jwt');
+  const dt = jwtDecode(jsonToken);
+  const userData = dt.data[0];
+  return userData;
+}
