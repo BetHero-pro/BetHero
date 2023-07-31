@@ -21,7 +21,6 @@ import CoinBar from '../components/CoinBar';
 import { Navbar } from '../ui/navbar';
 import PlayerLogs from '../components/playerLogs';
 
-
 const Player = () => {
   useEffect(() => {
     const handleUserStatus = online => {
@@ -85,7 +84,7 @@ const Player = () => {
 
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredQuests, setFilteredQuests] = useState([]);
-  
+
   useHotkeys('shift+enter', () => startFirstTask());
 
   useHotkeys('enter', () => setIsQuestion(true));
@@ -95,9 +94,9 @@ const Player = () => {
   };
 
   const onChange = async (question, e) => {
-    console.log("completing task")
-    console.log(question)
-    createLog(user.userID, question.Quest, "completed")
+    console.log('completing task');
+    console.log(question);
+    createLog(user.userID, question.Quest, 'completed');
     e.target.disabled = true;
 
     await markQuest(question._id);
@@ -149,7 +148,7 @@ const Player = () => {
 
     setQuestions(updatedQuestions);
     console.log(updatedOrderData);
-    await setOrder(updatedOrderData);
+    await setOrder(updatedOrderData, user.userID);
   };
 
   const handleDrop = async result => {
@@ -172,7 +171,7 @@ const Player = () => {
 
     setQuestions(updatedQuestions);
     console.log(updatedOrderData);
-    await setOrder(updatedOrderData);
+    await setOrder(updatedOrderData, user.userID);
   };
 
   const navigate = useNavigate();
@@ -236,7 +235,7 @@ const Player = () => {
     if (state.status === true) {
       setDisabledButton(true);
       await createQuest(user.userID, state.newQuestion);
-      await createLog(user.userID, state.newQuestion, "created newQuest")
+      await createLog(user.userID, state.newQuestion, 'created newQuest');
       setDisabledButton(false);
       toggleRefresh(!refresh);
       setIsQuestion(false);
@@ -252,10 +251,9 @@ const Player = () => {
         const startTime = Date.now();
         localStorage.setItem(`timerStartTime_${questions[0]._id}`, startTime.toString());
 
-
         // handling logs here
-        console.log("no savd time")
-        createLog(user.userID, questions[0].Quest, "started")
+        console.log('no savd time');
+        createLog(user.userID, questions[0].Quest, 'started');
       }
 
       navigate('/questdetail', { state: { taskid: questions[0]._id, currentQuest: questions[0], userid: user.userID, quests: questions } });
@@ -334,7 +332,7 @@ const Player = () => {
       question.order = index + 1;
       updatedOrderData.push({ questID: question._id, order: index + 1 });
     });
-    setOrder(updatedOrderData);
+    setOrder(updatedOrderData, user.userID);
   }, [updateOrder]);
 
   const userinfo = [
@@ -350,16 +348,13 @@ const Player = () => {
   ];
 
   // quest name search input
-  const handleSearchInputChange = (e) => {
+  const handleSearchInputChange = e => {
     const query = e.target.value.toLowerCase();
     setSearchQuery(query);
-    const filtered = questions.filter((quest) =>
-      quest.Quest.toLowerCase().includes(query)
-    );
+    const filtered = questions.filter(quest => quest.Quest.toLowerCase().includes(query));
     setFilteredQuests(filtered);
   };
-  const allQuestions = (searchQuery === '' ? questions : filteredQuests).sort((a, b) => a.order - b.order)
-
+  const allQuestions = (searchQuery === '' ? questions : filteredQuests).sort((a, b) => a.order - b.order);
 
   const [openLogs, setOpenLogs] = useState(false);
   useHotkeys('q', () => setOpenLogs(false));
@@ -384,8 +379,8 @@ const Player = () => {
                   <div className="mt-3">
                     <CoinBar />
                   </div>
-                  <div className='mt-3'>
-                  <div class="w-64 relative">
+                  <div className="mt-3">
+                    <div class="w-64 relative">
                       <input
                         type="text"
                         onChange={handleSearchInputChange}
@@ -419,48 +414,47 @@ const Player = () => {
                         >
                           <DownArrow size={20} />
                         </button>
-                        {allQuestions
-                          .map((quest, index) => (
-                            <Draggable key={quest._id} draggableId={quest._id} index={index}>
-                              {provided => (
-                                <div
-                                  ref={provided.innerRef}
-                                  {...provided.dragHandleProps}
-                                  {...provided.draggableProps}
-                                  className=" rounded-lg flex  items-center p-2 justify-between mb-2 w-full max-w-[95%] bg-orange-100"
-                                >
-                                  <div className="flex items-center  space-x-2">
-                                    <input
-                                      type="checkbox"
-                                      name={quest}
-                                      disabled={false}
-                                      className=" mr-2 w-8 h-8 "
-                                      checked={isSelected(quest)}
-                                      onChange={e => onChange(quest, e)}
-                                      id={quest._id}
-                                    />
-                                    <label className="text-xl font-bold">{quest.Quest}</label>
-                                  </div>
-
-                                  <div className="group flex space-x-2 relative">
-                                    <ArrowSmallUpIcon
-                                      onClick={e => {
-                                        pushToStart(quest._id);
-                                      }}
-                                      className="w-8 h-8  bg-white border-2 border-black  p-1 rounded-full "
-                                    />
-
-                                    <ArrowSmallDownIcon
-                                      onClick={e => {
-                                        pushToEnd(quest._id);
-                                      }}
-                                      className="w-8 h-8  bg-white border-2 border-black  p-1 rounded-full "
-                                    />
-                                  </div>
+                        {allQuestions.map((quest, index) => (
+                          <Draggable key={quest._id} draggableId={quest._id} index={index}>
+                            {provided => (
+                              <div
+                                ref={provided.innerRef}
+                                {...provided.dragHandleProps}
+                                {...provided.draggableProps}
+                                className=" rounded-lg flex  items-center p-2 justify-between mb-2 w-full max-w-[95%] bg-orange-100"
+                              >
+                                <div className="flex items-center  space-x-2">
+                                  <input
+                                    type="checkbox"
+                                    name={quest}
+                                    disabled={false}
+                                    className=" mr-2 w-8 h-8 "
+                                    checked={isSelected(quest)}
+                                    onChange={e => onChange(quest, e)}
+                                    id={quest._id}
+                                  />
+                                  <label className="text-xl font-bold">{quest.Quest}</label>
                                 </div>
-                              )}
-                            </Draggable>
-                          ))}
+
+                                <div className="group flex space-x-2 relative">
+                                  <ArrowSmallUpIcon
+                                    onClick={e => {
+                                      pushToStart(quest._id);
+                                    }}
+                                    className="w-8 h-8  bg-white border-2 border-black  p-1 rounded-full "
+                                  />
+
+                                  <ArrowSmallDownIcon
+                                    onClick={e => {
+                                      pushToEnd(quest._id);
+                                    }}
+                                    className="w-8 h-8  bg-white border-2 border-black  p-1 rounded-full "
+                                  />
+                                </div>
+                              </div>
+                            )}
+                          </Draggable>
+                        ))}
                         {provided.placeholder}
                         <div ref={bottomOfDivQuests} />
                       </div>
@@ -472,14 +466,22 @@ const Player = () => {
 
             <div className="flex justify-center space-x-2">
               <ExclamationTriangleIcon
-                onClick={(e) => setOpenLogs(true)}
+                onClick={e => setOpenLogs(true)}
                 className="w-12 h-12 bg-white cursor-pointer border border-black   rounded-full p-2 text-orange-400"
               />
               <PlayerLogs shouldOpen={openLogs} userId={user.userID} />
-              <button className='w-13 h-13 cursor-pointer border border-black rounded-full bg-white' onClick={startLogTask}><img src="/log.png" className='w-10 h-10 p-2' /></button>
-              <button className='w-13 h-13 cursor-pointer border border-black rounded-full bg-white' onClick={startPlaylistTask}><img src="/playlist.png" className='w-10 h-10 p-2' /></button>
-              <button className='w-13 h-13 cursor-pointer border border-black rounded-full bg-white' onClick={startWanderingTask}><img src="/wandering.png" className='w-10 h-10 p-2' /></button>
-              <button className='w-13 h-13 cursor-pointer border border-black rounded-full bg-white' onClick={startRestTask}><img src="/sleep.png" className='w-10 h-10 p-2' /></button>
+              <button className="w-13 h-13 cursor-pointer border border-black rounded-full bg-white" onClick={startLogTask}>
+                <img src="/log.png" className="w-10 h-10 p-2" />
+              </button>
+              <button className="w-13 h-13 cursor-pointer border border-black rounded-full bg-white" onClick={startPlaylistTask}>
+                <img src="/playlist.png" className="w-10 h-10 p-2" />
+              </button>
+              <button className="w-13 h-13 cursor-pointer border border-black rounded-full bg-white" onClick={startWanderingTask}>
+                <img src="/wandering.png" className="w-10 h-10 p-2" />
+              </button>
+              <button className="w-13 h-13 cursor-pointer border border-black rounded-full bg-white" onClick={startRestTask}>
+                <img src="/sleep.png" className="w-10 h-10 p-2" />
+              </button>
               <PlayIcon
                 onClick={startFirstTask}
                 className="w-12 h-12 bg-white cursor-pointer border border-black   rounded-full p-2 text-green-400"

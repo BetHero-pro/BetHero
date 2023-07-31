@@ -58,8 +58,8 @@ const userAuth = async userObject => {
   console.log(userObject);
 
   //TODO 'CHANGE THE API URL TO PROD'
-  console.log("URI IS ")
-  console.log(URI)
+  console.log('URI IS ');
+  console.log(URI);
   await fetch(URI + '/userAuth', {
     headers: {
       'Content-Type': 'application/json',
@@ -156,14 +156,13 @@ const markQuest = async questID => {
     });
 };
 
-const setOrder = async updatedOrderData => {
-  return;
+const setOrder = async (updatedOrderData,userID) => {
   console.log(updatedOrderData);
   await fetch(URI + '/setOrder', {
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ data: updatedOrderData }),
+    body: JSON.stringify({ data: updatedOrderData,userID:userID }),
     method: 'POST',
     mode: 'cors',
   }).then(response => {
@@ -171,10 +170,9 @@ const setOrder = async updatedOrderData => {
   });
 };
 
-
 // store logs
 const createLog = async (userid, name, state) => {
-  console.log("creating a log")
+  console.log('creating a log');
   await fetch(URI + '/storeLogs', {
     headers: {
       'Content-Type': 'application/json',
@@ -186,8 +184,6 @@ const createLog = async (userid, name, state) => {
     console.log(response.data);
   });
 };
-
-
 
 const fetchAllLogs = async (callback1, userID) => {
   await fetch(URI + '/fetchLogs', {
@@ -205,11 +201,22 @@ const fetchAllLogs = async (callback1, userID) => {
       const ndata = data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
       console.log(ndata);
       callback1(ndata);
-
     })
     .catch(err => {
       console.log(err);
     });
 };
 
-export { fetchAllQuests, fetchAllQuests1, createQuest, deleteQuest, markQuest, userAuth, setOrder, sendUserStatus, GetAllOnlineUsers, createLog, fetchAllLogs };
+export {
+  fetchAllQuests,
+  fetchAllQuests1,
+  createQuest,
+  deleteQuest,
+  markQuest,
+  userAuth,
+  setOrder,
+  sendUserStatus,
+  GetAllOnlineUsers,
+  createLog,
+  fetchAllLogs,
+};
