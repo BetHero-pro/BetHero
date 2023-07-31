@@ -1,8 +1,12 @@
 import { useNavigate } from 'react-router-dom';
 import { PowerIcon, ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { useHotkeys } from 'react-hotkeys-hook';
+import { UserComponent } from './user-component';
+import StatusLight from '../components/playerStatus';
+import CoinBar from '../components/CoinBar';
+import { NavButton } from './button';
 
-export const Navbar = ({ Content, RightSide }) => {
+export const Navbar = () => {
   const navigate = useNavigate();
   function backArrowClick() {
     navigate('/welcome');
@@ -18,9 +22,24 @@ export const Navbar = ({ Content, RightSide }) => {
           />
         </div>
       </div>
-      <div className="flex-1 mx-auto rounded-lg flex flex-col items-center mt-4">{Content}</div>
+      <div className="flex-1 mx-auto rounded-lg flex flex-col items-center mt-4">
+        <UserComponent />
+        <StatusLight
+          status={{
+            play: false,
+            rest: true,
+            wandering: false,
+          }}
+        />
+        <div className="mt-3">
+          <CoinBar />
+        </div>
+      </div>
       <div className="flex-1 flex justify-end mr-4">
-        <div className="flex flex-col">{RightSide}</div>
+        <div className="flex flex-col">
+          <NavButton onClick={() => navigate('/bet')} imgSrc="/bet.png" />
+          <NavButton onClick={() => navigate('/onlineplayers')} imgSrc="/pub.png" />
+        </div>
       </div>
     </div>
   );

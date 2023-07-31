@@ -1,57 +1,55 @@
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import { NavbarPage } from '../ui/navbar';
 import { useNavigate } from 'react-router-dom';
+import { getUserId } from '../config/user';
+import { fetchPlaylists, storePlaylist, deletePlaylists } from '../config/api';
 
 const PlaylistPage = () => {
-  const [playlistData, setPlaylistData] = useState(JSON.parse(localStorage.getItem('playlists')) || []);
+  const [playlistData, setPlaylistData] = useState([]);
+  const [newPlaylistName, setNewPlaylistName] = useState('');
+  const [refetch, setRefetch] = useState(false);
+  const navigate = useNavigate();
+
+  const userId = getUserId(); // Fetch the user ID once and store it in a variable
 
   useEffect(() => {
-    localStorage.setItem('playlists', JSON.stringify(playlistData));
-  }, [playlistData]);
+    const fetchData = async () => {
+      try {
+        const playlists = await fetchPlaylists(getUserId());
+        setPlaylistData(playlists);
+      } catch (error) {
+        console.log(error);
+      }
+    };
 
-  const [newPlaylistName, setNewPlaylistName] = useState('');
+    fetchData();
+  }, [refetch]);
 
-  const handleSubmit = e => {
+  const handleSubmit = async e => {
     e.preventDefault();
 
-    setPlaylistData([
-      ...playlistData,
-      {
-        name: newPlaylistName,
-        quests: [],
-      },
-    ]);
+    const playlistItem = {
+      name: newPlaylistName,
+      quests: [],
+    };
 
-    // Clear form inputs
+    try {
+      await storePlaylist(userId, playlistItem);
+      setRefetch(!refetch);
+    } catch (error) {
+      console.log(error);
+    }
+
     setNewPlaylistName('');
   };
 
-  const resetPlaylists = () => {
-    const playlists = [
-      {
-        name: 'Playlist name 1',
-        quests: [
-          {
-            _id: '1',
-            Quest: 'Quest name 1',
-          },
-          {
-            _id: '2',
-            Quest: 'Quest name 2',
-          },
-          {
-            _id: '3',
-            Quest: 'Quest name 3',
-          },
-        ],
-      },
-      {
-        name: 'Playlist name 2',
-        quests: [],
-      },
-    ];
-
-    setPlaylistData(playlists);
+  const resetPlaylists = async () => {
+    try {
+      await deletePlaylists(userId);
+      setRefetch(!refetch);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -60,7 +58,7 @@ const PlaylistPage = () => {
       <div className="flex justify-center mt-8">
         <div className="row gap-12 max-w-[400px]">
           {playlistData.map((playlist, index) => (
-            <PlaylistItem key={index} {...playlist} />
+            <PlaylistItem key={index} {...playlist} onClick={() => navigate('/playlistmainpage', { state: { playlist: playlist } })} />
           ))}
           <form onSubmit={handleSubmit}>
             <p>Create Playlist Item</p>
@@ -87,14 +85,10 @@ const PlaylistPage = () => {
   );
 };
 
-const PlaylistItem = state => {
-  const navigate = useNavigate();
+const PlaylistItem = ({ name, onClick }) => {
   return (
-    <div
-      onClick={() => navigate('/playlistmainpage', { state: { playlist: state } })}
-      className="bg-gray-200 flex flex-col items-center justify-center"
-    >
-      <p className="m-0">{state?.name}</p>
+    <div onClick={onClick} className="bg-gray-200 flex flex-col items-center justify-center">
+      <p className="m-0">{name}</p>
     </div>
   );
 };
