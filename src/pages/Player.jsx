@@ -379,16 +379,7 @@ const Player = () => {
                   <div className="mt-3">
                     <CoinBar />
                   </div>
-                  <div className="mt-3">
-                    <div class="w-64 relative">
-                      <input
-                        type="text"
-                        onChange={handleSearchInputChange}
-                        placeholder="Search Quest Name"
-                        class="w-full py-2 px-4 border-black border-2 rounded-md"
-                      />
-                    </div>
-                  </div>
+                 
                 </>
               }
               RightSide={
@@ -398,6 +389,16 @@ const Player = () => {
                 </>
               }
             />
+             <div className="mt-3">
+                    <div class="w-64 relative">
+                      <input
+                        type="text"
+                        onChange={handleSearchInputChange}
+                        placeholder="Search Quest Name"
+                        class="w-full py-2 px-4 border-black border-2 rounded-md"
+                      />
+                    </div>
+                  </div>
             <div>
               <DragDropContext onDragEnd={handleDrop}>
                 <Droppable droppableId="list-container">
