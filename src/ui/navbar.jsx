@@ -6,7 +6,7 @@ import StatusLight from '../components/playerStatus';
 import CoinBar from '../components/CoinBar';
 import { NavButton } from './button';
 
-export const Navbar = () => {
+export const Navbar = ({handleSearchInputChange}) => {
   const navigate = useNavigate();
   function backArrowClick() {
     navigate('/welcome');
@@ -33,6 +33,16 @@ export const Navbar = () => {
         />
         <div className="mt-3">
           <CoinBar />
+        </div>
+        <div className="mt-3">
+          <div className="w-64 relative">
+            <input
+              type="text"
+              onChange={handleSearchInputChange}
+              placeholder="Search Quest Name"
+              className="w-full py-2 px-4 border-black border-2 rounded-md"
+            />
+          </div>
         </div>
       </div>
       <div className="flex-1 flex justify-end mr-4">

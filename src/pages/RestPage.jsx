@@ -83,7 +83,7 @@ const RestPage = () => {
     <div className="flex flex-col bg-blue-200 w-screen h-screen">
       <NavbarPage title="Warrior Resting is essential for your Survival" RightSide={<MusicPlayer />} />
       <div className="flex justify-center mt-8">
-        <div class="row gap-12">
+        <div className="row gap-12">
           <img className="col rounded-full h-24 w-24" src="/pokemon-sleep.gif" alt="" />
         </div>
       </div>

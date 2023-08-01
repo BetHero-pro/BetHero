@@ -79,7 +79,7 @@ const WanderingPage = () => {
     <div className="flex flex-col bg-blue-200 w-screen h-screen">
       <NavbarPage title="with age comes greater trouble, not knowing where you are is a trouble" RightSide={<MusicPlayer />} />
       <div className="flex justify-center mt-8">
-        <div class="row gap-12">
+        <div className="row gap-12">
           <img className="col rounded-full h-24 w-24" src="/wizard.gif" alt="" />
         </div>
       </div>
