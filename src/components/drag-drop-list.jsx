@@ -14,6 +14,7 @@ const CheckboxItem = ({ quest, isCheckboxDisabled, onChange }) => (
       onChange={e => onChange(quest, e)}
       id={quest._id}
     />
+    <img src="monster.png" alt="monsterImage" width="50" height="50"></img>
     <label className="text-xl font-bold">{quest.Quest}</label>
   </div>
 );
@@ -22,7 +23,7 @@ const ArrowButton = ({ IconComponent, onClick }) => (
   <IconComponent onClick={onClick} className="w-8 h-8  bg-white border-2 border-black  p-1 rounded-full " />
 );
 
-const DraggableItem = ({ quest, index, moveQuestion, isCheckboxDisabled, onChange }) => (
+const DraggableItem = ({ quest, index, moveQuestion, isCheckboxDisabled, onChange, dndLoading }) => (
   <Draggable key={quest._id} draggableId={quest._id} index={index}>
     {provided => (
       <div
@@ -36,13 +37,17 @@ const DraggableItem = ({ quest, index, moveQuestion, isCheckboxDisabled, onChang
           <ArrowButton
             IconComponent={ArrowSmallUpIcon}
             onClick={() => {
-              moveQuestion(quest._id, 'up');
+              if (!dndLoading) {
+                moveQuestion(quest._id, 'up');
+              }
             }}
           />
           <ArrowButton
             IconComponent={ArrowSmallDownIcon}
             onClick={() => {
-              moveQuestion(quest._id, 'down');
+              if (!dndLoading) {
+                moveQuestion(quest._id, 'down');
+              }
             }}
           />
         </div>
@@ -51,7 +56,7 @@ const DraggableItem = ({ quest, index, moveQuestion, isCheckboxDisabled, onChang
   </Draggable>
 );
 
-export const DragDropList = ({ questions, handleDrop, moveQuestion, onCheck, isCheckboxDisabled }) => {
+export const DragDropList = ({ questions, handleDrop, moveQuestion, onCheck, isCheckboxDisabled, dndLoading }) => {
   const bottomOfDivQuests = useRef(null);
   const handleBottomScrollBtn = () => bottomOfDivQuests?.current?.scrollIntoView({ behavior: 'smooth' });
 
@@ -76,9 +81,10 @@ export const DragDropList = ({ questions, handleDrop, moveQuestion, onCheck, isC
                   key={quest._id}
                   quest={quest}
                   index={index}
-                  moveQuestion={moveQuestion}
+                  moveQuestion={dndLoading ? null : moveQuestion} // Prevent moving when loading
                   isCheckboxDisabled={isCheckboxDisabled}
                   onChange={onCheck}
+                  isLoading={dndLoading}
                 />
               ))}
               {provided.placeholder}

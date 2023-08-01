@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-const useDragDrop = (questions, currentPlaylist, setQuestions, updatePlaylistQuests) => {
+const useDragDrop = (questions, currentPlaylist, setQuestions, updatePlaylistQuests, setLoading) => {
   const move = useCallback((list, startIndex, endIndex) => {
     const result = Array.from(list);
     const [removed] = result.splice(startIndex, 1);
@@ -18,11 +18,19 @@ const useDragDrop = (questions, currentPlaylist, setQuestions, updatePlaylistQue
 
       if (endIndex >= 0 && endIndex < questions.length) {
         const newQuestions = move(questions, startIndex, endIndex);
-        await updatePlaylistQuests(currentPlaylist._id, newQuestions);
         setQuestions(newQuestions);
+        setLoading(true);
+        try {
+          await updatePlaylistQuests(currentPlaylist._id, newQuestions);
+        } catch (error) {
+          console.log(error);
+          // handle error, and revert state if necessary
+        } finally {
+          setLoading(false);
+        }
       }
     },
-    [questions, currentPlaylist, setQuestions, updatePlaylistQuests, move],
+    [questions, currentPlaylist, setQuestions, updatePlaylistQuests, move, setLoading],
   );
 
   const handleDrop = useCallback(

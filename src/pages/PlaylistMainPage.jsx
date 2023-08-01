@@ -25,7 +25,6 @@ export default function PlaylistMainDataPage() {
 
   // reducer (multiple state)
   const [state, dispatch] = useReducer(playlistMainReducer, { isQuestion: false, disabledButton: false });
-
   // use-state
   const [openLogs, setOpenLogs] = useState(false);
   const [currentPlaylist, _] = useState(location.state.playlist);
@@ -34,6 +33,9 @@ export default function PlaylistMainDataPage() {
   const [questions, setQuestions] = useFetchPlaylists(currentPlaylist.name, refetch);
   const { disableCheckbox, enableCheckbox, isCheckboxDisabled } = useDisabledCheckboxes();
 
+  // dnd-loading
+  const [dndLoading, setDndLoading] = useState(false);
+
   // task
   const startFirstTask = () => startTask('timerStartTime_', navigateToPage, navigateTo, questions, { username: '', userID: '' });
   // hot-keys
@@ -41,7 +43,7 @@ export default function PlaylistMainDataPage() {
   useHotkeys('shift+enter', () => startFirstTask());
   useHotkeys('enter', () => dispatch({ type: 'SET_QUESTION', isQuestion: true }));
   // drag-n-drop function
-  const { handleDrop, moveQuestion } = useDragDrop(questions, currentPlaylist, setQuestions, updatePlaylistQuests);
+  const { handleDrop, moveQuestion } = useDragDrop(questions, currentPlaylist, setQuestions, updatePlaylistQuests, setDndLoading);
 
   const handleAddQuest = async state => {
     dispatch({ type: 'SET_BOTH', isQuestion: state.isQuestion, disabledButton: true });
@@ -72,15 +74,16 @@ export default function PlaylistMainDataPage() {
                 moveQuestion={moveQuestion}
                 onCheck={handleOnCheck}
                 isCheckboxDisabled={isCheckboxDisabled}
+                dndLoading={dndLoading}
               />
             </div>
             <div className="flex justify-center space-x-2">
               <LogsIconButton onClick={e => setOpenLogs(true)} />
               <PlayerLogs shouldOpen={openLogs} userId={''} />
-              <IconButton onClick={() => navigate('/logpage')} imgSrc="/log.png" />
+              <IconButton onClick={() => navigate('/logpage')} imgSrc="/log.png" className="bg-white" />
               <IconButton onClick={() => navigate('/playlistpage')} imgSrc="/playlist.png" className="bg-green-500 hover:bg-gray-500" />
-              <IconButton onClick={() => navigate('/wanderingpage')} imgSrc="/wandering.png" />
-              <IconButton onClick={() => navigate('/restpage')} imgSrc="/sleep.png" />
+              <IconButton onClick={() => navigate('/wanderingpage')} imgSrc="/wandering.png" className="bg-white" />
+              <IconButton onClick={() => navigate('/restpage')} imgSrc="/sleep.png" className="bg-white" />
               <PlayButton onClick={startFirstTask} />
               <AddButton onClick={() => dispatch({ type: 'SET_QUESTION', isQuestion: true })} />
             </div>
