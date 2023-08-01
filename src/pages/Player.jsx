@@ -433,6 +433,8 @@ const Player = () => {
                                     onChange={e => onChange(quest, e)}
                                     id={quest._id}
                                   />
+                                    <img src="monster.png" alt='monsterImage' width={50} height={50} />
+
                                   <label className="text-xl font-bold">{quest.Quest}</label>
                                 </div>
 
