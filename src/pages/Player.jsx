@@ -1,9 +1,9 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import jwt from 'jsonwebtoken';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { JWT_SECRET } from '../config/env';
-import { fetchAllQuests, createQuest, sendUserStatus, setOrder, markQuest, createLog } from '../fetches';
+import { fetchAllQuests, createQuest, sendUserStatus, setOrder, markQuest, createLog, over24h } from '../fetches';
 import { PowerIcon, ArrowSmallDownIcon, ArrowSmallUpIcon } from '@heroicons/react/24/outline';
 import { PlayIcon, PlusIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 
@@ -20,6 +20,7 @@ import StatusLight from '../components/playerStatus';
 import CoinBar from '../components/CoinBar';
 import { Navbar } from '../ui/navbar';
 import PlayerLogs from '../components/playerLogs';
+
 
 const Player = () => {
   useEffect(() => {
@@ -81,10 +82,11 @@ const Player = () => {
   const [refresh, toggleRefresh] = useState(false);
   const [disabledButton, setDisabledButton] = useState(false);
   const [verification, setVerification] = useState(false);
-
+  const [dungeonTask, setDungeonTask] = useState([]);
+  const [renderDg, setRenderDg] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredQuests, setFilteredQuests] = useState([]);
-
+  
   useHotkeys('shift+enter', () => startFirstTask());
 
   useHotkeys('enter', () => setIsQuestion(true));
@@ -94,9 +96,9 @@ const Player = () => {
   };
 
   const onChange = async (question, e) => {
-    console.log('completing task');
-    console.log(question);
-    createLog(user.userID, question.Quest, 'completed');
+    console.log("completing task")
+    console.log(question)
+    createLog(user.userID, question.Quest, "completed")
     e.target.disabled = true;
 
     await markQuest(question._id);
@@ -114,7 +116,24 @@ const Player = () => {
     //   fetchAllQuests(setQuestions, setSelectedQuestions, user.userID);
     // }
     fetchAllQuests(setQuestions, setSelectedQuestions, user.userID);
+   
+   
   }, [refresh]);
+
+
+
+  
+
+  useEffect (() => {
+    setDungeonTask(over24h);
+    
+    console.log(over24h[1])
+    setRenderDg(dungeonTask);
+    console.log(renderDg[1])
+  
+  }, [ renderDg, dungeonTask, over24h]);
+
+
 
   // const handleClick = () => {
   //   setIsQuestion(1);
@@ -148,7 +167,7 @@ const Player = () => {
 
     setQuestions(updatedQuestions);
     console.log(updatedOrderData);
-    await setOrder(updatedOrderData, user.userID);
+    await setOrder(updatedOrderData);
   };
 
   const handleDrop = async result => {
@@ -171,7 +190,7 @@ const Player = () => {
 
     setQuestions(updatedQuestions);
     console.log(updatedOrderData);
-    await setOrder(updatedOrderData, user.userID);
+    await setOrder(updatedOrderData);
   };
 
   const navigate = useNavigate();
@@ -235,7 +254,7 @@ const Player = () => {
     if (state.status === true) {
       setDisabledButton(true);
       await createQuest(user.userID, state.newQuestion);
-      await createLog(user.userID, state.newQuestion, 'created newQuest');
+      await createLog(user.userID, state.newQuestion, "created newQuest")
       setDisabledButton(false);
       toggleRefresh(!refresh);
       setIsQuestion(false);
@@ -251,9 +270,10 @@ const Player = () => {
         const startTime = Date.now();
         localStorage.setItem(`timerStartTime_${questions[0]._id}`, startTime.toString());
 
+
         // handling logs here
-        console.log('no savd time');
-        createLog(user.userID, questions[0].Quest, 'started');
+        console.log("no savd time")
+        createLog(user.userID, questions[0].Quest, "started")
       }
 
       navigate('/questdetail', { state: { taskid: questions[0]._id, currentQuest: questions[0], userid: user.userID, quests: questions } });
@@ -332,7 +352,7 @@ const Player = () => {
       question.order = index + 1;
       updatedOrderData.push({ questID: question._id, order: index + 1 });
     });
-    setOrder(updatedOrderData, user.userID);
+    setOrder(updatedOrderData);
   }, [updateOrder]);
 
   const userinfo = [
@@ -348,13 +368,27 @@ const Player = () => {
   ];
 
   // quest name search input
-  const handleSearchInputChange = e => {
+  const handleSearchInputChange = (e) => {
     const query = e.target.value.toLowerCase();
     setSearchQuery(query);
-    const filtered = questions.filter(quest => quest.Quest.toLowerCase().includes(query));
+    const filtered = questions.filter((quest) =>
+      quest.Quest.toLowerCase().includes(query)
+    );
     setFilteredQuests(filtered);
   };
   const allQuestions = (searchQuery === '' ? questions : filteredQuests).sort((a, b) => a.order - b.order);
+  const IsInDungeon = allQuestions.filter((elementAll) => {
+    return !renderDg[1]?.some((e) => e._id === elementAll._id);
+  });
+  console.log(IsInDungeon);
+
+  
+  
+  
+  
+  
+  
+//  console.log(renderDg[1])
 
   const [openLogs, setOpenLogs] = useState(false);
   useHotkeys('q', () => setOpenLogs(false));
@@ -364,8 +398,42 @@ const Player = () => {
         <AddQuest onSubmit={handleAddQuest} />
       ) : (
         <>
+   
+  
           <div className="bg-blue-100 w-screen h-screen">
-            <Navbar handleSearchInputChange={handleSearchInputChange} />
+            <Navbar
+              Content={
+                <>
+                  <div className="   flex justify-center space-x-2 items-center ">
+                    <img className="  w-12 h-12 rounded-full" src={avatarurl} alt="user" />
+                    <div className="text-center  text-lg font-serif text-gray-700">
+                      Hello,
+                      <span className=" font-semibold ml-2  text-gray-950">{username ? username : 'please login guest'}</span>{' '}
+                    </div>
+                  </div>
+                  <StatusLight status={userinfo[0].userStatus} />
+                  <div className="mt-3">
+                    <CoinBar />
+                  </div>
+                  <div className='mt-3'>
+                  <div class="w-64 relative">
+                      <input
+                        type="text"
+                        onChange={handleSearchInputChange}
+                        placeholder="Search Quest Name"
+                        class="w-full py-2 px-4 border-black border-2 rounded-md"
+                      />
+                    </div>
+                  </div>
+                </>
+              }
+              RightSide={
+                <>
+                  <NavButton onNavigate={() => navigate('/bet')} imgSrc="/bet.png" />
+                  <NavButton onNavigate={() => navigate('/onlineplayers')} imgSrc="/pub.png" />
+                </>
+              }
+            />
             <div>
               <DragDropContext onDragEnd={handleDrop}>
                 <Droppable droppableId="list-container">
@@ -382,49 +450,47 @@ const Player = () => {
                         >
                           <DownArrow size={20} />
                         </button>
-                        {allQuestions.map((quest, index) => (
-                          <Draggable key={quest._id} draggableId={quest._id} index={index}>
-                            {provided => (
-                              <div
-                                ref={provided.innerRef}
-                                {...provided.dragHandleProps}
-                                {...provided.draggableProps}
-                                className=" rounded-lg flex  items-center p-2 justify-between mb-2 w-full max-w-[95%] bg-orange-100"
-                              >
-                                <div className="flex items-center  space-x-2">
-                                  <input
-                                    type="checkbox"
-                                    name={quest}
-                                    disabled={false}
-                                    className=" mr-2 w-8 h-8 "
-                                    checked={isSelected(quest)}
-                                    onChange={e => onChange(quest, e)}
-                                    id={quest._id}
-                                  />
-                                    <img src="monster.png" alt='monsterImage' width={50} height={50} />
+                        {IsInDungeon.map((quest, index) => (
+                            <Draggable key={quest._id} draggableId={quest._id} index={index}>
+                              {provided => (
+                                <div
+                                  ref={provided.innerRef}
+                                  {...provided.dragHandleProps}
+                                  {...provided.draggableProps}
+                                  className=" rounded-lg flex  items-center p-2 justify-between mb-2 w-full max-w-[95%] bg-orange-100"
+                                >
+                                  <div className="flex items-center  space-x-2">
+                                    <input
+                                      type="checkbox"
+                                      name={quest}
+                                      disabled={false}
+                                      className=" mr-2 w-8 h-8 "
+                                      checked={isSelected(quest)}
+                                      onChange={e => onChange(quest, e)}
+                                      id={quest._id}
+                                    />
+                                    <label className="text-xl font-bold">{quest.Quest}</label>
+                                  </div>
 
-                                  <label className="text-xl font-bold">{quest.Quest}</label>
+                                  <div className="group flex space-x-2 relative">
+                                    <ArrowSmallUpIcon
+                                      onClick={e => {
+                                        pushToStart(quest._id);
+                                      }}
+                                      className="w-8 h-8  bg-white border-2 border-black  p-1 rounded-full "
+                                    />
+
+                                    <ArrowSmallDownIcon
+                                      onClick={e => {
+                                        pushToEnd(quest._id);
+                                      }}
+                                      className="w-8 h-8  bg-white border-2 border-black  p-1 rounded-full "
+                                    />
+                                  </div>
                                 </div>
-
-                                <div className="group flex space-x-2 relative">
-                                  <ArrowSmallUpIcon
-                                    onClick={e => {
-                                      pushToStart(quest._id);
-                                    }}
-                                    className="w-8 h-8  bg-white border-2 border-black  p-1 rounded-full "
-                                  />
-
-                                  <ArrowSmallDownIcon
-                                    onClick={e => {
-                                      pushToEnd(quest._id);
-                                    }}
-                                    className="w-8 h-8  bg-white border-2 border-black  p-1 rounded-full "
-                                  />
-                                </div>
-                              </div>
-                            )}
-                          </Draggable>
-                        ))}
+                              )}
+                            </Draggable>
+                          ))}
                         {provided.placeholder}
                         <div ref={bottomOfDivQuests} />
                       </div>
@@ -434,24 +500,28 @@ const Player = () => {
               </DragDropContext>
             </div>
 
+
+
+
+
+           
+
+
+            
+
+
+
+
             <div className="flex justify-center space-x-2">
               <ExclamationTriangleIcon
-                onClick={e => setOpenLogs(true)}
+                onClick={(e) => setOpenLogs(true)}
                 className="w-12 h-12 bg-white cursor-pointer border border-black   rounded-full p-2 text-orange-400"
               />
               <PlayerLogs shouldOpen={openLogs} userId={user.userID} />
-              <button className="w-13 h-13 cursor-pointer border border-black rounded-full bg-white" onClick={startLogTask}>
-                <img src="/log.png" className="w-10 h-10 p-2" />
-              </button>
-              <button className="w-13 h-13 cursor-pointer border border-black rounded-full bg-white" onClick={startPlaylistTask}>
-                <img src="/playlist.png" className="w-10 h-10 p-2" />
-              </button>
-              <button className="w-13 h-13 cursor-pointer border border-black rounded-full bg-white" onClick={startWanderingTask}>
-                <img src="/wandering.png" className="w-10 h-10 p-2" />
-              </button>
-              <button className="w-13 h-13 cursor-pointer border border-black rounded-full bg-white" onClick={startRestTask}>
-                <img src="/sleep.png" className="w-10 h-10 p-2" />
-              </button>
+              <button className='w-13 h-13 cursor-pointer border border-black rounded-full bg-white' onClick={startLogTask}><img src="/log.png" className='w-10 h-10 p-2' /></button>
+              <button className='w-13 h-13 cursor-pointer border border-black rounded-full bg-white' onClick={startPlaylistTask}><img src="/playlist.png" className='w-10 h-10 p-2' /></button>
+              <button className='w-13 h-13 cursor-pointer border border-black rounded-full bg-white' onClick={startWanderingTask}><img src="/wandering.png" className='w-10 h-10 p-2' /></button>
+              <button className='w-13 h-13 cursor-pointer border border-black rounded-full bg-white' onClick={startRestTask}><img src="/sleep.png" className='w-10 h-10 p-2' /></button>
               <PlayIcon
                 onClick={startFirstTask}
                 className="w-12 h-12 bg-white cursor-pointer border border-black   rounded-full p-2 text-green-400"
@@ -464,6 +534,76 @@ const Player = () => {
                 }}
               />
             </div>
+
+
+
+ <div>
+              <DragDropContext onDragEnd={handleDrop}>
+                <Droppable droppableId="list-container">
+                  {provided => (
+                    <div className="p-6">
+                      <div
+                        {...provided.droppableProps}
+                        ref={provided.innerRef}
+                        className="overflow-auto bg-white pt-4 flex flex-col mx-auto justify-start shadow-md rounded-2xl border-2 border-black items-center lg:w-[600px] h-[300px]"
+                      >
+                        <button
+                          onClick={handleBottomScrollBtn}
+                          className="flex fixed top-[80px] ml-[550px]  bg-white p-2 rounded-full border-black shadow-lg border-2 hover:transform hover:scale-110 transition duration-500"
+                        >
+                          <DownArrow size={20} />
+                        </button>
+                        {renderDg[1]?.map((quest, index) => (
+                            <Draggable key={quest._id} draggableId={quest._id} index={index}>
+                              {provided => (
+                                <div
+                                  ref={provided.innerRef}
+                                  {...provided.dragHandleProps}
+                                  {...provided.draggableProps}
+                                  className=" rounded-lg flex  items-center p-2 justify-between mb-2 w-full max-w-[95%] bg-orange-100"
+                                >
+                                  <div className="flex items-center  space-x-2">
+                                    <input
+                                      type="checkbox"
+                                      name={quest}
+                                      disabled={false}
+                                      className=" mr-2 w-8 h-8 "
+                                      checked={isSelected(quest)}
+                                      onChange={e => onChange(quest, e)}
+                                      id={quest._id}
+                                    />
+                                    <label className="text-xl font-bold">{quest.Quest}</label>
+                                  </div>
+
+                                  <div className="group flex space-x-2 relative">
+                                    <ArrowSmallUpIcon
+                                      onClick={e => {
+                                        pushToStart(quest._id);
+                                      }}
+                                      className="w-8 h-8  bg-white border-2 border-black  p-1 rounded-full "
+                                    />
+
+                                    <ArrowSmallDownIcon
+                                      onClick={e => {
+                                        pushToEnd(quest._id);
+                                      }}
+                                      className="w-8 h-8  bg-white border-2 border-black  p-1 rounded-full "
+                                    />
+                                  </div>
+                                </div>
+                              )}
+                            </Draggable>
+                          ))}
+                        {provided.placeholder}
+                        <div ref={bottomOfDivQuests} />
+                      </div>
+                    </div>
+                  )}
+                </Droppable>
+              </DragDropContext>
+            </div>
+
+
           </div>
         </>
       )}
