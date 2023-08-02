@@ -1,5 +1,10 @@
 import { URI } from './config/env.js';
 
+const over24h = [];
+
+
+
+
 const fetchAllQuests = (callback1, callback2, userID) => {
   fetch(URI + '/fetchQuest', {
     body: JSON.stringify({ userID: userID }),
@@ -13,8 +18,21 @@ const fetchAllQuests = (callback1, callback2, userID) => {
       return response.json();
     })
     .then(data => {
+     
       const questions = data.filter(item => item.isChecked !== true);
-      console.log(questions);
+      // console.log(questions);
+       const currentTime = new Date().getTime();
+       const allConverted = questions.map(e => new Date(e.createdAt).getTime());
+       const check24Hours = questions.filter((_e, i) => {
+         const timeDifference = currentTime - allConverted[i];
+         return timeDifference > 86400000;
+       });
+       
+      //  console.log(check24Hours);
+       over24h.push(check24Hours);
+     
+      
+
       callback1(questions);
       callback2(
         questions.filter(question => {
@@ -58,8 +76,8 @@ const userAuth = async userObject => {
   console.log(userObject);
 
   //TODO 'CHANGE THE API URL TO PROD'
-  console.log('URI IS ');
-  console.log(URI);
+  console.log("URI IS ")
+  console.log(URI)
   await fetch(URI + '/userAuth', {
     headers: {
       'Content-Type': 'application/json',
@@ -156,13 +174,14 @@ const markQuest = async questID => {
     });
 };
 
-const setOrder = async (updatedOrderData,userID) => {
+const setOrder = async updatedOrderData => {
+  return;
   console.log(updatedOrderData);
   await fetch(URI + '/setOrder', {
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ data: updatedOrderData,userID:userID }),
+    body: JSON.stringify({ data: updatedOrderData }),
     method: 'POST',
     mode: 'cors',
   }).then(response => {
@@ -170,9 +189,10 @@ const setOrder = async (updatedOrderData,userID) => {
   });
 };
 
+
 // store logs
 const createLog = async (userid, name, state) => {
-  console.log('creating a log');
+  console.log("creating a log")
   await fetch(URI + '/storeLogs', {
     headers: {
       'Content-Type': 'application/json',
@@ -184,6 +204,8 @@ const createLog = async (userid, name, state) => {
     console.log(response.data);
   });
 };
+
+
 
 const fetchAllLogs = async (callback1, userID) => {
   await fetch(URI + '/fetchLogs', {
@@ -201,22 +223,11 @@ const fetchAllLogs = async (callback1, userID) => {
       const ndata = data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
       console.log(ndata);
       callback1(ndata);
+
     })
     .catch(err => {
       console.log(err);
     });
 };
 
-export {
-  fetchAllQuests,
-  fetchAllQuests1,
-  createQuest,
-  deleteQuest,
-  markQuest,
-  userAuth,
-  setOrder,
-  sendUserStatus,
-  GetAllOnlineUsers,
-  createLog,
-  fetchAllLogs,
-};
+export { fetchAllQuests, fetchAllQuests1, createQuest, deleteQuest, markQuest, userAuth, setOrder, sendUserStatus, GetAllOnlineUsers, createLog, fetchAllLogs, over24h };
