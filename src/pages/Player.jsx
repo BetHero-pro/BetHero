@@ -400,7 +400,7 @@ const Player = () => {
         <>
    
   
-          <div className="bg-blue-100 w-screen h-screen">
+          <div className="bg-blue-100">
             <Navbar
               Content={
                 <>
