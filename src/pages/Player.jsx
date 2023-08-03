@@ -401,39 +401,7 @@ const Player = () => {
    
   
           <div className="bg-blue-100">
-            <Navbar
-              Content={
-                <>
-                  <div className="   flex justify-center space-x-2 items-center ">
-                    <img className="  w-12 h-12 rounded-full" src={avatarurl} alt="user" />
-                    <div className="text-center  text-lg font-serif text-gray-700">
-                      Hello,
-                      <span className=" font-semibold ml-2  text-gray-950">{username ? username : 'please login guest'}</span>{' '}
-                    </div>
-                  </div>
-                  <StatusLight status={userinfo[0].userStatus} />
-                  <div className="mt-3">
-                    <CoinBar />
-                  </div>
-                  <div className='mt-3'>
-                  <div class="w-64 relative">
-                      <input
-                        type="text"
-                        onChange={handleSearchInputChange}
-                        placeholder="Search Quest Name"
-                        class="w-full py-2 px-4 border-black border-2 rounded-md"
-                      />
-                    </div>
-                  </div>
-                </>
-              }
-              RightSide={
-                <>
-                  <NavButton onNavigate={() => navigate('/bet')} imgSrc="/bet.png" />
-                  <NavButton onNavigate={() => navigate('/onlineplayers')} imgSrc="/pub.png" />
-                </>
-              }
-            />
+            <Navbar handleSearchInputChange={handleSearchInputChange} />
             <div>
               <DragDropContext onDragEnd={handleDrop}>
                 <Droppable droppableId="list-container">
