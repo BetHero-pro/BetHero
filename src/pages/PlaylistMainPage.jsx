@@ -78,9 +78,8 @@ export default function PlaylistMainDataPage() {
               />
             </div>
             <div className="flex justify-center space-x-2">
-              <LogsIconButton onClick={e => setOpenLogs(true)} />
               <PlayerLogs shouldOpen={openLogs} userId={''} />
-              <IconButton onClick={() => navigate('/logpage')} imgSrc="/log.png" className="bg-white" />
+              <IconButton onClick={e => setOpenLogs(true)} imgSrc="/log.png" className="bg-white" />
               <IconButton onClick={() => navigate('/playlistpage')} imgSrc="/playlist.png" className="bg-green-500 hover:bg-gray-500" />
               <IconButton onClick={() => navigate('/wanderingpage')} imgSrc="/wandering.png" className="bg-white" />
               <IconButton onClick={() => navigate('/restpage')} imgSrc="/sleep.png" className="bg-white" />

@@ -86,7 +86,7 @@ const Player = () => {
   const [renderDg, setRenderDg] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredQuests, setFilteredQuests] = useState([]);
-  
+
   useHotkeys('shift+enter', () => startFirstTask());
 
   useHotkeys('enter', () => setIsQuestion(true));
@@ -116,21 +116,21 @@ const Player = () => {
     //   fetchAllQuests(setQuestions, setSelectedQuestions, user.userID);
     // }
     fetchAllQuests(setQuestions, setSelectedQuestions, user.userID);
-   
-   
+
+
   }, [refresh]);
 
 
 
-  
+
 
   useEffect (() => {
     setDungeonTask(over24h);
-    
+
     console.log(over24h[1])
     setRenderDg(dungeonTask);
     console.log(renderDg[1])
-  
+
   }, [ renderDg, dungeonTask, over24h]);
 
 
@@ -382,12 +382,12 @@ const Player = () => {
   });
   console.log(IsInDungeon);
 
-  
-  
-  
-  
-  
-  
+
+
+
+
+
+
 //  console.log(renderDg[1])
 
   const [openLogs, setOpenLogs] = useState(false);
@@ -398,8 +398,8 @@ const Player = () => {
         <AddQuest onSubmit={handleAddQuest} />
       ) : (
         <>
-   
-  
+
+
           <div className="bg-blue-100">
             <Navbar handleSearchInputChange={handleSearchInputChange} />
             <div>
@@ -472,21 +472,17 @@ const Player = () => {
 
 
 
-           
 
 
-            
+
+
 
 
 
 
             <div className="flex justify-center space-x-2">
-              <ExclamationTriangleIcon
-                onClick={(e) => setOpenLogs(true)}
-                className="w-12 h-12 bg-white cursor-pointer border border-black   rounded-full p-2 text-orange-400"
-              />
               <PlayerLogs shouldOpen={openLogs} userId={user.userID} />
-              <button className='w-13 h-13 cursor-pointer border border-black rounded-full bg-white' onClick={startLogTask}><img src="/log.png" className='w-10 h-10 p-2' /></button>
+              <button className='w-13 h-13 cursor-pointer border border-black rounded-full bg-white' onClick={(e) => setOpenLogs(true)}><img src="/log.png" className='w-10 h-10 p-2' /></button>
               <button className='w-13 h-13 cursor-pointer border border-black rounded-full bg-white' onClick={startPlaylistTask}><img src="/playlist.png" className='w-10 h-10 p-2' /></button>
               <button className='w-13 h-13 cursor-pointer border border-black rounded-full bg-white' onClick={startWanderingTask}><img src="/wandering.png" className='w-10 h-10 p-2' /></button>
               <button className='w-13 h-13 cursor-pointer border border-black rounded-full bg-white' onClick={startRestTask}><img src="/sleep.png" className='w-10 h-10 p-2' /></button>
