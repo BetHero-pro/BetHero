@@ -25,7 +25,7 @@ export const navigateTo =
     navigate(path, { state });
   };
 
-export const playlistMainReducer = (state, action) => {
+export const questReducer = (state, action) => {
   switch (action.type) {
     case 'SET_QUESTION':
       return { ...state, isQuestion: action.isQuestion };

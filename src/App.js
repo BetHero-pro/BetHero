@@ -1,7 +1,3 @@
-import { useState } from 'react';
-
-import NavComponent from './components/NavComponent';
-import TodoList from './components/Todo';
 import Welcome from './pages/Welcome';
 import Login from './pages/Login';
 import Player from './pages/Player';
@@ -14,6 +10,7 @@ import OnlinePlayers from './pages/OnlinePlayers';
 import BetPage from './pages/BetPage';
 import PlaylistPage from './pages/PlaylistPage';
 import PlaylistMainPage from './pages/PlaylistMainPage';
+import PlayerNew from './pages/PlayerNew';
 
 function App() {
   return (
@@ -23,6 +20,7 @@ function App() {
           <Route Component={Welcome} path="/welcome" exact />
           <Route Component={Login} path="/login" exact />
           <Route Component={Player} path="/" exact />
+          <Route Component={PlayerNew} path="/player" exact />
           <Route Component={Intermediate} path="/authenticating" exact />
           <Route Component={QuestDetail} path="/questdetail" exact />
           <Route Component={WanderingPage} path="/wanderingpage" exact />

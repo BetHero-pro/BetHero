@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-const useDragDrop = (questions, currentPlaylist, setQuestions, updatePlaylistQuests, setLoading) => {
+const useDragDrop = (list, currentId, setList, apiFunc, setLoading) => {
   const move = useCallback((list, startIndex, endIndex) => {
     const result = Array.from(list);
     const [removed] = result.splice(startIndex, 1);
@@ -11,17 +11,17 @@ const useDragDrop = (questions, currentPlaylist, setQuestions, updatePlaylistQue
   const moveItem = useCallback(
     async (startIndex, endIndex, id = null, direction = null) => {
       if (direction) {
-        const questionIndex = questions.findIndex(quest => quest._id === id);
+        const questionIndex = list.findIndex(quest => quest._id === id);
         endIndex = direction === 'up' ? questionIndex - 1 : questionIndex + 1;
         startIndex = questionIndex;
       }
 
-      if (endIndex >= 0 && endIndex < questions.length) {
-        const newQuestions = move(questions, startIndex, endIndex);
-        setQuestions(newQuestions);
+      if (endIndex >= 0 && endIndex < list.length) {
+        const newList = move(list, startIndex, endIndex);
+        setList(newList);
         setLoading(true);
         try {
-          await updatePlaylistQuests(currentPlaylist._id, newQuestions);
+          await apiFunc(currentId, newList);
         } catch (error) {
           console.log(error);
           // handle error, and revert state if necessary
@@ -30,7 +30,7 @@ const useDragDrop = (questions, currentPlaylist, setQuestions, updatePlaylistQue
         }
       }
     },
-    [questions, currentPlaylist, setQuestions, updatePlaylistQuests, move, setLoading],
+    [list, currentId, setList, apiFunc, move, setLoading],
   );
 
   const handleDrop = useCallback(
