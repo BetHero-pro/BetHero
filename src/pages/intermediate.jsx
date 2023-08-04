@@ -21,7 +21,7 @@ export default function Intermediate() {
         .post(
           'https://discord.com/api/oauth2/token',
           {
-            client_id: '1134378057155760128',
+            client_id: '1136365104963780718',
             client_secret: client_secret,
             grant_type: 'authorization_code',
             code: code,
