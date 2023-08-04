@@ -6,44 +6,41 @@ import { createQuestInPlaylist, markPlaylistQuest, updatePlaylistQuests } from '
 import { getUserId } from '../config/user';
 
 import { DragDropList } from '../components/drag-drop-list';
-import PlayerLogs from '../components/playerLogs';
 
 import useFetchPlaylists from '../hooks/useFetchPlaylists';
 import { useDisabledCheckboxes } from '../hooks/useDisabledCheckboxes';
-import useDragDrop from '../hooks/useDragDrop';
 
-import { navigateTo, playlistMainReducer, startTask } from '../utils/lib';
+import { navigateTo, questReducer, startTask } from '../utils/lib';
 
 import { Navbar } from '../ui/navbar';
-import { AddButton, IconButton, LogsIconButton, PlayButton } from '../ui/button';
 import PlaylistAddQuest from '../components/playlist-add-quest';
+import { MenuButtons } from '../ui/menu-button';
 
 export default function PlaylistMainDataPage() {
-  const navigate = useNavigate();
   const navigateToPage = navigateTo(useNavigate());
   const location = useLocation();
 
   // reducer (multiple state)
-  const [state, dispatch] = useReducer(playlistMainReducer, { isQuestion: false, disabledButton: false });
+  const [state, dispatch] = useReducer(questReducer, { isQuestion: false, disabledButton: false });
   // use-state
   const [openLogs, setOpenLogs] = useState(false);
   const [currentPlaylist, _] = useState(location.state.playlist);
   const [refetch, setRefetch] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filteredQuests, setFilteredQuests] = useState([]);
   // hooks
-  const [questions, setQuestions] = useFetchPlaylists(currentPlaylist.name, refetch);
   const { disableCheckbox, enableCheckbox, isCheckboxDisabled } = useDisabledCheckboxes();
 
-  // dnd-loading
-  const [dndLoading, setDndLoading] = useState(false);
+  // fetch specific playlist quests data
+  const [list, setList] = useFetchPlaylists({ refetchFlag: refetch, currentPlaylistName: currentPlaylist.name });
 
   // task
-  const startFirstTask = () => startTask('timerStartTime_', navigateToPage, navigateTo, questions, { username: '', userID: '' });
+  const startFirstTask = () => startTask('timerStartTime_', navigateToPage, navigateTo, list, { username: '', userID: '' });
   // hot-keys
   useHotkeys('q', () => setOpenLogs(false));
   useHotkeys('shift+enter', () => startFirstTask());
   useHotkeys('enter', () => dispatch({ type: 'SET_QUESTION', isQuestion: true }));
   // drag-n-drop function
-  const { handleDrop, moveQuestion } = useDragDrop(questions, currentPlaylist, setQuestions, updatePlaylistQuests, setDndLoading);
 
   const handleAddQuest = async state => {
     dispatch({ type: 'SET_BOTH', isQuestion: state.isQuestion, disabledButton: true });
@@ -59,6 +56,18 @@ export default function PlaylistMainDataPage() {
     enableCheckbox(quest._id);
   };
 
+  const RenderButtons = () => <MenuButtons openLogs={openLogs} setOpenLogs={setOpenLogs} dispatch={dispatch} startFirstTask={startFirstTask} />;
+
+  const handleSearchInputChange = (e) => {
+    const query = e.target.value.toLowerCase();
+    setSearchQuery(query);
+    const filtered = list.filter((quest) =>
+      quest.Quest.toLowerCase().includes(query)
+    );
+    setFilteredQuests(filtered);
+  };
+  const allList = (searchQuery === '' ? list : filteredQuests).sort((a, b) => a.order - b.order);
+
   return (
     <>
       {state.isQuestion ? (
@@ -66,26 +75,18 @@ export default function PlaylistMainDataPage() {
       ) : (
         <>
           <div className="bg-blue-100 w-screen h-screen">
-            <Navbar />
+            <Navbar handleSearchInputChange={handleSearchInputChange} />
             <div>
               <DragDropList
-                questions={questions}
-                handleDrop={handleDrop}
-                moveQuestion={moveQuestion}
+                currentId={currentPlaylist._id}
+                apiFunc={updatePlaylistQuests}
+                list={allList}
+                setList={setList}
                 onCheck={handleOnCheck}
                 isCheckboxDisabled={isCheckboxDisabled}
-                dndLoading={dndLoading}
               />
             </div>
-            <div className="flex justify-center space-x-2">
-              <PlayerLogs shouldOpen={openLogs} userId={''} />
-              <IconButton onClick={e => setOpenLogs(true)} imgSrc="/log.png" className="bg-white" />
-              <IconButton onClick={() => navigate('/playlistpage')} imgSrc="/playlist.png" className="bg-green-500 hover:bg-gray-500" />
-              <IconButton onClick={() => navigate('/wanderingpage')} imgSrc="/wandering.png" className="bg-white" />
-              <IconButton onClick={() => navigate('/restpage')} imgSrc="/sleep.png" className="bg-white" />
-              <PlayButton onClick={startFirstTask} />
-              <AddButton onClick={() => dispatch({ type: 'SET_QUESTION', isQuestion: true })} />
-            </div>
+            <RenderButtons />
           </div>
         </>
       )}

@@ -1,14 +1,13 @@
 import { useState, useEffect } from 'react';
-import { fetchPlaylists } from '../config/api';
 import { getUserId } from '../config/user';
 
-export default function useFetchPlaylists({ refetchFlag, currentPlaylistName }) {
+export default function useFetchPlaylistCustom(fetchPlaylistsFunc, { refetchFlag, currentPlaylistName }) {
   const [data, setData] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetchPlaylists(getUserId(), currentPlaylistName);
+        const response = await fetchPlaylistsFunc(getUserId(), currentPlaylistName);
         if (currentPlaylistName) {
           setData(response.quests);
         } else {
@@ -20,7 +19,7 @@ export default function useFetchPlaylists({ refetchFlag, currentPlaylistName }) 
     };
 
     fetchData();
-  }, [refetchFlag, currentPlaylistName]);
+  }, [refetchFlag, currentPlaylistName, fetchPlaylistsFunc]);
 
   return [data, setData];
 }

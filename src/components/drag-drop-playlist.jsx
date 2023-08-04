@@ -77,7 +77,7 @@ const DraggableItem = ({ type, item, itemId, index, moveQuestion, CheckboxItem, 
   );
 };
 
-export const DragDropList = ({ currentId, type, list, setList, apiFunc, onCheck, isCheckboxDisabled }) => {
+export const DragDropPlaylist = ({ currentId, type, list, setList, apiFunc, onCheck, isCheckboxDisabled }) => {
   // states
   const [dndLoading, setDndLoading] = useState(false);
 
@@ -87,7 +87,7 @@ export const DragDropList = ({ currentId, type, list, setList, apiFunc, onCheck,
   const handleBottomScrollBtn = () => bottomOfDivQuests?.current?.scrollIntoView({ behavior: 'smooth' });
 
   const navigate = useNavigate();
-  const onClick = (item) => {
+  const onClick = item => {
     if (type !== 'playlist') {
       console.log('clicked');
     }
