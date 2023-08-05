@@ -2,11 +2,11 @@ import { BottomSheet } from 'react-spring-bottom-sheet';
 import 'react-spring-bottom-sheet/dist/style.css';
 import { fetchAllLogs } from '../fetches';
 import { Fragment, useEffect, useState } from 'react';
-import { getUserData } from '../config/user';
+import { useSelector } from 'react-redux';
 
 const PlayerLogs = ({ shouldOpen, userId }) => {
   const [logs, setLogs] = useState([]);
-  const userData = getUserData();
+  const userData = useSelector(state => state.user);
   useEffect(() => {
     if (shouldOpen === true) {
       fetchAllLogs(setLogs, userId);
