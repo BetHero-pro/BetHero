@@ -88,3 +88,7 @@ export const orderQuests = async (userID, updatedQuests) => {
 export const markQuest = async questID => {
   return await fetchAPI('quests/markQuest', 'POST', { questID });
 };
+
+export const removeQuests = async userID => {
+  return await fetchAPI('quests/removeQuests', 'DELETE', { userID });
+};

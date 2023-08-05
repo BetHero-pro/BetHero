@@ -2,7 +2,7 @@ import { useReducer, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useHotkeys } from 'react-hotkeys-hook';
 
-import { createQuest, getQuests } from '../config/api';
+import { createQuest, getQuests, removeQuests } from '../config/api';
 import { getUserId } from '../config/user';
 import { createLog, markQuest } from '../fetches';
 
@@ -102,6 +102,9 @@ export default function PlayerNew() {
                 isCheckboxDisabled={isCheckboxDisabled}
                 onCheck={handleOnCheck}
               />
+            </div>
+            <div className="flex justify-center">
+              <button className='font-bold text-xl' onClick={() => removeQuests(userId)}>remove Quests</button>
             </div>
           </div>
         </>
