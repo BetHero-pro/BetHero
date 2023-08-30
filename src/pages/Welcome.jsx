@@ -1,22 +1,41 @@
-const Welcome = ({ currentPage, setCurrentPage }) => {
+import { useNavigate } from 'react-router-dom';
 
-    const handleClick = () => {
-        setCurrentPage(1);
-    }
+const Welcome = () => {
+  const navigate = useNavigate();
+  const handleClick = () => {
+    navigate('/login');
+  };
 
-    return (
-        <div class="d-flex flex-col align-items-center">
-            <div class="">
-                <h1 class="font-title">Welcome to BetHero</h1>
-                <div class="d-flex justify-content-center">
-                    <img width="50%" height="50%" src="Logo.png" />
-                </div>
-                <div class="d-flex justify-content-center pt-5">
-                    <button class="btn btn-secondary custom-btn" onClick={handleClick}><span class="fs-4">Enter</span></button>
-                </div>
-            </div>
+  return (
+    <>
+      <div className="flex justify-center lg:justify-start items-start h-screen">
+        <div className="absolute inset-0  flex items-center justify-center">
+          <img
+            srcSet="welcome-mobile.png 768w, welcome-desktop-transformed-x2.png 1600w, welcome-desktop-transformed-x4.png"
+            sizes="(max-width: 768px) 768px, (max-width: 1600px) 1600px, 100vw"
+            src="welcome-desktop.png"
+            alt="Background"
+            className="object-cover w-full h-full object-right xl:object-top"
+          />
         </div>
-    );
-}
+        <div className="relative flex flex-col items-center z-10 text-center mt-16 lg:ml-20 lg:mt-16 xl:ml-28 xl:mt-20 ">
+          <h3 className="text-4xl xl:text-[48px] font-bold italic">Welcome</h3>
+          <h3 className="text-2xl xl:text-[48px] font-bold italic">to</h3>
+          <h1 className="text-[64px] sm:text-8xl xl:text-[120px] font-bold italic">BetHero</h1>
+          <h2 className="text-xl xl:text-[30px] italic  font-bold">(Prototype Version 0.0.3)</h2>
+          <div className="mt-8"></div>
+          <div className="mt-10">
+            <button
+              onClick={handleClick}
+              className="w-[200px] xl:w-[500px] h-[64px] xl:h-[150px] flex justify-center items-center text-4xl xl:text-[80px] text-white italic font-bold px-6 py-3 bg-[#6282AE] hover:bg-[#7282AE] rounded-r-full rounded-l-full box-border"
+            >
+              Enter
+            </button>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
 
 export default Welcome;

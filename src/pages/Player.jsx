@@ -1,81 +1,584 @@
-import React from 'react';
-import '../../node_modules/@fortawesome/fontawesome-svg-core/styles.css'
-import '../../node_modules/font-awesome/css/font-awesome.min.css'; 
-import { useState } from "react";
-import Quest from "./Quest";
+import { useEffect, useState, useRef, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
+import jwt from 'jsonwebtoken';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { JWT_SECRET } from '../config/env';
+import { fetchAllQuests, createQuest, sendUserStatus, setOrder, markQuest, createLog, over24h } from '../fetches';
+import { PowerIcon, ArrowSmallDownIcon, ArrowSmallUpIcon } from '@heroicons/react/24/outline';
+import { PlayIcon, PlusIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 
-const Player = ({ palyerName }) => {
-    const [newQuestion, setNewQuestion] = useState('');
-    const [questions, setQuestions] = useState([]);
-    const [selectedQuestions, setSelectedQuestions] = useState([]);
-    const [isQuestion, setIsQuestion] = useState(false);
+import jwtDecode from 'jwt-decode';
 
-    const isSelected = (question) => {
-        return selectedQuestions.includes(question);
+import { useDispatch, useSelector } from 'react-redux';
+import { setUserData, getUserData } from '../redux_states/userState';
+import AddQuest from '../components/addquest';
+import { useHotkeys } from 'react-hotkeys-hook';
+
+//icons
+import { AiOutlineArrowDown as DownArrow } from 'react-icons/ai';
+import StatusLight from '../components/playerStatus';
+import CoinBar from '../components/CoinBar';
+import { Navbar } from '../ui/navbar';
+import PlayerLogs from '../components/playerLogs';
+
+
+const Player = () => {
+  useEffect(() => {
+    const handleUserStatus = online => {
+      const token = localStorage.getItem('jwt');
+      try {
+        const dt = jwtDecode(token);
+        const userData = dt.data[0];
+        sendUserStatus(userData.userName, userData._id, userData.avatarID, online);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+
+    // User is online when the component is mounted
+    handleUserStatus(true);
+
+    const handleBeforeUnload = () => {
+      // User is offline when the window is closed
+      handleUserStatus(false);
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        // User becomes inactive when the window/tab is not visible
+        handleUserStatus(false);
+      } else {
+        // User becomes active again when the window/tab becomes visible
+        handleUserStatus(true);
+      }
+    };
+
+    // Add event listeners for beforeunload and visibilitychange
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    // Clean-up function when the component is unmounted
+    return () => {
+      // Remove event listeners
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+
+      // User is offline when the component is unmounted
+      handleUserStatus(false);
+    };
+  }, []);
+
+  const bottomOfDivQuests = useRef(null);
+
+  const handleBottomScrollBtn = () => {
+    bottomOfDivQuests?.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+  const jsonToken = localStorage.getItem('jwt');
+  const [user, setUser] = useState({ username: '', userID: '' });
+
+  const [questions, setQuestions] = useState([]);
+  const [selectedQuestions, setSelectedQuestions] = useState([]);
+  const [isQuestion, setIsQuestion] = useState(false);
+  const [refresh, toggleRefresh] = useState(false);
+  const [disabledButton, setDisabledButton] = useState(false);
+  const [verification, setVerification] = useState(false);
+  const [dungeonTask, setDungeonTask] = useState([]);
+  const [renderDg, setRenderDg] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filteredQuests, setFilteredQuests] = useState([]);
+
+  useHotkeys('shift+enter', () => startFirstTask());
+
+  useHotkeys('enter', () => setIsQuestion(true));
+
+  const isSelected = question => {
+    return selectedQuestions.includes(question);
+  };
+
+  const onChange = async (question, e) => {
+    console.log("completing task")
+    console.log(question)
+    createLog(user.userID, question.Quest, "completed")
+    e.target.disabled = true;
+
+    await markQuest(question._id);
+    // handling logs here
+
+    toggleRefresh(!refresh);
+    e.target.disabled = false;
+  };
+
+  // when new question is added
+  useEffect(() => {
+    // if (jsonToken === '') {
+    //   navigate('/welcome');
+    // } else if (user.userID !== '') {
+    //   fetchAllQuests(setQuestions, setSelectedQuestions, user.userID);
+    // }
+    fetchAllQuests(setQuestions, setSelectedQuestions, user.userID);
+
+
+  }, [refresh]);
+
+
+
+
+
+  useEffect (() => {
+    setDungeonTask(over24h);
+
+    console.log(over24h[1])
+    setRenderDg(dungeonTask);
+    console.log(renderDg[1])
+
+  }, [ renderDg, dungeonTask, over24h]);
+
+
+
+  // const handleClick = () => {
+  //   setIsQuestion(1);
+  //   setNewQuestion('');
+  // };
+
+  // const handlePlayer = async e => {
+  //   e.preventDefault();
+  //   if (newQuestion !== '') {
+  //     setDisabledButton(true);
+  //     await createQuest(user.userID, newQuestion);
+  //     setDisabledButton(false);
+  //     toggleRefresh(!refresh);
+  //     setIsQuestion(0);
+  //   }
+  // };
+
+  const handleDropprev = async droppedItem => {
+    const destinationIndex = droppedItem.destination.index;
+    const sourceIndex = droppedItem.source.index;
+
+    let updatedQuestions = [...questions];
+    const [reorderedQuestion] = updatedQuestions.splice(sourceIndex, 1);
+    updatedQuestions.splice(destinationIndex, 0, reorderedQuestion);
+
+    let updatedOrderData = [];
+    updatedQuestions.forEach((question, index) => {
+      question.order = index + 1;
+      updatedOrderData.push({ questID: question._id, order: index + 1 });
+    });
+
+    setQuestions(updatedQuestions);
+    console.log(updatedOrderData);
+    await setOrder(updatedOrderData);
+  };
+
+  const handleDrop = async result => {
+    if (!result.destination) return;
+
+    const { source, destination } = result;
+    const updatedQuestions = Array.from(questions);
+
+    // Remove the dragged item from the array
+    const [removed] = updatedQuestions.splice(source.index, 1);
+
+    // Insert the dragged item at the destination index
+    updatedQuestions.splice(destination.index, 0, removed);
+
+    let updatedOrderData = [];
+    updatedQuestions.forEach((question, index) => {
+      question.order = index + 1;
+      updatedOrderData.push({ questID: question._id, order: index + 1 });
+    });
+
+    setQuestions(updatedQuestions);
+    console.log(updatedOrderData);
+    await setOrder(updatedOrderData);
+  };
+
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (jsonToken === '') {
+      navigate('/welcome');
+    } else if (user.userID === '') {
+      try {
+        const { data } = jwt.decode(jsonToken, JWT_SECRET);
+        setUser({ username: data[0].userName, userID: data[0]._id });
+        setVerification(true);
+        toggleRefresh(!refresh);
+        document.addEventListener('keypress', e => {
+          if (e.key === 'Enter' && isQuestion === 0) {
+            setIsQuestion(1);
+          }
+        });
+      } catch {
+        localStorage.setItem('jwt', '');
+        navigate('/welcome');
+      }
+    }
+  }, []);
+
+  // // get the avater url from local storage for now
+  // const userpic = localStorage.getItem('avatarurl');
+
+  // // get username from local storage for now
+  // const username = localStorage.getItem('username');
+
+  // redux code for managing user state
+  const dispatch = useDispatch();
+
+  // const [username, setUserName] = useState();
+  // const [avatarurl, setAvatarUrl] = useState();
+  const { username, avatarurl } = useSelector(state => state.user);
+  useEffect(() => {
+    let userData = localStorage.getItem('jwt');
+    if (userData) {
+      userData = jwtDecode(userData);
+      console.log(userData.data[0].avatarID);
+      // setUserName(userData.data[0].userName);
+      // setAvatarUrl(userData.data[0].userID);
+      dispatch(setUserData({ username: userData.data[0].userName, avatarurl: userData.data[0].avatarID }));
+      dispatch(getUserData());
+    }
+  }, []);
+
+  // button to go to timer detail functionality
+  function gotoQuestDetailBtn(e, currentQuest, index) {
+    e.preventDefault();
+    console.log(currentQuest, index);
+    navigate('/questdetail', { state: { index: index, currentQuest: currentQuest, userid: user.userID } });
+  }
+
+  function backArrowClick() {
+    navigate('/welcome');
+  }
+
+  const handleAddQuest = async state => {
+    if (state.status === true) {
+      setDisabledButton(true);
+      await createQuest(user.userID, state.newQuestion);
+      await createLog(user.userID, state.newQuestion, "created newQuest")
+      setDisabledButton(false);
+      toggleRefresh(!refresh);
+      setIsQuestion(false);
+    } else {
+      setIsQuestion(false);
+    }
+  };
+
+  function startFirstTask() {
+    if (questions.length > 0) {
+      const savedStartTime = localStorage.getItem(`timerStartTime_${questions[0]._id}`);
+      if (!savedStartTime) {
+        const startTime = Date.now();
+        localStorage.setItem(`timerStartTime_${questions[0]._id}`, startTime.toString());
+
+
+        // handling logs here
+        console.log("no savd time")
+        createLog(user.userID, questions[0].Quest, "started")
+      }
+
+      navigate('/questdetail', { state: { taskid: questions[0]._id, currentQuest: questions[0], userid: user.userID, quests: questions } });
+    }
+  }
+
+  function startRestTask() {
+    const savedRestTime = localStorage.getItem('restTime');
+    if (!savedRestTime) {
+      const restTime = Date.now();
+      localStorage.setItem('restTime', restTime.toString());
     }
 
-    const onChange = (question) => {
-        if (!isSelected(question)) {
-            setSelectedQuestions([...selectedQuestions, question]);
-        } else {
-            setSelectedQuestions(selectedQuestions.filter(_question => _question !== question));
-        }
+    navigate('/restPage');
+  }
+
+  function startWanderingTask() {
+    const savedWanderingTime = localStorage.getItem('wanderingTime');
+    if (!savedWanderingTime) {
+      const wanderingTime = Date.now();
+      localStorage.setItem('wanderingTime', wanderingTime.toString());
     }
 
-    const handleClick = () => {
-        setIsQuestion(1);
-        setNewQuestion('');
+    navigate('/wanderingpage');
+  }
+
+  function startPlaylistTask() {
+    navigate('/playlistpage');
+  }
+
+  function startLogTask() {
+    navigate('/logpage');
+  }
+
+  const [updateOrder, setUpdateOrder] = useState(false);
+  const pushToEnd = async element => {
+    console.log('pushing to end');
+    console.log(element);
+    const index = questions.findIndex(item => item._id === element);
+    console.log(index);
+    if (index > -1) {
+      const lastQuestion = questions[questions.length - 1];
+      console.log(lastQuestion);
+      const updatedQuestions = [...questions]; // Create a shallow copy of the questions array
+      updatedQuestions[index] = {
+        ...updatedQuestions[index],
+        order: lastQuestion.order + 1,
+      };
+      setQuestions(updatedQuestions);
+      setUpdateOrder(true);
     }
+  };
 
-    const handlePlayer = () => {
-        setIsQuestion(0);
-        setQuestions([...questions, newQuestion]);
+  const pushToStart = async element => {
+    console.log('pushing to start');
+
+    const index = questions.findIndex(item => item._id === element);
+    console.log(index);
+    if (index > -1) {
+      const firstQuestion = questions[0]; // Get the first question
+      console.log(firstQuestion);
+      const updatedQuestions = [...questions]; // Create a shallow copy of the questions array
+      updatedQuestions[index] = {
+        ...updatedQuestions[index],
+        order: firstQuestion.order - 1, // Decrease the order to make it the first question
+      };
+      setQuestions(updatedQuestions);
+      setUpdateOrder(true);
     }
+  };
 
-    return (
-        <div class="d-flex flex-col justify-content-center">
+  useEffect(() => {
+    console.log('updating');
+    let updatedOrderData = [];
+    questions.forEach((question, index) => {
+      question.order = index + 1;
+      updatedOrderData.push({ questID: question._id, order: index + 1 });
+    });
+    setOrder(updatedOrderData);
+  }, [updateOrder]);
 
-            <div className='my-1 mx-1 parent'>
-                {isQuestion ? (
-                    <>
-                        <h1>Write Quest Name</h1>
-                        <div class="d-flex justify-content-center align-items-center middleDiv">
-                            <input value={newQuestion} onChange={(e) => setNewQuestion(e.target.value)} class="custom-input"/>
-                        </div>
-                        <div className='child d-flex align-items-center justify-content-center py-5'>
-                            <button className='btn-circle' onClick={handlePlayer}>
-                                <i class="fa fa-check"></i>
-                            </button>
-                        </div>
-                    </>
-                ) : (
-                    <>
-                        <h1>{`Hi (${palyerName == undefined ? 'Playername' : palyerName})`}</h1>
-                        <div>
-                            {questions.map((question, index) => (
-                                <React.Fragment key={index}>
-                                    <input
-                                        type="checkbox"
-                                        name={question}
-                                        className='custom-check'
-                                        checked={isSelected(question)}
-                                        onChange={() => onChange(question)}
-                                    />
-                                    <label className='px-5 fs-1'>{question}</label>
-                                    <br></br>
-                                </React.Fragment>
-                            ))}
-                        </div>
-                        <div className='child d-flex align-items-center justify-content-center py-5'>
-                            <button className='btn-circle' onClick={handleClick}>
-                                <i class="fa fa-plus"></i>
-                            </button>
-                        </div>
-                    </>
-                )}
-            </div>
-        </div>
+  const userinfo = [
+    {
+      id: 1,
+      name: 'John',
+      userStatus: {
+        play: false,
+        rest: true,
+        wandering: false,
+      },
+    },
+  ];
+
+  // quest name search input
+  const handleSearchInputChange = (e) => {
+    const query = e.target.value.toLowerCase();
+    setSearchQuery(query);
+    const filtered = questions.filter((quest) =>
+      quest.Quest.toLowerCase().includes(query)
     );
-}
+    setFilteredQuests(filtered);
+  };
+  const allQuestions = (searchQuery === '' ? questions : filteredQuests).sort((a, b) => a.order - b.order);
+  const IsInDungeon = allQuestions.filter((elementAll) => {
+    return !renderDg[1]?.some((e) => e._id === elementAll._id);
+  });
+  console.log(IsInDungeon);
+
+
+
+
+
+
+
+//  console.log(renderDg[1])
+
+  const [openLogs, setOpenLogs] = useState(false);
+  useHotkeys('q', () => setOpenLogs(false));
+  return (
+    <>
+      {isQuestion ? (
+        <AddQuest onSubmit={handleAddQuest} />
+      ) : (
+        <>
+
+
+          <div className="bg-blue-100">
+            <Navbar handleSearchInputChange={handleSearchInputChange} />
+            <div>
+              <DragDropContext onDragEnd={handleDrop}>
+                <Droppable droppableId="list-container">
+                  {provided => (
+                    <div className="p-6">
+                      <div
+                        {...provided.droppableProps}
+                        ref={provided.innerRef}
+                        className="overflow-auto bg-white pt-4 flex flex-col mx-auto justify-start shadow-md rounded-2xl border-2 border-black items-center lg:w-[600px] h-[400px]"
+                      >
+                        <button
+                          onClick={handleBottomScrollBtn}
+                          className="flex fixed top-[80px] ml-[550px]  bg-white p-2 rounded-full border-black shadow-lg border-2 hover:transform hover:scale-110 transition duration-500"
+                        >
+                          <DownArrow size={20} />
+                        </button>
+                        {IsInDungeon.map((quest, index) => (
+                            <Draggable key={quest._id} draggableId={quest._id} index={index}>
+                              {provided => (
+                                <div
+                                  ref={provided.innerRef}
+                                  {...provided.dragHandleProps}
+                                  {...provided.draggableProps}
+                                  className=" rounded-lg flex  items-center p-2 justify-between mb-2 w-full max-w-[95%] bg-orange-100"
+                                >
+                                  <div className="flex items-center  space-x-2">
+                                    <input
+                                      type="checkbox"
+                                      name={quest}
+                                      disabled={false}
+                                      className=" mr-2 w-8 h-8 "
+                                      checked={isSelected(quest)}
+                                      onChange={e => onChange(quest, e)}
+                                      id={quest._id}
+                                    />
+                                    <label className="text-xl font-bold">{quest.Quest}</label>
+                                  </div>
+
+                                  <div className="group flex space-x-2 relative">
+                                    <ArrowSmallUpIcon
+                                      onClick={e => {
+                                        pushToStart(quest._id);
+                                      }}
+                                      className="w-8 h-8  bg-white border-2 border-black  p-1 rounded-full "
+                                    />
+
+                                    <ArrowSmallDownIcon
+                                      onClick={e => {
+                                        pushToEnd(quest._id);
+                                      }}
+                                      className="w-8 h-8  bg-white border-2 border-black  p-1 rounded-full "
+                                    />
+                                  </div>
+                                </div>
+                              )}
+                            </Draggable>
+                          ))}
+                        {provided.placeholder}
+                        <div ref={bottomOfDivQuests} />
+                      </div>
+                    </div>
+                  )}
+                </Droppable>
+              </DragDropContext>
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <div className="flex justify-center space-x-2">
+              <PlayerLogs shouldOpen={openLogs} userId={user.userID} />
+              <button className='w-13 h-13 cursor-pointer border border-black rounded-full bg-white' onClick={(e) => setOpenLogs(true)}><img src="/log.png" className='w-10 h-10 p-2' /></button>
+              <button className='w-13 h-13 cursor-pointer border border-black rounded-full bg-white' onClick={startPlaylistTask}><img src="/playlist.png" className='w-10 h-10 p-2' /></button>
+              <button className='w-13 h-13 cursor-pointer border border-black rounded-full bg-white' onClick={startWanderingTask}><img src="/wandering.png" className='w-10 h-10 p-2' /></button>
+              <button className='w-13 h-13 cursor-pointer border border-black rounded-full bg-white' onClick={startRestTask}><img src="/sleep.png" className='w-10 h-10 p-2' /></button>
+              <PlayIcon
+                onClick={startFirstTask}
+                className="w-12 h-12 bg-white cursor-pointer border border-black   rounded-full p-2 text-green-400"
+              />
+
+              <PlusIcon
+                className=" bg-white cursor-pointer rounded-full border border-black w-12 h-12  text-black p-2 "
+                onClick={() => {
+                  setIsQuestion(true);
+                }}
+              />
+            </div>
+
+
+
+ <div>
+              <DragDropContext onDragEnd={handleDrop}>
+                <Droppable droppableId="list-container">
+                  {provided => (
+                    <div className="p-6">
+                      <div
+                        {...provided.droppableProps}
+                        ref={provided.innerRef}
+                        className="overflow-auto bg-white pt-4 flex flex-col mx-auto justify-start shadow-md rounded-2xl border-2 border-black items-center lg:w-[600px] h-[300px]"
+                      >
+                        <button
+                          onClick={handleBottomScrollBtn}
+                          className="flex fixed top-[80px] ml-[550px]  bg-white p-2 rounded-full border-black shadow-lg border-2 hover:transform hover:scale-110 transition duration-500"
+                        >
+                          <DownArrow size={20} />
+                        </button>
+                        {renderDg[1]?.map((quest, index) => (
+                            <Draggable key={quest._id} draggableId={quest._id} index={index}>
+                              {provided => (
+                                <div
+                                  ref={provided.innerRef}
+                                  {...provided.dragHandleProps}
+                                  {...provided.draggableProps}
+                                  className=" rounded-lg flex  items-center p-2 justify-between mb-2 w-full max-w-[95%] bg-orange-100"
+                                >
+                                  <div className="flex items-center  space-x-2">
+                                    <input
+                                      type="checkbox"
+                                      name={quest}
+                                      disabled={false}
+                                      className=" mr-2 w-8 h-8 "
+                                      checked={isSelected(quest)}
+                                      onChange={e => onChange(quest, e)}
+                                      id={quest._id}
+                                    />
+                                    <label className="text-xl font-bold">{quest.Quest}</label>
+                                  </div>
+
+                                  <div className="group flex space-x-2 relative">
+                                    <ArrowSmallUpIcon
+                                      onClick={e => {
+                                        pushToStart(quest._id);
+                                      }}
+                                      className="w-8 h-8  bg-white border-2 border-black  p-1 rounded-full "
+                                    />
+
+                                    <ArrowSmallDownIcon
+                                      onClick={e => {
+                                        pushToEnd(quest._id);
+                                      }}
+                                      className="w-8 h-8  bg-white border-2 border-black  p-1 rounded-full "
+                                    />
+                                  </div>
+                                </div>
+                              )}
+                            </Draggable>
+                          ))}
+                        {provided.placeholder}
+                        <div ref={bottomOfDivQuests} />
+                      </div>
+                    </div>
+                  )}
+                </Droppable>
+              </DragDropContext>
+            </div>
+
+
+          </div>
+        </>
+      )}
+    </>
+  );
+};
+
+const NavButton = ({ onNavigate, imgSrc }) => (
+  <button onClick={onNavigate}>
+    <img alt="some-alt-title" src={imgSrc} className="w-20 h-20 p-2" />
+  </button>
+);
 
 export default Player;
